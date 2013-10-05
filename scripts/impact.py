@@ -6,6 +6,7 @@ import StringIO
 import urllib2
 import base64
 import json
+import sys
 import re
 import os
 
@@ -58,13 +59,25 @@ class GitHub(object):
             return json.loads(response.read())
 
     def getRepos(self, user):
-        repos = self._req("/users/"+user+"/repos")
-        return repos
+        try:
+            repos = self._req("/users/"+user+"/repos")
+            return repos
+        except Exception as e:
+            print "Error fetching repositories: "+str(e)
+            sys.exit(1)
     def getTags(self, user, repo):
-        tags = self._req("/repos/"+user+"/"+repo+"/tags")
-        return tags
+        try:
+            tags = self._req("/repos/"+user+"/"+repo+"/tags")
+            return tags
+        except Exception as e:
+            print "Error accessing repository tags: "+str(e)
+            sys.exit(1)
     def getFile(self, url):
-        return self._req(url, isurl=True, raw=True)
+        try:
+            return self._req(url, isurl=True, raw=True)
+        except Exception as e:
+            print "Error downloading file: "+str(e)
+            sys.exit(1)
 
 def cache_file_name():
     return os.path.expanduser("~/.impact_cache")
@@ -85,7 +98,7 @@ def parse_semver(tag):
     return {"version": "%s.%s.%s" % (major, minor, patch),
             "major": major, "minor": minor, "patch": patch}
 
-def process_user(repo_data, user):
+def process_user(repo_data, user, github):
     # Get a list of repositories
     repos = github.getRepos(user)
 
@@ -145,11 +158,11 @@ def refresh(args):
     repo_data = {}
 
     # Process all 3rd party libraries
-    process_user(repo_data, "modelica-3rdparty")
+    process_user(repo_data, "modelica-3rdparty", github)
 
     # This gives the "modelica" user priority over "modelica-3rdparty"
     # in case of naming conflict
-    process_user(repo_data, "modelica")
+    process_user(repo_data, "modelica", github)
     
     # Write out repository data collected
     cache_file = cache_file_name()
@@ -307,7 +320,7 @@ parser_refresh.add_argument("-u", "--username", default=None,
                             help="GitHub username", required=False)
 parser_refresh.add_argument("-p", "--password", action=None,
                             help="GitHub password", required=False)
-parser_refresh.add_argument("-t", "--token", action="store_true",
+parser_refresh.add_argument("-t", "--token", default=None,
                                help="GitHub OAuth token", required=False)
 parser_refresh.set_defaults(func=refresh)
 
@@ -330,7 +343,7 @@ parser_install.add_argument("-u", "--username", default=None,
                             help="GitHub username", required=False)
 parser_install.add_argument("-p", "--password", action=None,
                             help="GitHub password", required=False)
-parser_install.add_argument("-t", "--token", action="store_true",
+parser_install.add_argument("-t", "--token", default=None,
                             help="GitHub OAuth token", required=False)
 parser_install.set_defaults(func=install)
 
