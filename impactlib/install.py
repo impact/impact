@@ -3,6 +3,7 @@ import StringIO
 
 from impactlib.load import load_repo_data
 from impactlib.github import GitHub
+from impactlib.semver import SemanticVersion
 
 try:
     import colorama
@@ -26,10 +27,11 @@ def get_package(pkg):
 def latest_version(versions):
     if len(versions)==0:
         return None
-    sorted_versions = sorted(versions,
-                             cmp=lambda x, y: semver_cmp(x, y, versions))
+    keys = versions.keys()
+    svs = map(lambda x: (SemanticVersion(x), x), keys)
+    sorted_versions = sorted(svs, cmp=lambda x, y: x[0]>y[0])
     print "sorted_versions = "+str(sorted_versions)
-    return sorted_versions[0]
+    return sorted_versions[0][1]
 
 def install_version(pkg, version, github, dryrun, verbose):
     repo_data = load_repo_data()
@@ -61,17 +63,26 @@ def install_version(pkg, version, github, dryrun, verbose):
     if not dryrun:
         zf.extractall()
 
-def install(args):
-    pkg = args.pkgname[0]
+def install(pkgname, verbose, username, password, token, dry_run):
+    pkg_data = pkgname.split("#")
+    if len(pkg_data)==1:
+        pkg = pkg_data[0]
+        version = None
+    elif len(pkg_data)==2:
+        pkg = pkg_data[0]
+        version = pkg_data[1]
+    else:
+        raise ValueError("Package name must be of the form name[#version]")
+    
     pdata = get_package(pkg)
 
     if pdata==None:
         return
 
-    version = args.version
+    version = version
     if version==None:
         version = latest_version(pdata["versions"])
-        if args.verbose:
+        if verbose:
             print "  Choosing latest version: "+version
         if version==None:
             msg = "No (semantic) versions found for package '"+pkg+"'"
@@ -88,8 +99,8 @@ def install(args):
         print msg
 
     # Setup connection to github
-    github = GitHub(username=args.username, password=args.password,
-                    token=args.token)
+    github = GitHub(username=username, password=password,
+                    token=token)
 
     install_version(pkg, version, github,
-                    dryrun=args.dry_run, verbose=args.verbose)
+                    dryrun=dry_run, verbose=verbose)

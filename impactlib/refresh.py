@@ -61,27 +61,27 @@ def process_user(repo_data, user, github, verbose):
         # Add data for this repository to master data structure
         repo_data[name] = data
 
-def refresh(args):
+def refresh(username, password, token, verbose):
     # Setup connection to github
-    github = GitHub(username=args.username, password=args.password,
-                    token=args.token)
+    github = GitHub(username=username, password=password,
+                    token=token)
 
     # Initialize respository data.  This is what we are refreshing
     # and what we will store eventually.
     repo_data = {}
 
     # Process all 3rd party libraries
-    process_user(repo_data, "modelica-3rdparty", github, args.verbose)
+    process_user(repo_data, "modelica-3rdparty", github, verbose)
 
     # This gives the "modelica" user priority over "modelica-3rdparty"
     # in case of naming conflict
-    process_user(repo_data, "modelica", github, args.verbose)
+    process_user(repo_data, "modelica", github, verbose)
     
     # Write out repository data collected
     cache_file = cache_file_name()
-    if args.verbose:
+    if verbose:
         print "Cache file: "+cache_file
     with open(cache_file, "w") as fp:
         json.dump(repo_data, fp, indent=4)
-    if args.verbose:
+    if verbose:
         print "Refresh completed"

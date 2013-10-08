@@ -9,10 +9,9 @@ try:
 except:
     use_color = False
 
-def search(args):
+def search(term, description, verbose):
     repo_data = load_repo_data()
 
-    term = args.term[0]
     matches = []
     for repo in repo_data:
         match = False
@@ -29,7 +28,7 @@ def search(args):
         print "No matches found for search term '"+term+"'"
     else:
         for m in matches:
-            if args.description:
+            if description:
                 if use_color:
                     print Fore.RED+m[0]+Fore.RESET+" - "+Fore.GREEN+m[1]
                 else:
@@ -39,7 +38,7 @@ def search(args):
                     print Fore.RED + m[0]
                 else:
                     print m[0]
-            if args.verbose:
+            if verbose:
                 if len(m[2].keys())==0:
                     versions = "None"
                 else:

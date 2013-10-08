@@ -20,4 +20,7 @@ parser.add_argument("-t", "--token", default=None,
 
 args = parser.parse_args()
 
-refresh(args)
+refresh(username=args.username,
+        password=args.password,
+        token=args.token,
+        verbose=args.verbose)
