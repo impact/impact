@@ -11,7 +11,6 @@ class SemanticVersion(object):
         if m==None:
             msg = "Version number %s isn't a semantic version" % (text,)
             raise ValueError(msg)
-        print "m.groups = "+str(m.groups())
         self.major = int(m.group(1))
         self.minor = int(m.group(2))
         self.patch = int(m.group(3))

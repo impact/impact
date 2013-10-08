@@ -2,7 +2,8 @@ import json
 import os
 
 from impactlib.github import GitHub
-from impactlib.semver import parse_semver
+#from impactlib.semver import parse_semver
+from impactlib.semver import SemanticVersion
 
 def cache_file_name():
     return os.path.expanduser("~/.impact_cache")
@@ -15,8 +16,7 @@ def process_user(repo_data, user, github, verbose):
     for repo in repos:
         # Extract the repository name
         name = repo["name"]
-        if verbose:
-            print "Repository: "+name
+        print "Repository: "+name
 
         # Initialize data for current repository
         data = {}
@@ -39,21 +39,25 @@ def process_user(repo_data, user, github, verbose):
                 print "  Tag: "+tagname
             
             # Parse the tag to see if it is a semantic version number
-            ver = parse_semver(tagname)
-            if ver==None:
-                print "    '"+tagname+"' is not a semantic version number"
+            try:
+                ver = SemanticVersion(tagname)
+            except ValueError as e:
+                if verbose:
+                    print "Exception: "+str(e)
                 continue
-            else:
-                print "    Semantic version info: "+str(ver)
+
+            print "  Semantic version info: "+str(ver)
 
             # TODO: extract dependency information
 
             # Create a data structure for information related to this version
-            tagdata = ver
+            tagdata = ver.json()
             tagdata["zipball_url"] = tag["zipball_url"]
             tagdata["tarball_url"] = tag["tarball_url"]
-            data["versions"][ver["version"]] = tagdata
+            data["versions"][str(ver)] = tagdata
 
+        if len(data["versions"])==0:
+            print "  No semantic version tags found"
         # Add data for this repository to master data structure
         repo_data[name] = data
 
