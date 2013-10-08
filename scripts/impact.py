@@ -1,24 +1,11 @@
 #!/usr/bin/env python
 import argparse
 
-from impactlib.refresh import refresh
 from impactlib.search import search
 from impactlib.install import install
 
 parser = argparse.ArgumentParser(prog='impact')
 subparsers = parser.add_subparsers(help='command help')
-
-parser_refresh = subparsers.add_parser('refresh',
-                                       help='Refresh package cache')
-parser_refresh.add_argument("-v", "--verbose", action="store_true",
-                            help="Verbose mode", required=False)
-parser_refresh.add_argument("-u", "--username", default=None,
-                            help="GitHub username", required=False)
-parser_refresh.add_argument("-p", "--password", action=None,
-                            help="GitHub password", required=False)
-parser_refresh.add_argument("-t", "--token", default=None,
-                               help="GitHub OAuth token", required=False)
-parser_refresh.set_defaults(func=refresh)
 
 parser_search = subparsers.add_parser('search',
                                       help="Search for term in package")
