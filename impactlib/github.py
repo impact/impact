@@ -1,3 +1,8 @@
+import sys
+import base64
+import json
+import urllib2
+
 # This is (yet another) Python interface to the GitHub v3 API.
 # There is no reason to invent our own here except that it is
 # already done and does the minimum of what we need.  But if another

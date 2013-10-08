@@ -2,4 +2,5 @@ build
 dist
 test
 impact.egg-info
+impactlib.egg-info
 *.pyc
