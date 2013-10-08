@@ -17,5 +17,6 @@ def get(section, option, default=None):
         return ret
 
 def get_repos():
-    repo_list = get("Impact", "repos", "file:///home/mtiller/.impact_cache")
+    repo_list = get("Impact", "repos",
+                    "https://xogeny-public.s3.amazonaws.com/impact_data.json")
     return repo_list.split(",")

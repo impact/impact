@@ -1,7 +1,7 @@
 import zipfile
 import StringIO
 
-from impactlib.cache import cache_file_name, load_cache_file
+from impactlib.load import load_repo_data
 from impactlib.github import GitHub
 
 try:
@@ -13,7 +13,7 @@ except:
     use_color = False
 
 def get_package(pkg):
-    repo_data = load_cache_file()
+    repo_data = load_repo_data()
     if not pkg in repo_data:
         msg = "No package named '"+pkg+"' found"
         if use_color:
@@ -32,7 +32,7 @@ def latest_version(versions):
     return sorted_versions[0]
 
 def install_version(pkg, version, github, dryrun, verbose):
-    repo_data = load_cache_file()
+    repo_data = load_repo_data()
 
     pdata = get_package(pkg)
     if pdata==None:

@@ -1,8 +1,11 @@
 import json
+import os
 
 from impactlib.github import GitHub
 from impactlib.semver import parse_semver
-from impactlib.cache import cache_file_name
+
+def cache_file_name():
+    return os.path.expanduser("~/.impact_cache")
 
 def process_user(repo_data, user, github, verbose):
     # Get a list of repositories

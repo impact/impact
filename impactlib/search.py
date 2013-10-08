@@ -1,4 +1,4 @@
-from impactlib.cache import load_cache_file
+from impactlib.load import load_repo_data
 from fnmatch import fnmatch
 
 try:
@@ -10,7 +10,7 @@ except:
     use_color = False
 
 def search(args):
-    repo_data = load_cache_file()
+    repo_data = load_repo_data()
 
     term = args.term[0]
     matches = []

@@ -3,10 +3,6 @@ import argparse
 
 from impactlib.search import search
 from impactlib.install import install
-from impactlib import config
-
-DEFAULT_REPOS = config.get_repos()
-print "DEFAULT_REPOS = "+str(DEFAULT_REPOS)
 
 parser = argparse.ArgumentParser(prog='impact')
 subparsers = parser.add_subparsers(help='command help')
