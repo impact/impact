@@ -49,4 +49,5 @@ def get_repos():
 ## token=API_token_from_GitHub
 ## username=GitHub username
 ## password=GitHub password
+## source_list=github://user/repo_pattern,github://user/repo_pattern
 ##

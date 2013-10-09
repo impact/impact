@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import urlparse
 
 from impactlib.github import GitHub
 from impactlib.semver import SemanticVersion
@@ -58,14 +59,19 @@ def get_package_details(user, repo, tag, github, ver, verbose):
         print "Not in versioned directory ("+ver_name+")"
     return (None, [])
 
-def process_user(repo_data, user, github, verbose, tolerant, ignore_empty):
+def process_github_user(repo_data, user, pat, github, verbose,
+                        tolerant, ignore_empty):
     # Get a list of repositories
     repos = github.getRepos(user)
+
+    c = re.compile(pat)
 
     # Iterate over each repository
     for repo in repos:
         # Extract the repository name
         name = repo["name"]
+        if c.match(name)==None:
+            continue
         print "Repository: "+name
 
         # Initialize data for current repository
@@ -130,10 +136,15 @@ def process_user(repo_data, user, github, verbose, tolerant, ignore_empty):
         # Add data for this repository to master data structure
         repo_data[name] = data
 
-def refresh(output, verbose, tolerant, ignore_empty):
+def refresh(output, verbose, tolerant, ignore_empty, source_list=None):
     username = config.get("Impact", "username", None)
     password = config.get("Impact", "password", None)
     token = config.get("Impact", "token", None)
+
+    if source_list==None:
+        source_list = config.get("Impact", "source_list",
+                        "github://modelica-3rdparty/.*,github://modelica/.*")
+        source_list = source_list.split(",")
 
     if verbose:
         if username!=None:
@@ -149,14 +160,27 @@ def refresh(output, verbose, tolerant, ignore_empty):
     # and what we will store eventually.
     repo_data = {}
 
+    for source in source_list:
+        if verbose:
+            print "Scanning "+source
+        data = urlparse.urlparse(source)
+        if data.scheme=="github":
+            user = data.netloc
+            repo_pat = data.path[1:]
+            process_github_user(repo_data, user=user, github=github, pat=repo_pat,
+                                verbose=verbose, tolerant=tolerant,
+                                ignore_empty=ignore_empty)
+        else:
+            print "Unknown scheme: "+data.scheme+" in "+source+", skipping"
+        
     # Process all 3rd party libraries
-    process_user(repo_data, user="modelica-3rdparty", github=github,
-                 verbose=verbose, tolerant=tolerant, ignore_empty=ignore_empty)
+    #process_github_user(repo_data, user="modelica-3rdparty", github=github,
+    #             verbose=verbose, tolerant=tolerant, ignore_empty=ignore_empty)
 
     # This gives the "modelica" user priority over "modelica-3rdparty"
     # in case of naming conflict
-    process_user(repo_data, user="modelica", github=github, verbose=verbose,
-                 tolerant=tolerant, ignore_empty=ignore_empty)
+    #process_user(repo_data, user="modelica", github=github, verbose=verbose,
+    #             tolerant=tolerant, ignore_empty=ignore_empty)
     
     # Write out repository data collected
     if output==None:

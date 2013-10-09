@@ -9,8 +9,13 @@ parser = argparse.ArgumentParser(prog='impact')
 subparsers = parser.add_subparsers(help='command help')
 
 def call_refresh(args):
+    if args.source_list==[] or args.source_list==None:
+        source_list = None
+    else:
+        source_list = args.source_list
     refresh(output=args.output, verbose=args.verbose,
-            tolerant=args.forgiving, ignore_empty=args.ignore)
+            source_list=source_list, tolerant=args.forgiving,
+            ignore_empty=args.ignore)
 
 def call_search(args):
     search(term=args.term[0], description=args.description,
@@ -23,6 +28,7 @@ def call_install(args):
 
 parser_refresh = subparsers.add_parser('refresh',
                                        help="Used for private package listings")
+parser_refresh.add_argument("source_list", nargs="*")
 parser_refresh.add_argument("-v", "--verbose", action="store_true",
                             help="Verbose mode", required=False)
 parser_refresh.add_argument("-f", "--forgiving", action="store_true",
