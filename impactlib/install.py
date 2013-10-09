@@ -79,6 +79,9 @@ def install_version(pkg, version, github, dryrun, verbose):
         shutil.copytree(src,dst)
         shutil.rmtree(td)
 
+def elaborate_dependencies(pkgname, version):
+    return {pkgname: version}
+
 def install(pkgname, verbose, username, password, token, dry_run):
     pkg_data = pkgname.split("#")
     if len(pkg_data)==1:
@@ -118,5 +121,8 @@ def install(pkgname, verbose, username, password, token, dry_run):
     github = GitHub(username=username, password=password,
                     token=token)
 
-    install_version(pkg, version, github,
-                    dryrun=dry_run, verbose=verbose)
+    pkgversions = elaborate_dependencies(pkg, version)
+
+    for pkgname in pkgversions:
+        install_version(pkgname, pkgversions[pkgname], github,
+                        dryrun=dry_run, verbose=verbose)
