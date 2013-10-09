@@ -115,6 +115,12 @@ def process_user(repo_data, user, github, verbose, tolerant, ignore_empty):
             tagdata["dependencies"] = deps
 
             data["versions"][str(ver)] = tagdata
+            # Useful for legacy (non-semver) versions
+            tver = tagname.replace("v","")
+            if str(ver)!=tver:
+                if verbose:
+                    print "  Also storing under version: "+tver
+                data["versions"][tver] = tagdata
 
         if len(data["versions"])==0:
             print "  No useable version tags found"
