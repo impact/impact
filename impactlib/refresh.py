@@ -20,18 +20,27 @@ def extract_dependencies(fp):
     return ret
 
 def get_package_details(user, repo, tag, github, ver, verbose):
+    """
+    This function returns a tuple.
+
+    The first element in the tuple is that path of the actual Modelica
+    package.  This tells us what, after extracting the zipball, needs
+    to be moved to the install path.
+
+    The second element in the tuple is the list of dependencies.
+    """
     root = github.getRawFile(user, repo, tag, "package.mo")
     if root!=None:
         deps = extract_dependencies(root)
         root.close()
-        return ("package.mo", deps)
+        return (".", deps)
     elif verbose:
         print "Not in root directory"
     unver_dir = github.getRawFile(user, repo, tag, repo+"/package.mo")
     if unver_dir!=None:
         deps = extract_dependencies(unver_dir)
         unver_dir.close()
-        return (repo+"/package.mo", deps)
+        return (repo, deps)
     elif verbose:
         print "Not in unversioned directory of the same name"
     ver_name = repo+" "+str(ver)
@@ -40,7 +49,7 @@ def get_package_details(user, repo, tag, github, ver, verbose):
     if ver_dir!=None:
         ver_dir.close()
         deps = extract_dependencies(ver_dir)
-        return (ver_name+"/package.mo", deps)
+        return (ver_name, deps)
     elif verbose:
         print "Not in versioned directory ("+ver_name+")"
     return (None, [])
@@ -94,13 +103,13 @@ def process_user(repo_data, user, github, verbose):
             print "    Path: "+str(path)
             print "    Dependencies: "+str(deps)
 
-            data["path"] = path
-            data["dependencies"] = deps
-
             # Create a data structure for information related to this version
             tagdata = ver.json()
             tagdata["zipball_url"] = tag["zipball_url"]
             tagdata["tarball_url"] = tag["tarball_url"]
+            tagdata["path"] = path
+            tagdata["dependencies"] = deps
+
             data["versions"][str(ver)] = tagdata
 
         if len(data["versions"])==0:
