@@ -4,6 +4,7 @@ import re
 
 from impactlib.github import GitHub
 from impactlib.semver import SemanticVersion
+from impactlib import config
 
 def extract_dependencies(fp):
     deps = {}
@@ -123,7 +124,17 @@ def process_user(repo_data, user, github, verbose, tolerant, ignore_empty):
         # Add data for this repository to master data structure
         repo_data[name] = data
 
-def refresh(username, password, token, output, verbose, tolerant, ignore_empty):
+def refresh(output, verbose, tolerant, ignore_empty):
+    username = config.get("Impact", "username", None)
+    password = config.get("Impact", "password", None)
+    token = config.get("Impact", "token", None)
+
+    if verbose:
+        if username!=None:
+            print "Using username: "+username+" to authenticate"
+        if token!=None:
+            print "Using API token to authenticate"
+
     # Setup connection to github
     github = GitHub(username=username, password=password,
                     token=token)
