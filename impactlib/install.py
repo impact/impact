@@ -1,5 +1,8 @@
 import zipfile
 import StringIO
+import tempfile
+import shutil
+import os
 
 from impactlib.load import load_repo_data
 from impactlib.github import GitHub
@@ -56,12 +59,25 @@ def install_version(pkg, version, github, dryrun, verbose):
         return
 
     zipurl = vdata["zipball_url"]
+    vpath = vdata["path"]
     if verbose:
         print "  URL: "+zipurl
     zfp = StringIO.StringIO(github.getDownload(zipurl).read())
     zf = zipfile.ZipFile(zfp)
     if not dryrun:
-        zf.extractall()
+        root = zf.infolist()[0].filename
+        td = tempfile.mkdtemp()
+        zf.extractall(td)
+        src = os.path.join(td, root, vpath)
+        dst = os.path.join(".", str(pkg)+" "+str(version))
+        if verbose:
+            print "  Root zip directory: "+root
+            print "  Temp directory: "+str(td)
+            print "  Version path: "+str(vpath)
+            print "  Source: "+str(src)
+            print "  Destination: "+str(dst)
+        shutil.copytree(src,dst)
+        shutil.rmtree(td)
 
 def install(pkgname, verbose, username, password, token, dry_run):
     pkg_data = pkgname.split("#")
