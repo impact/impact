@@ -4,3 +4,4 @@ test
 impact.egg-info
 impactlib.egg-info
 *.pyc
+test_data.json
