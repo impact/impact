@@ -58,7 +58,7 @@ def install_version(pkg, version, github, dryrun, verbose):
     zipurl = vdata["zipball_url"]
     if verbose:
         print "  URL: "+zipurl
-    zfp = StringIO.StringIO(github.getFile(zipurl).read())
+    zfp = StringIO.StringIO(github.getDownload(zipurl).read())
     zf = zipfile.ZipFile(zfp)
     if not dryrun:
         zf.extractall()
