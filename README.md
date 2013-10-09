@@ -28,6 +28,6 @@ any manual configuration.  Here are the conventions that Impact expects:
     the name of the library)
 
   * `./<LibraryName> <Version>/package.mo` (i.e. within a directory sharing
-    the name of the library followed by a space followed by the semantic
-    version number)
+    the name of the library followed by a space followed by the tag name,
+    without any leading `v` present)
 
