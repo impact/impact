@@ -12,6 +12,8 @@ from impactlib.refresh import refresh
 parser = argparse.ArgumentParser(prog='impact')
 parser.add_argument("-v", "--verbose", action="store_true",
                     help="Verbose mode", required=False)
+parser.add_argument("-f", "--forgiving", action="store_true",
+                    help="Allow non-semvar tags", required=False)
 parser.add_argument("-i", "--ignore", action="store_true",
                     help="Ignore packages with no versions", required=False)
 parser.add_argument("-u", "--username", default=None,
@@ -30,4 +32,5 @@ refresh(username=args.username,
         token=args.token,
         output=args.output,
         verbose=args.verbose,
+        tolerant=args.forgiving,
         ignore_empty=args.ignore)

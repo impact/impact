@@ -1,19 +1,26 @@
 import re
 
 class SemanticVersion(object):
-    def __init__(self, text):
+    def __init__(self, text, tolerant=False):
         self.build = None
         self.prerelease = None
 
         pat = """^v?([0-9]+)\.([0-9]+)\.([0-9]+)([+-].*)?$"""
         c = re.compile(pat)
         m = c.match(text)
+        if m==None and tolerant:
+            pat = """^v?([0-9]+)\.([0-9]+)()([+-].*)?$"""
+            c = re.compile(pat)
+            m = c.match(text)
         if m==None:
             msg = "Version number %s isn't a semantic version" % (text,)
             raise ValueError(msg)
         self.major = int(m.group(1))
         self.minor = int(m.group(2))
-        self.patch = int(m.group(3))
+        if m.group(3)=="":
+            self.patch = 0 # We get here if we are tolerant
+        else:
+            self.patch = int(m.group(3))
         if m.group(4)!=None and m.group(4)[0]=="+":
             self.build = m.group(4)[1:]
         elif m.group(4)!=None and m.group(4)[0]=="-":

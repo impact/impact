@@ -126,3 +126,36 @@ def test_sorting():
 
     x = sorted([v1, v2, v3])
     assert_equal(x, [v2, v3, v1])
+
+def test_tolerance():
+    v1 = SemanticVersion("1.0-build", tolerant=True)
+    assert_equal(v1.major, 1)
+    assert_equal(v1.minor, 0)
+    assert_equal(v1.patch, 0)
+    assert_equal(v1.build, None)
+    assert_equal(v1.prerelease, "build")
+
+    v2 = SemanticVersion("1.0", tolerant=True)
+    assert_equal(v2.major, 1)
+    assert_equal(v2.minor, 0)
+    assert_equal(v2.patch, 0)
+    assert_equal(v2.build, None)
+    assert_equal(v2.prerelease, None)
+
+    v3 = SemanticVersion("1.0.0", tolerant=True)
+    assert_equal(v3.major, 1)
+    assert_equal(v3.minor, 0)
+    assert_equal(v3.patch, 0)
+    assert_equal(v3.build, None)
+    assert_equal(v3.prerelease, None)
+
+    v4 = SemanticVersion("1.0.1", tolerant=True)
+    assert_equal(v4.major, 1)
+    assert_equal(v4.minor, 0)
+    assert_equal(v4.patch, 1)
+    assert_equal(v4.build, None)
+    assert_equal(v4.prerelease, None)
+
+    assert_equal(True, v2>v1)
+    assert_equal(True, v4>v2)
+    assert_equal(True, v4>v3)

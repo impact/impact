@@ -6,7 +6,7 @@ from impactlib.github import GitHub
 from impactlib.semver import SemanticVersion
 
 def extract_dependencies(fp):
-    ret = []
+    deps = {}
     contents = fp.read()
     contents = contents.replace("\n","")
     contents = contents.replace("\r","")
@@ -16,7 +16,10 @@ def extract_dependencies(fp):
     for m in matches:
         if m[0]=="uses":
             continue
-        ret.append((m[0], m[1]+m[2]))
+        deps[m[0]] = m[1]+m[2]
+    ret = []
+    for dep in deps:
+        ret.append((dep, deps[dep]))
     return ret
 
 def get_package_details(user, repo, tag, github, ver, verbose):
@@ -43,18 +46,18 @@ def get_package_details(user, repo, tag, github, ver, verbose):
         return (repo, deps)
     elif verbose:
         print "Not in unversioned directory of the same name"
-    ver_name = repo+" "+str(ver)
-    path = repo+"%20"+str(ver)+"/package"
+    ver_name = repo+" "+str(tag.replace("v",""))
+    path = repo+"%20"+str(tag.replace("v", ""))+"/package.mo"
     ver_dir = github.getRawFile(user, repo, tag, path)
     if ver_dir!=None:
-        ver_dir.close()
         deps = extract_dependencies(ver_dir)
+        ver_dir.close()
         return (ver_name, deps)
     elif verbose:
         print "Not in versioned directory ("+ver_name+")"
     return (None, [])
 
-def process_user(repo_data, user, github, verbose, ignore_empty):
+def process_user(repo_data, user, github, verbose, tolerant, ignore_empty):
     # Get a list of repositories
     repos = github.getRepos(user)
 
@@ -86,7 +89,7 @@ def process_user(repo_data, user, github, verbose, ignore_empty):
             
             # Parse the tag to see if it is a semantic version number
             try:
-                ver = SemanticVersion(tagname)
+                ver = SemanticVersion(tagname, tolerant=tolerant)
             except ValueError as e:
                 if verbose:
                     print "Exception: "+str(e)
@@ -120,7 +123,7 @@ def process_user(repo_data, user, github, verbose, ignore_empty):
         # Add data for this repository to master data structure
         repo_data[name] = data
 
-def refresh(username, password, token, output, verbose, ignore_empty):
+def refresh(username, password, token, output, verbose, tolerant, ignore_empty):
     # Setup connection to github
     github = GitHub(username=username, password=password,
                     token=token)
@@ -130,11 +133,13 @@ def refresh(username, password, token, output, verbose, ignore_empty):
     repo_data = {}
 
     # Process all 3rd party libraries
-    process_user(repo_data, "modelica-3rdparty", github, verbose, ignore_empty)
+    process_user(repo_data, user="modelica-3rdparty", github=github,
+                 verbose=verbose, tolerant=tolerant, ignore_empty=ignore_empty)
 
     # This gives the "modelica" user priority over "modelica-3rdparty"
     # in case of naming conflict
-    process_user(repo_data, "modelica", github, verbose, ignore_empty)
+    process_user(repo_data, user="modelica", github=github, verbose=verbose,
+                 tolerant=tolerant, ignore_empty=ignore_empty)
     
     # Write out repository data collected
     if output==None:
