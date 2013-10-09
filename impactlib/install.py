@@ -66,21 +66,54 @@ def install_version(pkg, version, github, dryrun, verbose):
     zf = zipfile.ZipFile(zfp)
     if not dryrun:
         root = zf.infolist()[0].filename
-        td = tempfile.mkdtemp()
-        zf.extractall(td)
-        src = os.path.join(td, root, vpath)
         dst = os.path.join(".", str(pkg)+" "+str(version))
-        if verbose:
-            print "  Root zip directory: "+root
-            print "  Temp directory: "+str(td)
-            print "  Version path: "+str(vpath)
-            print "  Source: "+str(src)
-            print "  Destination: "+str(dst)
-        shutil.copytree(src,dst)
-        shutil.rmtree(td)
+        if os.path.exists(dst):
+            print "  Directory "+dst+" already exists, skipping"
+        else:
+            td = tempfile.mkdtemp()
+            zf.extractall(td)
+            src = os.path.join(td, root, vpath)
+            if verbose:
+                print "  Root zip directory: "+root
+                print "  Temp directory: "+str(td)
+                print "  Version path: "+str(vpath)
+                print "  Source: "+str(src)
+                print "  Destination: "+str(dst)
+            shutil.copytree(src,dst)
+            shutil.rmtree(td)
 
-def elaborate_dependencies(pkgname, version):
-    return {pkgname: version}
+def elaborate_dependencies(pkgname, version, current):
+    repo_data = load_repo_data()
+    if not pkgname in repo_data:
+        print "  No information for package "+pkgname+", skipping"
+        return current
+    if not version in repo_data[pkgname]["versions"]:
+        print "  No version "+version+" of package "+pkgname+" found, skipping"
+        return current
+    ret = current.copy()
+    ret[pkgname] = version
+    vdata = repo_data[pkgname]["versions"][version]
+    deps = vdata["dependencies"]
+    for dep in deps:
+        dname = dep[0]
+        dver = dep[1]
+        if dname in ret:
+            if dver==ret[dname]:
+                # This could avoid circular dependencies?
+                continue
+            else:
+                raise NameError("Dependency on version %s and %s of %s" % \
+                                    (ret[dname], dver, dname))
+        subs = elaborate_dependencies(dname, dver, ret)
+        for sub in subs:
+            if sub in ret:
+                if subs[sub]==ret[sub]:
+                    continue
+                else:
+                    raise NameError("Dependency on version %s and %s of %s" % \
+                                        (sub[sub], ret[sub], sub))
+            ret[sub] = subs[sub]
+    return ret
 
 def install(pkgname, verbose, username, password, token, dry_run):
     pkg_data = pkgname.split("#")
@@ -121,7 +154,13 @@ def install(pkgname, verbose, username, password, token, dry_run):
     github = GitHub(username=username, password=password,
                     token=token)
 
-    pkgversions = elaborate_dependencies(pkg, version)
+    pkgversions = elaborate_dependencies(pkg, version, current={})
+    
+    if verbose:
+        print "Libraries to install:"
+        for pkgname in pkgversions:
+            print "  "+pkgname+" version "+pkgversions[pkgname]
+        print "Installation..."
 
     for pkgname in pkgversions:
         install_version(pkgname, pkgversions[pkgname], github,
