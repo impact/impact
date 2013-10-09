@@ -5,6 +5,7 @@
 # information to some public place.
 
 import argparse
+import os
 
 from impactlib.refresh import refresh
 
@@ -17,10 +18,13 @@ parser.add_argument("-p", "--password", action=None,
                     help="GitHub password", required=False)
 parser.add_argument("-t", "--token", default=None,
                     help="GitHub OAuth token", required=False)
+parser.add_argument("-o", "--output", default=None,
+                    help="Output file", required=False)
 
 args = parser.parse_args()
 
 refresh(username=args.username,
         password=args.password,
         token=args.token,
+        output=args.output,
         verbose=args.verbose)

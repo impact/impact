@@ -5,9 +5,6 @@ import re
 from impactlib.github import GitHub
 from impactlib.semver import SemanticVersion
 
-def cache_file_name():
-    return os.path.expanduser("~/.impact_cache")
-
 def extract_dependencies(fp):
     ret = []
     contents = fp.read()
@@ -111,7 +108,7 @@ def process_user(repo_data, user, github, verbose):
         # Add data for this repository to master data structure
         repo_data[name] = data
 
-def refresh(username, password, token, verbose):
+def refresh(username, password, token, output, verbose):
     # Setup connection to github
     github = GitHub(username=username, password=password,
                     token=token)
@@ -128,10 +125,12 @@ def refresh(username, password, token, verbose):
     process_user(repo_data, "modelica", github, verbose)
     
     # Write out repository data collected
-    cache_file = cache_file_name()
-    if verbose:
-        print "Cache file: "+cache_file
-    with open(cache_file, "w") as fp:
-        json.dump(repo_data, fp, indent=4)
+    if output==None:
+        print json.dumps(repo_data, indent=4)
+    else:
+        if verbose:
+            print "Output file: "+output
+        with open(output, "w") as fp:
+            json.dump(repo_data, fp, indent=4)
     if verbose:
         print "Refresh completed"
