@@ -1,12 +1,52 @@
 import json
 import os
+import re
 
 from impactlib.github import GitHub
-#from impactlib.semver import parse_semver
 from impactlib.semver import SemanticVersion
 
 def cache_file_name():
     return os.path.expanduser("~/.impact_cache")
+
+def extract_dependencies(fp):
+    ret = []
+    contents = fp.read()
+    contents = contents.replace("\n","")
+    contents = contents.replace("\r","")
+    pat = """([A-Za-z]\w*)\s*\(\s*version\s*=\s*"(\d+\.\d+)(\.\d+)?"\s*\)"""
+    c = re.compile(pat)
+    matches = re.findall(c, contents)
+    for m in matches:
+        if m[0]=="uses":
+            continue
+        ret.append((m[0], m[1]+m[2]))
+    return ret
+
+def get_package_details(user, repo, tag, github, ver, verbose):
+    root = github.getRawFile(user, repo, tag, "package.mo")
+    if root!=None:
+        deps = extract_dependencies(root)
+        root.close()
+        return ("package.mo", deps)
+    elif verbose:
+        print "Not in root directory"
+    unver_dir = github.getRawFile(user, repo, tag, repo+"/package.mo")
+    if unver_dir!=None:
+        deps = extract_dependencies(unver_dir)
+        unver_dir.close()
+        return (repo+"/package.mo", deps)
+    elif verbose:
+        print "Not in unversioned directory of the same name"
+    ver_name = repo+" "+str(ver)
+    path = repo+"%20"+str(ver)+"/package"
+    ver_dir = github.getRawFile(user, repo, tag, path)
+    if ver_dir!=None:
+        ver_dir.close()
+        deps = extract_dependencies(ver_dir)
+        return (ver_name+"/package.mo", deps)
+    elif verbose:
+        print "Not in versioned directory ("+ver_name+")"
+    return (None, [])
 
 def process_user(repo_data, user, github, verbose):
     # Get a list of repositories
@@ -46,9 +86,19 @@ def process_user(repo_data, user, github, verbose):
                     print "Exception: "+str(e)
                 continue
 
-            print "  Semantic version info: "+str(ver)
-
             # TODO: extract dependency information
+            (path, deps) = get_package_details(user, name, tagname,
+                                               github, ver, verbose)
+            if path==None:
+                print "Couldn't find Modelica package root"
+                continue
+
+            print "  Semantic version info: "+str(ver)
+            print "    Path: "+str(path)
+            print "    Dependencies: "+str(deps)
+
+            data["path"] = path
+            data["dependencies"] = deps
 
             # Create a data structure for information related to this version
             tagdata = ver.json()
@@ -57,7 +107,7 @@ def process_user(repo_data, user, github, verbose):
             data["versions"][str(ver)] = tagdata
 
         if len(data["versions"])==0:
-            print "  No semantic version tags found"
+            print "  No useable version tags found"
         # Add data for this repository to master data structure
         repo_data[name] = data
 
