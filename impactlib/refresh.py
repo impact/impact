@@ -54,7 +54,7 @@ def get_package_details(user, repo, tag, github, ver, verbose):
         print "Not in versioned directory ("+ver_name+")"
     return (None, [])
 
-def process_user(repo_data, user, github, verbose):
+def process_user(repo_data, user, github, verbose, ignore_empty):
     # Get a list of repositories
     repos = github.getRepos(user)
 
@@ -114,10 +114,13 @@ def process_user(repo_data, user, github, verbose):
 
         if len(data["versions"])==0:
             print "  No useable version tags found"
+            if ignore_empty:
+                continue
+
         # Add data for this repository to master data structure
         repo_data[name] = data
 
-def refresh(username, password, token, output, verbose):
+def refresh(username, password, token, output, verbose, ignore_empty):
     # Setup connection to github
     github = GitHub(username=username, password=password,
                     token=token)
@@ -127,11 +130,11 @@ def refresh(username, password, token, output, verbose):
     repo_data = {}
 
     # Process all 3rd party libraries
-    process_user(repo_data, "modelica-3rdparty", github, verbose)
+    process_user(repo_data, "modelica-3rdparty", github, verbose, ignore_empty)
 
     # This gives the "modelica" user priority over "modelica-3rdparty"
     # in case of naming conflict
-    process_user(repo_data, "modelica", github, verbose)
+    process_user(repo_data, "modelica", github, verbose, ignore_empty)
     
     # Write out repository data collected
     if output==None:
