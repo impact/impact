@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 import argparse
 
+from impactlib.refresh import refresh
 from impactlib.search import search
 from impactlib.install import install
 
 parser = argparse.ArgumentParser(prog='impact')
 subparsers = parser.add_subparsers(help='command help')
+
+def call_refresh(args):
+    refresh(output=args.output, verbose=args.verbose,
+            tolerant=args.forgiving, ignore_empty=args.ignore)
 
 def call_search(args):
     search(term=args.term[0], description=args.description,
@@ -15,6 +20,19 @@ def call_install(args):
     install(pkgname=args.pkgname[0], verbose=args.verbose,
             username=args.username, password=args.password,
             token=args.token, dry_run=args.dry_run)
+
+parser_refresh = subparsers.add_parser('refresh',
+                                       help="Used for private package listings")
+parser_refresh.add_argument("-v", "--verbose", action="store_true",
+                            help="Verbose mode", required=False)
+parser_refresh.add_argument("-f", "--forgiving", action="store_true",
+                            help="Allow non-semvar tags", required=False)
+parser_refresh.add_argument("-i", "--ignore", action="store_true",
+                            help="Ignore packages with no versions",
+                            required=False)
+parser_refresh.add_argument("-o", "--output", default=None,
+                            help="Output file", required=False)
+parser_refresh.set_defaults(func=call_refresh)
 
 parser_search = subparsers.add_parser('search',
                                       help="Search for term in package")
