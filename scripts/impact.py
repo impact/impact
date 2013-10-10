@@ -23,8 +23,7 @@ def call_search(args):
 
 def call_install(args):
     install(pkgname=args.pkgname[0], verbose=args.verbose,
-            username=args.username, password=args.password,
-            token=args.token, dry_run=args.dry_run)
+            dry_run=args.dry_run)
 
 parser_refresh = subparsers.add_parser('refresh',
                                        help="Used for private package listings")
@@ -56,12 +55,6 @@ parser_install.add_argument("-v", "--verbose", action="store_true",
                             help="Verbose mode", required=False)
 parser_install.add_argument("-d", "--dry_run", action="store_true",
                             help="Suppress installation", required=False)
-parser_install.add_argument("-u", "--username", default=None,
-                            help="GitHub username", required=False)
-parser_install.add_argument("-p", "--password", action=None,
-                            help="GitHub password", required=False)
-parser_install.add_argument("-t", "--token", default=None,
-                            help="GitHub OAuth token", required=False)
 parser_install.set_defaults(func=call_install)
 
 args = parser.parse_args()

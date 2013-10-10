@@ -7,6 +7,7 @@ import os
 from impactlib.load import load_repo_data
 from impactlib.github import GitHub
 from impactlib.semver import SemanticVersion
+from impactlib import config
 
 try:
     import colorama
@@ -115,7 +116,11 @@ def elaborate_dependencies(pkgname, version, current):
             ret[sub] = subs[sub]
     return ret
 
-def install(pkgname, verbose, username, password, token, dry_run):
+def install(pkgname, verbose, dry_run):
+    username = config.get("Impact", "username", None)
+    password = config.get("Impact", "password", None)
+    token = config.get("Impact", "token", None)
+
     pkg_data = pkgname.split("#")
     if len(pkg_data)==1:
         pkg = pkg_data[0]
