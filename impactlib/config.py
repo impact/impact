@@ -38,7 +38,7 @@ def get(section, option, default=None):
 
 def get_repos():
     repo_list = get("Impact", "repos",
-                    "https://xogeny-public.s3.amazonaws.com/impact_data.json")
+                    "https://impact.modelica.org/impact_data.json")
     return repo_list.split(",")
 
 ##
