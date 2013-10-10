@@ -32,7 +32,7 @@ parser_refresh.add_argument("source_list", nargs="*")
 parser_refresh.add_argument("-v", "--verbose", action="store_true",
                             help="Verbose mode", required=False)
 parser_refresh.add_argument("-f", "--forgiving", action="store_true",
-                            help="Allow non-semvar tags", required=False)
+                            help="Allow non-semver tags", required=False)
 parser_refresh.add_argument("-i", "--ignore", action="store_true",
                             help="Ignore packages with no versions",
                             required=False)
