@@ -81,6 +81,9 @@ def process_github_user(repo_data, user, pat, github, verbose,
         # and store it.
         data["description"] = repo["description"]
 
+        # If homepage field exist store this otherwise use repo home
+        data["homepage"] = repo["homepage"] or repo["html_url"]
+
         # Prepare to extract all versions of this library
         data["versions"] = {}
 
@@ -93,7 +96,7 @@ def process_github_user(repo_data, user, pat, github, verbose,
             tagname = tag["name"]
             if verbose:
                 print "  Tag: "+tagname
-            
+
             # Parse the tag to see if it is a semantic version number
             try:
                 ver = SemanticVersion(tagname, tolerant=tolerant)
@@ -172,7 +175,7 @@ def refresh(output, verbose, tolerant, ignore_empty, source_list=None):
                                 ignore_empty=ignore_empty)
         else:
             print "Unknown scheme: "+data.scheme+" in "+source+", skipping"
-        
+
     # Process all 3rd party libraries
     #process_github_user(repo_data, user="modelica-3rdparty", github=github,
     #             verbose=verbose, tolerant=tolerant, ignore_empty=ignore_empty)
@@ -181,7 +184,7 @@ def refresh(output, verbose, tolerant, ignore_empty, source_list=None):
     # in case of naming conflict
     #process_user(repo_data, user="modelica", github=github, verbose=verbose,
     #             tolerant=tolerant, ignore_empty=ignore_empty)
-    
+
     # Write out repository data collected
     if output==None:
         print json.dumps(repo_data, indent=4)
