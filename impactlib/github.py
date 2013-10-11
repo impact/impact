@@ -22,7 +22,10 @@ class GitHub(object):
         if isurl:
             url = path
         else:
-            url = self.BASE+path+self.pager
+            url = self.BASE+path
+
+        # Add pagination part
+        url = url+self.pager
 
         # If we have an OAuth token, add it to the URL
         if self.token!=None:
