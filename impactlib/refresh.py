@@ -117,9 +117,11 @@ def process_github_user(repo_data, user, pat, github, verbose,
             print "    Dependencies: "+str(deps)
 
             # Create a data structure for information related to this version
+            tagurlbase = ('https://github.com/%s/%s/archive/%s'
+                                      % (str(user), str(name), str(tagname)))
             tagdata = ver.json()
-            tagdata["zipball_url"] = tag["zipball_url"]
-            tagdata["tarball_url"] = tag["tarball_url"]
+            tagdata["zipball_url"] = tagurlbase+".zip"
+            tagdata["tarball_url"] = tagurlbase+".tar.gz"
             tagdata["path"] = path
             tagdata["dependencies"] = deps
 
