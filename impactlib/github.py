@@ -16,16 +16,17 @@ class GitHub(object):
         self.username = username
         self.password = password
         self.token = token
+        self.pager = "?per_page=100"
     def _req(self, path, headers={}, raw=False, isurl=False):
         # Construct base URL
         if isurl:
             url = path
         else:
-            url = self.BASE+path
+            url = self.BASE+path+self.pager
 
         # If we have an OAuth token, add it to the URL
         if self.token!=None:
-            url = url+"?access_token="+str(self.token)
+            url = url+"&access_token="+str(self.token)
 
         # If we have a username and password, create the appropriate
         # Basic Authorization header
