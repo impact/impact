@@ -20,10 +20,13 @@ def load_repo_data():
     # allow you to search.  Install will require network connectivity
     # anyway.
     for url in urls:
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        data = json.loads(response.read())
-        ret.update(data)
+        try:
+            req = urllib2.Request(url)
+            response = urllib2.urlopen(req)
+            data = json.loads(response.read())
+            ret.update(data)
+        except Exception as e:
+            print "Unable to load repo data from: "+str(url)+", skipping"
 
     cached_data = ret
     return ret
