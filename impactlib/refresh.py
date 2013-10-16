@@ -127,7 +127,7 @@ def process_github_user(repo_data, user, pat, github, verbose,
 
             data["versions"][str(ver)] = tagdata
             # Useful for legacy (non-semver) versions
-            tver = tagname.replace("v","")
+            tver = tagname.replace("^v","")
             if str(ver)!=tver:
                 if verbose:
                     print "  Also storing under version: "+tver
