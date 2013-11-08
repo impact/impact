@@ -2,6 +2,8 @@ from ConfigParser import SafeConfigParser, NoSectionError, NoOptionError
 import os
 import sys
 
+ENVVAR = "IMPACT_CONFIG_FILE"
+
 def get_config_file():
     """
     All this complexity is here because @dietmarw had to be all "you
@@ -11,6 +13,8 @@ def get_config_file():
     I got tired of all his whining and implemented this.  If you don't
     like it, blame him.
     """
+    if ENVVAR in os.environ:
+        return os.environ[ENVVAR]
     if sys.platform=="win32":
         datadir = os.environ.get("APPDATA",
                                  os.path.expanduser("~/.config"))
