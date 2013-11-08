@@ -35,7 +35,10 @@ end RealTimeCoordinationLibrary;
 """)
     deps = extract_dependencies(fp)
     print "deps = "+str(deps)
-    assert_equal([("Modelica", "3.2"),
+    exp = [("Modelica", "3.2"),
                   ("RealTimeCoordinationLibrary", "1.0.2"),
-                  ("Modelica_StateGraph2", "2.0.1")], deps)
+                  ("Modelica_StateGraph2", "2.0.1")]
+    exp.sort(lambda x, y: cmp(x[0], y[0]))
+    deps.sort(lambda x, y: cmp(x[0], y[0]))
+    assert_equal(exp, deps)
                    
