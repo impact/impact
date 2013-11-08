@@ -1,7 +1,7 @@
 # This is really designed to run inside a virtual environment.
 # It is strongly advised to do:
 # $ virtualenv venv --no-site-packages
-# $ source test/bin/activate
+# $ source venv/bin/activate
 # $ pip install nose
 # $ make run_tests
 install:
