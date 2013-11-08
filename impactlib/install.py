@@ -5,6 +5,7 @@ import shutil
 import os
 
 from impactlib.load import load_repo_data
+from impactlib.refresh import strip_extra
 from impactlib.github import GitHub
 from impactlib.semver import SemanticVersion
 from impactlib import config
@@ -67,7 +68,7 @@ def install_version(pkg, version, github, dryrun, verbose):
     zf = zipfile.ZipFile(zfp)
     if not dryrun:
         root = zf.infolist()[0].filename
-        dst = os.path.join(".", str(pkg)+" "+str(version))
+        dst = os.path.join(".", str(pkg)+" "+str(strip_extra(version)))
         if os.path.exists(dst):
             print "  Directory "+dst+" already exists, skipping"
         else:

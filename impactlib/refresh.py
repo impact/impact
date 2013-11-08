@@ -24,6 +24,9 @@ def extract_dependencies(fp):
         ret.append((dep, deps[dep]))
     return ret
 
+def strip_extra(version):
+    return (version.split("-")[0]).split("+")[0]
+
 def get_package_details(user, repo, tag, github, ver, verbose):
     """
     This function returns a tuple.
@@ -48,9 +51,10 @@ def get_package_details(user, repo, tag, github, ver, verbose):
         return (repo, deps)
     elif verbose:
         print "Not in unversioned directory of the same name"
+    version = tag
     if version[0]=="v":
         version = version[1:]
-    version = (version.split("-")[0]).split("+")[0]
+    version = strip_extra(version)
     ver_name = repo+" "+version
     path = repo+"%20"+version+"/package.mo"
     ver_dir = github.getRawFile(user, repo, tag, path)
@@ -130,7 +134,9 @@ def process_github_user(repo_data, user, pat, github, verbose,
 
             data["versions"][str(ver)] = tagdata
             # Useful for legacy (non-semver) versions
-            tver = tagname.replace("^v","")
+            tver = tagname
+            if tver[0]=="v":
+                tver = tver[1:]
             if str(ver)!=tver:
                 if verbose:
                     print "  Also storing under version: "+tver

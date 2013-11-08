@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import argparse
+import os
 
 from impactlib.refresh import refresh
 from impactlib.search import search
