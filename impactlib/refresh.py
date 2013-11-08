@@ -48,8 +48,9 @@ def get_package_details(user, repo, tag, github, ver, verbose):
         return (repo, deps)
     elif verbose:
         print "Not in unversioned directory of the same name"
-    ver_name = repo+" "+str(tag.replace("v",""))
-    path = repo+"%20"+str(tag.replace("v", ""))+"/package.mo"
+    version = (tag.replace("v","").split("-")[0]).split("+")[0]
+    ver_name = repo+" "+version
+    path = repo+"%20"+version+"/package.mo"
     ver_dir = github.getRawFile(user, repo, tag, path)
     if ver_dir!=None:
         deps = extract_dependencies(ver_dir)
