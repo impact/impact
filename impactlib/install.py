@@ -64,9 +64,9 @@ def install_version(pkg, version, github, dryrun, verbose):
     vpath = vdata["path"]
     if verbose:
         print "  URL: "+zipurl
-    zfp = StringIO.StringIO(github.getDownload(zipurl).read())
-    zf = zipfile.ZipFile(zfp)
     if not dryrun:
+        zfp = StringIO.StringIO(github.getDownload(zipurl).read())
+        zf = zipfile.ZipFile(zfp)
         root = zf.infolist()[0].filename
         dst = os.path.join(".", str(pkg)+" "+str(strip_extra(version)))
         if os.path.exists(dst):
