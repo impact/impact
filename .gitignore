@@ -1,6 +1,7 @@
 build
 dist
-test
+venv
+junk
 impact.egg-info
 impactlib.egg-info
 *.pyc

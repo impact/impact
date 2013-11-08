@@ -121,7 +121,10 @@ def install(pkgname, verbose, dry_run):
     password = config.get("Impact", "password", None)
     token = config.get("Impact", "token", None)
 
-    pkg_data = pkgname.split("#")
+    if "#" in pkgname:
+        pkg_data = pkgname.split("#")
+    else:
+        pkg_data = pkgname.split(" ")
     if len(pkg_data)==1:
         pkg = pkg_data[0]
         version = None
