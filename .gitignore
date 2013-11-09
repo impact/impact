@@ -1,0 +1,8 @@
+*~
+*.bbl
+*.aux
+*.blg
+*.bak
+*.log
+*#*
+impact.pdf
