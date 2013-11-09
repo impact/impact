@@ -22,11 +22,12 @@
 \newcommand{\ud}{\mathrm{d}}
 \newcommand{\matx}[1]{\mathbf{#1}}
 \newcommand{\impact}{\texttt{impact.py}}
+\newcommand{\code}[1]{\texttt{#1}} % make quoting code text a bit simpler
 
 \begin{document}
 
 \title{\textbf{{\small Modelica'2014}\\
-    \texttt{impact.py} -- A Modelica\myr\ Package Manager}}
+    \code{impact.py} -- A Modelica\myr\ Package Manager}}
 
 \author{Michael Tiller\\Xogeny Inc., USA\\\url{michael.tiller@xogeny.com} %
         \and Dietmar Winkler\\Telemark University College, Norway\\\url{dietmar.winkler@hit.no}}
@@ -41,31 +42,31 @@ programming language, these units might be called libraries, packages
 or modules.  But they all attempt to encapsulate functionality to
 promote modular code and reusability.  For the remainder of this
 paper, we will simply refer to these organizational units as
-\em{packages} (as they are called in Modelica).
+\emph{packages} (as they are called in Modelica).
 
 Also common to many modern programming languages are tools that can be
 used to manage these packages.  These tools are generally called
-\em{package managers} and they allow developers to quickly "fetch" any
+\emph{package managers} and they allow developers to quickly "fetch" any
 packages they may need for a given project.  The main functions of
 package managers are to allow developers to search, install, update
 and uninstall packages with a simple command-line or graphical
 interface.  In the Java world, the most common package manager is
-\tt{maven}.  For Python, tools like \tt{easy_install} and \tt{pip} are
+\code{maven}.  For Python, tools like \code{easy\_install} and \code{pip} are
 used for managing packages.  For client-side web development,
-\tt{bower} is used.  For server-side javascript, the tool of choice is
-\tt{npm}.  For compiled languages, these package managers often
+\code{bower} is used.  For server-side javascript, the tool of choice is
+\code{npm}.  For compiled languages, these package managers often
 include some additional build functionality as well.
 
-This paper introduces \em{\tt{impact}, a package manager for Modelica.
-  Using \tt{impact}, Modelica users and developers can quickly search
+This paper introduces \emph{\code{impact}}, a package manager for Modelica.
+  Using \code{impact}, Modelica users and developers can quickly search
   for, install and update Modelica libraries.  In this paper, we will
-  discuss the functionality provided by \tt{impact}.  In addition, we
+  discuss the functionality provided by \code{impact}.  In addition, we
   will discuss how the functionality was implemented.  As part of this
   we will discuss the importance of collaborative platforms, like
-  \tt{GitHub} in our case, for providing a means for collecting,
+  \code{GitHub} in our case, for providing a means for collecting,
   curating and distributing packages within a community of developers.
 
-The \tt{impact} package manager is provided to the Modelica community
+The \code{impact} package manager is provided to the Modelica community
 as a free, open-source tool.  Furthermore, the protocols involved are
 all documented and we encourage tool vendors to integrate them into
 their own tools so that graphical tools can provide same searching,
