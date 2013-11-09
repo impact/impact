@@ -4,5 +4,6 @@
 *.blg
 *.bak
 *.log
+*.out
 *#*
 impact.pdf

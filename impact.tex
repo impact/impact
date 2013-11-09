@@ -16,6 +16,7 @@
 % some additional packages
 \usepackage{listings} % for code listings
 \usepackage{color}
+\usepackage[colorlinks=false]{hyperref}
 
 % usefull commands
 \newcommand{\myr}{\textsuperscript{\textregistered}}
@@ -29,8 +30,8 @@
 \title{\textbf{{\small Modelica'2014}\\
     \impact -- A Modelica\myr\ Package Manager}}
 
-\author{Michael Tiller\\Xogeny Inc., USA\\\url{michael.tiller@xogeny.com} %
-        \and Dietmar Winkler\\Telemark University College, Norway\\\url{dietmar.winkler@hit.no}}
+\author{Michael Tiller\\\href{http://xogeny.com}{Xogeny Inc.}, USA\\\href{mailto:michael.tiller@xogeny.com}{\nolinkurl{michael.tiller@xogeny.com}} %
+        \and Dietmar Winkler\\\href{http://www.hit.no}{Telemark University College}, Norway\\\href{mailto:dietmar.winkler@hit.no}{\nolinkurl{dietmar.winkler@hit.no}}}
 \date{} % <--- leave date empty
 \maketitle\thispagestyle{empty} %% <-- you need this for the first page
 
@@ -63,7 +64,7 @@ This paper introduces \emph{\impact}, a package manager for Modelica.
   discuss the functionality provided by \impact.  In addition, we
   will discuss how the functionality was implemented.  As part of this
   we will discuss the importance of collaborative platforms, like
-  \code{GitHub} in our case, for providing a means for collecting,
+  \href{https://github.com}{GitHub} in our case, for providing a means for collecting,
   curating and distributing packages within a community of developers.
 
 The \impact\ package manager is provided to the Modelica community
