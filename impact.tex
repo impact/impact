@@ -59,18 +59,18 @@ used for managing packages.  For client-side web development,
 include some additional build functionality as well.
 
 This paper introduces \emph{\impact}, a package manager for Modelica.
-  Using \impact, Modelica users and developers can quickly search
-  for, install and update Modelica libraries.  In this paper, we will
-  discuss the functionality provided by \impact.  In addition, we
-  will discuss how the functionality was implemented.  As part of this
-  we will discuss the importance of collaborative platforms, like
-  \href{https://github.com}{GitHub} in our case, for providing a means for collecting,
-  curating and distributing packages within a community of developers.
+Using \impact, Modelica users and developers can quickly search
+for, install and update Modelica libraries.  In this paper, we will
+discuss the functionality provided by \impact.  In addition, we
+will discuss how the functionality was implemented.  As part of this
+we will discuss the importance of collaborative platforms, like
+\href{https://github.com}{GitHub} in our case, for providing a means for collecting,
+curating and distributing packages within a community of developers.
 
-The \impact\ package manager is provided to the Modelica community
-as a free, open-source tool.  Furthermore, the protocols involved are
-all documented and we encourage tool vendors to integrate them into
-their own tools so that graphical tools can provide same searching,
+The \impact\ package manager is provided to the Modelica community as
+a free, open-source tool.  Furthermore, the protocols involved are all
+documented and we encourage tool vendors to integrate them into their
+own tools so that graphical tools can provide the same searching,
 updating and installation capabilities that the command-line tool
 provides.
 
@@ -78,6 +78,17 @@ provides.
 
 \section{Introduction}
 \label{sec:intro}
+
+% Explain ``the problem'' (finding, installing and updating packages
+% as well as dealing with version incompatibilities which leads to the
+% need to use different versions of a package across different projects)
+
+% Discuss existing package managers in other tools and how they've
+% been implemented.  I'm thinking of Maven, npm, bower, go.  The focus
+% on the relatively lightweight approach taken by bower.
+
+% Talk about dependencies (what is handled, what isn't)
+
 %TODO
 In Fig.~\ref{fig:newtons_cradle} you see a possible candiate for a logo.
 
@@ -89,39 +100,15 @@ In Fig.~\ref{fig:newtons_cradle} you see a possible candiate for a logo.
   \label{fig:newtons_cradle}
 \end{figure}
 
+\section{Command Line Interface}
 
-\section{Background}
-\label{sec:background}
+% Talk about installation (we need to get this up on PyPI, right?!)
 
-Problems we want to solve:
-\begin{itemize}
-\item one
-\item another one
-\item and a third one
-\end{itemize}
+% Talk about the various commands available with impact (search, list,
+% install, etc)
 
-
-\subsection{Exisiting solutions}
-\label{sec:exist-sol}
-
-\subsection{New approach}
-\label{sec:exist-sol}
-Foo
-\lstset{language=python}
-\begin{lstlisting}[frame=single]  % Start your code-block
-
-from setuptools import setup
-
-setup(name="impactlib",
-      version="0.1.0",
-      description="Modelica package manager",
-      author="Michael Tiller",
-      author_email="michael.tiller@gmail.com",
-      url="http://www.xogeny.com/",
-      scripts=['scripts/impact.py'],
-      packages=['impactlib'])
-\end{lstlisting}
-
+\subsection{Searching} % Make each command a subsection
+\label{cmd:search}
 
 Search for librararies is done by executed by doing:
 \lstset{language=bash}
@@ -130,13 +117,47 @@ Search for librararies is done by executed by doing:
 impact.py search <search term>
 \end{lstlisting}
 
-\section{Discussion}
-\label{sec:discussion}
-%TODO
+\section{Candidate Packages}
+
+% Discuss how we construct the pool of packages to consider for impact.
+
+% Discuss semantic versioning, tags, github
+
+% Discuss the Github API, how we walk it, what we produce from it and
+% where we store the results
+
+\section{Package Index}
+
+% Discuss the file format for the packages that are found.  I suspect
+% once we start writing about this, we will feel the urge to clean up
+% the format a bit out of sheer embarassment.
+
+% Where the data is published (URL)
+
+\section{Private Packages}
+
+% Discussion on how users can generate their own package indices
+% using impact
+
+% What they need to do to their config files to include one or
+% more private repositories.
+
+\section{Source Code}
+
+% Talk about where the repository is, how it is organized and
+% the license used for impact.
 
 \section{Conclusion}
 \label{sec:conclusion}
-%TODO
+
+% Relatively light implementation modeled on the Bower approach
+
+% Leverages Git (and/or potentially other version control systems, if
+% people want to add support) to build package index
+
+% Relies on semantic versioning
+
+% Handles dependencies
 
 \bibliography{impact}
 \end{document}
