@@ -117,28 +117,17 @@ their libraries in such a way that they are available to other Modelica users
 through the \impact\ package manager.  Each of these aspects will be discussed as 
 part of this paper.
 
-% MIKE
-
-% Explain ``the problem'' (finding, installing and updating packages
-% as well as dealing with version incompatibilities which leads to the
-% need to use different versions of a package across different projects)
-
-% Discuss existing package managers in other tools and how they've
-% been implemented.  I'm thinking of Maven, npm, bower, go.  The focus
-% on the relatively lightweight approach taken by bower.
-
-% Talk about dependencies (what is handled, what isn't)
-
-%TODO
-In Fig.~\ref{fig:newtons_cradle} you see a possible candiate for a logo.
-
-
-\begin{figure}[!ht]
-  \centering
-  \includegraphics[width=\columnwidth]{newtons_cradle}
-  \caption{Possible logo candidate \cite{Andersson2007}}
-  \label{fig:newtons_cradle}
-\end{figure}
+It is worth noting that while \impact\ can handle dependences, it doesn't solve 
+some of the problems currently inherent in Modelica.  At the moment, dependencies 
+between packages are described by individual versions.  The result is that these 
+dependencies can create brittle chains which are not always possible to satisfy.  
+The logic for unconvering dependencies in \impact\ is very simple.  It merely 
+identifies any dependencies explicitly listed by the library and then attempts
+to find that version of those packages within the \impact\ package index.
+Hopefully the Modelica annotations to express dependencies will be refined to
+support a richer set of relationships.  If so, the logic used by \impact\ to
+identify and install these dependencies can be extended to support this
+improved expressiveness.
 
 \section{Command Line Interface}
 \label{sec:command_line}
@@ -148,7 +137,8 @@ In Fig.~\ref{fig:newtons_cradle} you see a possible candiate for a logo.
 % Talk about installation (we need to get this up on PyPI, right?!)
 
 % Talk about the various commands available with impact (search, list,
-% install, etc)
+% install, etc).  Don't talk about generating indices...we'll talk about
+% that later.
 
 \subsection{Searching} % Make each command a subsection
 \label{cmd:search}
@@ -186,13 +176,59 @@ impact.py search <search term>
 \section{Private Packages}
 \label{sec:private}
 
+\subsection{Using Private Indices}
+\label{sec:use_private}
+
+As mentioned in Section \ref{sec:index}, there will be a package index hosted
+on \code{modelica.org} that lists any packages connected to special Modelica
+related GitHub accounts.  This provides a means for library developers to
+quickly add their libraries to the set of libraries that are publicly indexed.
+
+However, we recognize that many users will depend on libraries that cannot
+be hosted publicly.  At the same time, we would like for those users to be
+able to benefit from the same kind of package management features for
+finding and installing their privately hosted libraries.
+
+For this reason, users can create a special configuration file that
+lists the indices to be searched.  By default, \impact\ will use only
+the index hosted on \code{modelica.org}.  But through custom
+configurations, users can specify any collection of indices (public
+or private) they wish to use.
+
+To specify an alternative list of indices, a user simply edit their
+user configuration file and add the following text:
+
+\begin{verbatim}
+[Impact]
+indices=<ur1l>,<url2>
+\end{verbatim}
+where the value of \code{indices} is a list of URLs pointing to index files.  The default value for the \code{indices} variable is \code{}.
+
+% Kind of lame, but I don't feel like putting the complete logic for this in
+% the paper.  It might be nice to include a command-line option that just
+% tells the user where it would search for their configuration file?
+% (added as issue #34)
+
+Note, the location of the user's configuration file will depend on the platform
+their are using.
+
+\subsection{Generating Private Indices}
+\label{sec:gen_private}
+
 % MIKE
+
+In order for users to include a private index file in the list of indices to be 
+searched (as discussed \ref{sec:use_private}), it is necessary to also have the
+capability to easily generate such private indices.
+
+This functionality is also available using the \impact\ command line although
+we didn't talk about it previously because it is not functionality that a
+typical user would require.
+
+% generating private indices
 
 % Discussion on how users can generate their own package indices
 % using impact
-
-% What they need to do to their config files to include one or
-% more private repositories.
 
 \section{Source Code and Licensing}
 \label{sec:source}
