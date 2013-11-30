@@ -40,8 +40,13 @@ def get(section, option, default=None):
     else:
         return ret
 
-def get_repos():
-    repo_list = get("Impact", "repos",
+def get_indices():
+    """
+    This is a user level setting for specifying where to search
+    for the *processed indices*.  When using the "refresh" command
+    to **create** such an index, the `source_list` open is used.
+    """
+    repo_list = get("Impact", "indices",
                     "https://impact.modelica.org/impact_data.json")
     return repo_list.split(",")
 
@@ -49,7 +54,7 @@ def get_repos():
 ## Configuration Options
 ##
 ## [Impact]
-## repos=url1,url2
+## indices=url1,url2
 ## token=API_token_from_GitHub
 ## username=GitHub username
 ## password=GitHub password

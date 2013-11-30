@@ -13,7 +13,7 @@ def load_repo_data():
     if cached_data!=None:
         return cached_data
 
-    urls = config.get_repos()
+    urls = config.get_indices()
     ret = {}
     # Ideally, we could cache this data if we cannot immediately
     # fetch it.  But it isn't too much good since it would only
