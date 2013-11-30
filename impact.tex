@@ -74,10 +74,48 @@ own tools so that graphical tools can provide the same searching,
 updating and installation capabilities that the command-line tool
 provides.
 
-\paragraph{Keywords:}\emph{modelica, package manager, github, dependency management}
+\paragraph{Keywords:}
+\emph{modelica, package manager, github, dependency management}
 
 \section{Introduction}
 \label{sec:intro}
+
+It is increasingly the case that the adoption of new technologies hinges more
+and more on automating away the tedious tasks required to learn and adopt the
+technologies.  For programming languages or frameworks, this means streamlining
+the process by which libraries can be found and installed.
+
+For nearly all modern languages, this issue of "package management" has reached
+the point where it is almost an element of language design.  The Java world has 
+the \code{maven} tool, Scala has \code{sbt}, Node.js has \code{npm} and the Go 
+language includes built-in support for package management via its the command line 
+\code{go} compiler.
+
+In the Modelica world, this issue has been largely overlooked.  Although there
+have been proposals for formats to list network accessible libraries, these 
+efforts have remained mere proposals without any concrete functionality.  The
+\impact\ project was inspired by the \code{Bower}\cite{Bower} project's approach.  
+This lightweight, \code{git}-centric approach (discussed in Section
+\ref{sec:candidates} turned out to be relatively straightforward to implement and 
+provides functionality otherwise unavailable in the Modelica world.
+
+The goal of this project is to provide the same basic package management features 
+found across most of the examples listed so far.  These features will be discussed 
+in detail in subsequent sections of this paper (see Section \ref{sec:command_line}.
+Our goal is to lower the barrier for users to find, install and update libraries.  
+At the same time, we expect that the \impact\ tool itself will be just as easy to 
+install as the libraries it supports.
+
+The problem that \impact\ addresses is making installation of Modelica packages as 
+easy as possible.  There are actually three important aspects to the problem.  The 
+most obvious aspect is providing a command-line interface that can be used by 
+users to easily install not just a given Modelica library, but \textbf{also its 
+dependencies}.  However, such a command line tool must rely on the second aspect 
+which is the avialability of a centrally served, up to date index of packages.  
+The final aspect is making it easy for library developers \textbf{to publish} 
+their libraries in such a way that they are available to other Modelica users 
+through the \impact\ package manager.  Each of these aspects will be discussed as 
+part of this paper.
 
 % MIKE
 
@@ -103,6 +141,7 @@ In Fig.~\ref{fig:newtons_cradle} you see a possible candiate for a logo.
 \end{figure}
 
 \section{Command Line Interface}
+\label{sec:command_line}
 
 % DIETMAR
 
@@ -122,6 +161,7 @@ impact.py search <search term>
 \end{lstlisting}
 
 \section{Candidate Packages}
+\label{sec:candidates}
 
 % DIETMAR
 
@@ -133,6 +173,7 @@ impact.py search <search term>
 % where we store the results
 
 \section{Package Index}
+\label{sec:index}
 
 % MIKE
 
@@ -143,6 +184,7 @@ impact.py search <search term>
 % Where the data is published (URL)
 
 \section{Private Packages}
+\label{sec:private}
 
 % MIKE
 
@@ -153,13 +195,21 @@ impact.py search <search term>
 % more private repositories.
 
 \section{Source Code and Licensing}
+\label{sec:source}
 
-The \impact\ project started off a simple script, then a gist and eventually a complete repository.  The repository for the source code is hosted on GitHub at
-\code{https://github.com/xogeny/impact}.  Potential contributors are invited to fork the repository and add more functionality.
+The \impact\ project started off a simple script, then a gist and eventually a 
+complete repository.  The repository for the source code is hosted on GitHub at
+\code{https://github.com/xogeny/impact}.  Potential contributors are invited to 
+fork the repository and add more functionality.
 
-The software is distributed under an MIT license.  As such, there are no significant
-restrictions on using the code in open-source, closed-source or commerical projects.
-In fact, we welcome vendor support and adoption.  In addition to making the complete source code for the package manager available and documentating the functionality in this (freely downloadable) paper, we are also making the index data freely available from the modelica.org domain.   We hope that all these measures will lead to the highest possible chance of adoption.
+The software is distributed under an MIT license.  As such, there are no 
+significant restrictions on using the code in open-source, closed-source or 
+commerical projects.
+In fact, we welcome vendor support and adoption.  In addition to making the 
+complete source code for the package manager available and documentating the 
+functionality in this (freely downloadable) paper, we are also making the index 
+data freely available from the modelica.org domain.   We hope that all these 
+measures will lead to the highest possible chance of adoption.
 
 \section{Conclusion}
 \label{sec:conclusion}
