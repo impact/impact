@@ -37,42 +37,39 @@
 
 \section*{Abstract}
 
-To manage complexity, modern programming languages use organizational
-units to group code related by some common purpose.  Depending on the
-programming language, these units might be called libraries, packages
-or modules.  But they all attempt to encapsulate functionality to
-promote modular code and reusability.  For the remainder of this
-paper, we will simply refer to these organizational units as
-\emph{packages} (as they are called in Modelica).
+To manage complexity, modern programming languages use organizational units to
+group code related by some common purpose.  Depending on the programming
+language, these units might be called libraries, packages or modules.  But
+they all attempt to encapsulate functionality to promote modular code and
+reusability.  For the remainder of this paper, we will simply refer to these
+organizational units as \emph{packages} (as they are called in Modelica).
 
 Also common to many modern programming languages are tools that can be
 used to manage these packages.  These tools are generally called
 \emph{package managers} and they allow developers to quickly "fetch" any
-packages they may need for a given project.  The main functions of
-package managers are to allow developers to search, install, update
-and uninstall packages with a simple command-line or graphical
-interface.  In the Java world, the most common package manager is
-\code{maven}.  For Python, tools like \code{easy\_install} and \code{pip} are
-used for managing packages.  For client-side web development,
-\code{bower} is used.  For server-side JavaScript, the tool of choice is
-\code{npm}.  For compiled languages, these package managers often
-include some additional build functionality as well.
+packages they may need for a given project.  The main functions of package
+managers are to allow developers to search, install, update and uninstall
+packages with a simple command-line or graphical interface.  In the Java
+world, the most common package manager is \code{maven}.  For Python, tools
+like \code{easy\_install} and \code{pip} are used for managing packages.  For
+client-side web development, \code{bower} is used.  For server-side
+JavaScript, the tool of choice is \code{npm}.  For compiled languages, these
+package managers often include some additional build functionality as well.
 
-This paper introduces \emph{\impact}, a package manager for Modelica.
-Using \impact, Modelica users and developers can quickly search
-for, install and update Modelica libraries.  In this paper, we will
-discuss the functionality provided by \impact.  In addition, we
-will discuss how the functionality was implemented.  As part of this
-we will discuss the importance of collaborative platforms, like
-\href{https://github.com}{GitHub} in our case, for providing a means for collecting,
-curating and distributing packages within a community of developers.
+This paper introduces \emph{\impact}, a package manager for Modelica. Using
+\impact, Modelica users and developers can quickly search for, install and
+update Modelica libraries.  In this paper, we will discuss the functionality
+provided by \impact.  In addition, we will discuss how the functionality was
+implemented.  As part of this we will discuss the importance of collaborative
+platforms, like \href{https://github.com}{GitHub} in our case, for providing a
+means for collecting, curating and distributing packages within a community of
+developers.
 
-The \impact\ package manager is provided to the Modelica community as
-a free, open-source tool.  Furthermore, the protocols involved are all
-documented and we encourage tool vendors to integrate them into their
-own tools so that graphical tools can provide the same searching,
-updating and installation capabilities that the command-line tool
-provides.
+The \impact\ package manager is provided to the Modelica community as a free,
+open-source tool.  Furthermore, the protocols involved are all documented and
+we encourage tool vendors to integrate them into their own tools so that
+graphical tools can provide the same searching, updating and installation
+capabilities that the command-line tool provides.
 
 \paragraph{Keywords:}
 \emph{modelica, package manager, github, dependency management}
@@ -117,17 +114,17 @@ their libraries in such a way that they are available to other Modelica users
 through the \impact\ package manager.  Each of these aspects will be discussed as 
 part of this paper.
 
-It is worth noting that while \impact\ can handle dependences, it doesn't solve 
-some of the problems currently inherent in Modelica.  At the moment, dependencies 
-between packages are described by individual versions.  The result is that these 
-dependencies can create brittle chains which are not always possible to satisfy.  
-The logic for unconvering dependencies in \impact\ is very simple.  It merely 
-identifies any dependencies explicitly listed by the library and then attempts
-to find that version of those packages within the \impact\ package index.
-Hopefully the Modelica annotations to express dependencies will be refined to
-support a richer set of relationships.  If so, the logic used by \impact\ to
-identify and install these dependencies can be extended to support this
-improved expressiveness.
+It is worth noting that while \impact\ can handle dependences, it doesn't
+solve some of the problems currently inherent in Modelica.  At the moment,
+dependencies between packages are described by individual versions.  The
+result is that these dependencies can create brittle chains which are not
+always possible to satisfy. The logic for unconvering dependencies in \impact\
+is very simple.  It merely identifies any dependencies explicitly listed by
+the library and then attempts to find that version of those packages within
+the \impact\ package index. Hopefully the Modelica annotations to express
+dependencies will be refined to support a richer set of relationships.  If so,
+the logic used by \impact\ to identify and install these dependencies can be
+extended to support this improved expressiveness.
 
 \section{Command Line Interface}
 \label{sec:command_line}
@@ -150,6 +147,12 @@ Search for librararies is done by executed by doing:
 impact.py search <search term>
 \end{lstlisting}
 
+
+% Discuss "refresh" command here?  I assumed no when I wrote the
+% section on private repositories.  But now I'm struggling with how
+% to introduce the topics in section sec:index if we haven't talked
+% about how indices are made.
+
 \section{Candidate Packages}
 \label{sec:candidates}
 
@@ -167,11 +170,66 @@ impact.py search <search term>
 
 % MIKE
 
-% Discuss the file format for the packages that are found.  I suspect
-% once we start writing about this, we will feel the urge to clean up
-% the format a bit out of sheer embarassment.
+% This is an awkward way to introduce this topic (without already
+% discussing where these index files come from)...
 
-% Where the data is published (URL)
+The index file used by \impact\ is stored in JSON format.  The index file
+has the following structure:
+
+\begin{verbatim}
+{
+	"<LibraryName>": {
+		"homepage": "<URL>",
+		"description": "<description string>",
+		"versions": [
+			"<version number>": {
+			    "version": "<version number string>",
+				"major": <major version number>,
+				"minor": <minor version number>,
+				"patch": <patch version number>,
+				"tarball_url": "<URL to tarball>",
+				"zipball_url": "<URL to zipball>",
+				"path": "<path within repository to library>",
+				"dependencies": [
+					["<DepLibName1>", "<version string>"],
+					["<DepLibName2>", "<version string>"],
+					...
+				]
+			}
+			...
+		]
+	}
+}
+\end{verbatim}
+
+All quantities listed within angle brackets, \code{<...>}, are library
+specific details.  The \code{<LibraryName>} is the name of the \code{package} in 
+Modelica.  Generally speaking, all version numbers follow the semantic versioning
+approach.  However, since not all Modelica libraries follow semantic version 
+conventions, indices can include semantic duplicates (\textit{e.g.,} \code{1.0} 
+and \code{1.0.0}) amount the set of listed versions.  Any non-semantic conforming 
+versions (\textit{e.g.,} \code{1.0}) will act as "redirects" to the semantic
+version (\textit{e.g.,} \code{1.0.0}).
+
+The \code{homepage} field is a URL to a web site that contains additional
+information about the library.  The \code{zipball\_url} and \code{tarball\_url}
+fields point to archives that can be downloaded, in the \code{zip} and \code{tar} 
+formats respectively, and extracted.  The \code{dependencies} field lists all the 
+libraries dependencies.  These are the libraries that will also be installed
+when installing the library and version they are listed under.  The \code{path}
+field specifies the name of the directory or file representing the Modelica
+library within the specified archive.
+
+Note, we have not currently defined a schema for this format.  To promote
+interopability we recognize that a formal schema would be the next logical
+step.  We have added the creation of a JSON schema for the index file
+format to our list of next steps to promote interoperability with other
+implementations.  Our hope is that such a schema would further encourage
+tool vendors to support this format as a means of publishing information
+about avialable Modelica libraries.
+
+The Modelica Association index of publically available libraries can be found
+at \code{https://impact.modelica.org/impact\_data.json}.
 
 \section{Private Packages}
 \label{sec:private}
