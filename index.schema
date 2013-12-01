@@ -1,0 +1,71 @@
+{
+    "$schema": "http://json-schema.org/draft-03/schema",
+    "required": true,
+    "type": "object" ,
+    "patternProperties": {
+        ".*": { // Library name
+	    "required": false,
+            "type": "object",
+            "properties": {
+		"description": {
+		    "required": false,
+		    "type": "string" 
+		},
+		"homepage": { // TODO: URL
+		    "required": false,
+		    "type": "string" 
+		},
+		"versions" :
+		{
+		    "required": true,
+		    "type": "object" ,
+		    "patternProperties": {
+			".*": { // TODO: Should be a semver regexp or something
+			    "required": false,
+			    "type": "object" ,
+			    "properties": {
+				"major": {
+				    "required": true,
+				    "type": "number" 
+				},
+				"minor": {
+				    "required": true,
+				    "type": "number" 
+				},
+				"patch": {
+				    "required": true,
+				    "type": "number" 
+				},
+				"path": {
+				    "required": true,
+				    "type": "string" 
+				},
+				"tarball_url": {
+				    "required": true,
+				    "type": "string" 
+				},
+				"version": {
+				    "required": true,
+				    "type": "string" 
+				},
+				"zipball_url": {
+				    "required": true,
+				    "type": "string" 
+				}
+				"dependencies": {
+				    "required": true,
+				    "type": "array" ,
+				    "items":
+				    {
+					"required": false,
+					"type": "array" // TODO: More specific? object?
+				    }
+				},
+			    } 
+			}
+		    }
+		}
+	    }
+	}
+    }
+}
