@@ -97,8 +97,8 @@ def elaborate_dependencies(pkgname, version, current):
     vdata = repo_data[pkgname]["versions"][version]
     deps = vdata["dependencies"]
     for dep in deps:
-        dname = dep[0]
-        dver = dep[1]
+        dname = dep["name"]
+        dver = dep["version"]
         if dname in ret:
             if dver==ret[dname]:
                 # This could avoid circular dependencies?
