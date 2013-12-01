@@ -202,7 +202,8 @@ user configuration file and add the following text:
 [Impact]
 indices=<ur1l>,<url2>
 \end{verbatim}
-where the value of \code{indices} is a list of URLs pointing to index files.  The default value for the \code{indices} variable is \code{}.
+where the value of \code{indices} is a list of URLs pointing to index files.  The 
+default value for the \code{indices} variable is \code{}.
 
 % Kind of lame, but I don't feel like putting the complete logic for this in
 % the paper.  It might be nice to include a command-line option that just
@@ -219,16 +220,30 @@ their are using.
 
 In order for users to include a private index file in the list of indices to be 
 searched (as discussed \ref{sec:use_private}), it is necessary to also have the
-capability to easily generate such private indices.
-
-This functionality is also available using the \impact\ command line although
-we didn't talk about it previously because it is not functionality that a
+capability to easily generate such private indices.  This functionality is also 
+available using the \impact\ command line although
+we did not discuss it previously because it is not functionality that a
 typical user would require.
 
-% generating private indices
+To generate an index file, the following \impact\ command line syntax should
+be used:
 
-% Discussion on how users can generate their own package indices
-% using impact
+\begin{verbatim}
+$ impact.py refresh <source1> <source2> ... <sourcen> -o <output file>
+\end{verbatim}
+where each source is a URL encoding information about a potential source.  For 
+example, the default sources are \code{github://modelica-3rdparty/.*} and \code{
+github://modelica/.*} (in other words, all repositories belonging to the GitHub 
+user \code{modelica-3rdparty} and all repositories belonging to the GitHub user \
+code{modelica}, respectively).  Note that later sources have a higher priority 
+than earlier sources.  Also, at the moment the only types of repositories 
+supported are GitHub repositories although by using a URL based approach it is
+easy to extend the possibilities to include Git, Subversion or other types
+of repositories.
+
+The output file generated from this command should then be made accessible
+to users so they can incorporate it into the set of indices they search
+(see Section \ref{sec:use_private} for more details).
 
 \section{Source Code and Licensing}
 \label{sec:source}

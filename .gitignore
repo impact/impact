@@ -5,5 +5,8 @@
 *.bak
 *.log
 *.out
+*.dvi
+*.fdb_latexmk
+*.fls
 *#*
 impact.pdf
