@@ -11,7 +11,10 @@
 \usepackage{geometry}            %% please don't change geometry settings!
 \geometry{left=20mm, right=20mm, top=25.4mm, bottom=25mm, noheadfoot, columnsep=8mm}
 \parindent0pt
-\bibliographystyle{ieeetr}
+
+\usepackage[sorting=none]{biblatex}
+%\bibliographystyle{ieeetr}
+\bibliography{impact}
 
 % some additional packages
 \usepackage{listings} % for code listings
@@ -51,15 +54,15 @@ paper, we will simply refer to these organizational units as
 
 Also common to many modern programming languages are tools that can be
 used to manage these packages.  These tools are generally called
-\emph{package managers} and they allow developers to quickly "fetch"
+\emph{package managers} and they allow developers to quickly ``fetch''
 any packages they may need for a given project.  The main functions of
 package managers are to allow developers to search, install, update
 and uninstall packages with a simple command-line or graphical
 interface.  In the Java world, the most common package manager is
-\code{maven}.  For Python, tools like \code{easy\_install} and
-\code{pip} are used for managing packages.  For client-side web
+\code{maven}.  For Python, tools like \code{easy\_install}\cite{easy_install} and
+\code{pip}\cite{pip} are used for managing packages.  For client-side web
 development, \code{bower} is used.  For server-side JavaScript, the
-tool of choice is \code{npm}.  For compiled languages, these package
+tool of choice is \code{npm}\cite{npm}.  For compiled languages, these package
 managers often include some additional build functionality as well.
 
 This paper introduces \emph{\impact}, a package manager for
@@ -68,7 +71,7 @@ search for, install and update Modelica libraries.  In this paper, we
 will discuss the functionality provided by \impact.  In addition, we
 will discuss how the functionality was implemented.  As part of this
 we will discuss the importance of collaborative platforms, like
-\href{https://github.com}{GitHub} in our case, for providing a means
+\href{https://github.com}{GitHub}\cite{github} in our case, for providing a means
 for collecting, curating and distributing packages within a community
 of developers.
 
@@ -80,7 +83,7 @@ updating and installation capabilities that the command-line tool
 provides.
 
 \paragraph{Keywords:}
-\emph{modelica, package manager, github, dependency management}
+\emph{modelica, package manager, github, dependency management, python}
 
 \section{Introduction}
 \label{sec:intro}
@@ -91,7 +94,7 @@ learn and adopt the technologies.  For programming languages or
 frameworks, this means streamlining the process by which libraries can
 be found and installed.
 
-For nearly all modern languages, this issue of "package management"
+For nearly all modern languages, this issue of ``package management''
 has reached the point where it is almost an element of language
 design.  The Java world has the \code{maven} tool, Scala has
 \code{sbt}, Node.js has \code{npm} and the Go language includes
@@ -103,14 +106,14 @@ Although there have been proposals for formats to list network
 accessible libraries, these efforts have remained mere proposals
 without any concrete functionality.  The \impact\ project was inspired
 by the \code{Bower}\cite{Bower} project's approach.  This lightweight,
-\code{git}-centric approach (discussed in Section \ref{sec:candidates}
+\code{git}-centric approach (discussed in Section~\ref{sec:candidates})
 turned out to be relatively straightforward to implement and provides
 functionality otherwise unavailable in the Modelica world.
 
 The goal of this project is to provide the same basic package
 management features found across most of the examples listed so far.
 These features will be discussed in detail in subsequent sections of
-this paper (see Section \ref{sec:command_line}.  Our goal is to lower
+this paper (see Section~\ref{sec:command_line}).  Our goal is to lower
 the barrier for users to find, install and update libraries.  At the
 same time, we expect that the \impact\ tool itself will be just as
 easy to install as the libraries it supports.
@@ -129,7 +132,7 @@ manager.  Each of these aspects will be discussed as part of this
 paper.
 
 It is worth noting that while \impact\ can handle dependences, it
-doesn't solve some of the problems currently inherent in Modelica.  At
+does not solve some of the problems currently inherent in Modelica.  At
 the moment, dependencies between packages are described by individual
 versions.  The result is that these dependencies can create brittle
 chains which are not always possible to satisfy. The logic for
@@ -144,6 +147,32 @@ dependencies can be extended to support this improved expressiveness.
 \section{Command Line Interface}
 \label{sec:command_line}
 
+\subsection{Installation of \impact}
+\label{sec:install}
+
+The \impact\ tool is available from ``PyPI''\cite{pypi} and
+can be simply installed by running either
+
+\lstset{language=bash}
+% Start your code-block
+\begin{lstlisting}
+$ pip install impact
+\end{lstlisting}
+or
+\begin{lstlisting}
+$ easy_install impact
+\end{lstlisting}
+
+As an alternative one can also download the souces from
+\url{https://github.com/xogeny/impact} or
+\url{https://pypi.python.org/pypi/PyFMI},
+unpack and run
+\begin{lstlisting}
+$ python setup.py install
+\end{lstlisting}
+
+in order to install it.
+
 % DIETMAR
 
 % Talk about installation (we need to get this up on PyPI, right?!)
@@ -156,17 +185,58 @@ dependencies can be extended to support this improved expressiveness.
 \label{cmd:search}
 
 Search for librararies is done by executed by doing:
-\lstset{language=bash}
-\begin{lstlisting}[frame=shadowbox]  % Start your code-block
 
-impact.py search <search term>
+\begin{lstlisting}
+$ impact search <search term>
 \end{lstlisting}
 
+This will return a list of all package which names and/or description strings
+contain the ``\code{<search term>}''. The returned list contains also the URL
+from where the Modelica package originates.
+
+The output can also be made more verbose with:
+\begin{lstlisting}
+$ impact search -v <search term>
+\end{lstlisting}
+which then will return the description string and the available versions
+in addition.
+
+\subsection{Installing packages} % Make each command a subsection
+\label{cmd:install-pkg}
+Once a package of interest is found with the use of \code{search} it can
+be installed by executing:
+\begin{lstlisting}
+$ impact install <package name>
+\end{lstlisting}
+This will then fetch not only the package itself and extract it in a
+configurable target directory but will also fetch the dependencies of
+the packages as long as those are available to \impact.
+
+In case several versions of one package are available, \impact will choose
+the latest available. If this is not desirable then one can also specify the
+version explicitely. E.g., in order to install Modelica version 2.2.2
+one would do:
+\begin{lstlisting}
+$ impact install Modelica#2.2.2
+\end{lstlisting}
+
+Just like for the \code{search} sub-command there is also a verbose switch
+``\code{-v}'' available for \code{install} this will give information on what
+versions are available, which version is going to be installed, what are the
+dependencies and which file is downloaded from where.
+
+In addition there is also a ``\code{[--dry-run|-d]}'' option available which
+does not actually download or extract any files but will simply report what
+\impact\ \emph{would} do.
+It makes sense to use the ``dry-run'' option always in combination with the
+``verbose'' option.
 
 % Discuss "refresh" command here?  I assumed no when I wrote the
 % section on private repositories.  But now I'm struggling with how
 % to introduce the topics in section sec:index if we haven't talked
 % about how indices are made.
+
+% I agree, we should not talk about this "plumbing" command here.
 
 \section{Candidate Packages}
 \label{sec:candidates}
@@ -191,6 +261,7 @@ impact.py search <search term>
 The index file used by \impact\ is stored in JSON format.  The index file
 has the following structure:
 
+{\footnotesize
 \begin{verbatim}
 {
   "<LibraryName>": {
@@ -216,6 +287,7 @@ has the following structure:
   }
 }
 \end{verbatim}
+}
 
 All quantities listed within angle brackets, \code{<...>}, are library
 specific details.  The \code{<LibraryName>} is the name of the
@@ -225,7 +297,7 @@ Modelica libraries follow semantic version conventions, indices can
 include semantic duplicates (\textit{e.g.,} \code{1.0} and
 \code{1.0.0}) amount the set of listed versions.  Any non-semantic
 conforming versions (\textit{e.g.,} \code{1.0}) will act as
-"redirects" to the semantic version (\textit{e.g.,} \code{1.0.0}).
+``redirects'' to the semantic version (\textit{e.g.,} \code{1.0.0}).
 
 The \code{homepage} field is a URL to a web site that contains
 additional information about the library.  The \code{zipball\_url} and
@@ -254,7 +326,7 @@ be found at \code{https://impact.modelica.org/impact\_data.json}.
 \subsection{Using Private Indices}
 \label{sec:use_private}
 
-As mentioned in Section \ref{sec:index}, there will be a package index
+As mentioned in Section~\ref{sec:index}, there will be a package index
 hosted on \code{modelica.org} that lists any packages connected to
 special Modelica related GitHub accounts.  This provides a means for
 library developers to quickly add their libraries to the set of
@@ -295,7 +367,7 @@ platform their are using.
 % MIKE
 
 In order for users to include a private index file in the list of
-indices to be searched (as discussed \ref{sec:use_private}), it is
+indices to be searched (as discussed~\ref{sec:use_private}), it is
 necessary to also have the capability to easily generate such private
 indices.  This functionality is also available using the
 \impact\ command line although we did not discuss it previously
@@ -305,14 +377,16 @@ To generate an index file, the following \impact\ command line syntax
 should be used:
 
 \begin{verbatim}
-$ impact.py refresh <source1> <source2> ... <sourcen> -o <output file>
+$ impact.py refresh <source1> \
+      <source2> ... <sourcen> -o <output file>
 \end{verbatim}
+
 where each source is a URL encoding information about a potential
 source.  For example, the default sources are
-\code{github://modelica-3rdparty/.*} and \code{ github://modelica/.*}
+\code{github://modelica-3rdparty/.*} and \code{github://modelica/.*}
 (in other words, all repositories belonging to the GitHub user
 \code{modelica-3rdparty} and all repositories belonging to the GitHub
-user \ code{modelica}, respectively).  Note that later sources have a
+user \code{modelica}, respectively).  Note that later sources have a
 higher priority than earlier sources.  Also, at the moment the only
 types of repositories supported are GitHub repositories although by
 using a URL based approach it is easy to extend the possibilities to
@@ -320,14 +394,14 @@ include Git, Subversion or other types of repositories.
 
 The output file generated from this command should then be made
 accessible to users so they can incorporate it into the set of indices
-they search (see Section \ref{sec:use_private} for more details).
+they search (see Section~\ref{sec:use_private} for more details).
 
 \section{Source Code and Licensing}
 \label{sec:source}
 
 The \impact\ project started off a simple script, then a gist and
 eventually a complete repository.  The repository for the source code
-is hosted on GitHub at \code{https://github.com/xogeny/impact}.
+is hosted on GitHub at \url{https://github.com/xogeny/impact}.
 Potential contributors are invited to fork the repository and add more
 functionality.
 
@@ -353,6 +427,5 @@ measures will lead to the highest possible chance of adoption.
 % Relies on semantic versioning
 
 % Handles dependencies
-
-\bibliography{impact}
+\printbibliography
 \end{document}
