@@ -59,8 +59,8 @@ any packages they may need for a given project.  The main functions of
 package managers are to allow developers to search, install, update
 and uninstall packages with a simple command-line or graphical
 interface.  In the Java world, the most common package manager is
-\code{maven}.  For Python, tools like \code{easy\_install}\cite{easy_install} and
-\code{pip}\cite{pip} are used for managing packages.  For client-side web
+\code{maven}.  For Python, tools like \code{easy\_install}\cite{easy_install}
+and \code{pip}\cite{pip} are used for managing packages.  For client-side web
 development, \code{bower} is used.  For server-side JavaScript, the
 tool of choice is \code{npm}\cite{npm}.  For compiled languages, these package
 managers often include some additional build functionality as well.
@@ -71,8 +71,8 @@ search for, install and update Modelica libraries.  In this paper, we
 will discuss the functionality provided by \impact.  In addition, we
 will discuss how the functionality was implemented.  As part of this
 we will discuss the importance of collaborative platforms, like
-\href{https://github.com}{GitHub}\cite{github} in our case, for providing a means
-for collecting, curating and distributing packages within a community
+\href{https://github.com}{GitHub}\cite{github} in our case, for providing
+a means for collecting, curating and distributing packages within a community
 of developers.
 
 The \impact\ package manager is provided to the Modelica community as
@@ -176,10 +176,12 @@ in order to install it.
 % DIETMAR
 
 % Talk about installation (we need to get this up on PyPI, right?!)
+% DONE
 
 % Talk about the various commands available with impact (search, list,
 % install, etc).  Don't talk about generating indices...we'll talk about
 % that later.
+% DONE
 
 \subsection{Searching} % Make each command a subsection
 \label{cmd:search}
@@ -241,14 +243,124 @@ It makes sense to use the ``dry-run'' option always in combination with the
 \section{Candidate Packages}
 \label{sec:candidates}
 
-% DIETMAR
+The question that might arise now is, how does \impact\ know of all the
+available packages and their available versions.
 
+% DIETMAR
 % Discuss how we construct the pool of packages to consider for impact.
+% DONE
+\subsection{Making packages visible}
+\label{sec:collection}
+Right from the beginning the Modelica Association (MA) was always keen to list
+available Modelica libraries on their website under
+\url{https://modelica.org/libraries}.
+That website used to be a static page which listed the different packages and
+their latest version as submitted to the webmasters of the MA.
+Keeping the list of packages up-to-date was a manual job for both, the website
+maintainers and package developers.
+
+In spring 2013, all the free packages listed on
+\url{https://modelica.org/libraries} were moved to individual repositories
+on GitHub. Third-party packages can be found under
+\url{https://github.com/modelica-3rdparty}
+and packages by the MA under \url{https://github.com/modelica}
+This had the following benefits:
+\begin{itemize}
+\item Package developers can access their package repository directly without
+having to involve the webmasters of the MA thus submitting updates any time.
+\item All packages now have an individual issue tracker and version control
+service in place.
+\item The webmasters of the MA can now collect the latest information on all
+the packages automatically in order to generate an up-to-date listing on
+\url{https://modelica.org/libraries} (more on this later in
+Section~\ref{sec:gh-api}.
+\end{itemize}
 
 % Discuss semantic versioning, tags, github
+% DONE
+\subsection{Semantic versioning}
+\label{sec:semver}
+One thing that is important when trying to build up a package manager that can
+also handle version dependencies is that we need a proper system for the
+versioning.
+
+We decided to base our package manager on the system called
+Semantic Versioning\cite{semver}.
+Therefore we also advice all package developers to use semantic versioning
+so that they are compatible with \impact\ and also give a proper meaning to
+their package versions.
+
+Semantic versioning has the simple rule of:
+
+{\small
+\emph{Given a version number MAJOR.MINOR.PATCH, increment the:
+  \begin{enumerate}
+  \item MAJOR version when you make incompatible API changes,
+  \item MINOR version when you add functionality in a backwards-compatible
+    manner, and
+  \item PATCH version when you make backwards-compatible bug fixes.
+\end{enumerate}
+}
+}
+In addition also pre- and post-releases are taken care of in this system,
+details can be found in the manual page~\cite{semver}.
 
 % Discuss the Github API, how we walk it, what we produce from it and
 % where we store the results
+% MIKE: I wonder if I should talk already here about the result files
+% when we do mention much later in the sec:index. What do you think?
+
+\subsection{GitHub API}
+\label{sec:gh-api}
+Having all packages available as GitHub repositories means also that we can use
+the \emph{GitHub API v3}\cite~{gh-api} in order to collect data.
+All API access is over HTTPS, and accessed from the \url{api.github.com} domain.
+All data is sent and received as JSON\cite{json}.
+
+For example if one visits:
+\url{https://api.github.com/users/modelica/repos }
+a verbose JSON list containing a series of information of all repositories
+that exist under the user \code{modelica}.
+This includes also a new API-url for retrieving the tags of a specific
+repository.
+
+E.g., by visiting \url{https://api.github.com/repos/modelica/Modelica/tags}
+we get a list of all tags for the Modelica Standard library repository including
+download links for a zipped version of the tagged source code.
+
+As mentioned before, all data is returned as JSON according to a proper schema.
+This makes it easy to pull out all the information we need.
+In a first step the information was used to generate an up-to-date listing of
+all MA and third-party packages to be displayed on
+\url{https://modelica.org/libraries} but we also noticed quite quickly the
+possibilities such an API opens up.
+It was offering the very information we needed in order to build a catalog of
+available packages including the different tagged versions for download.
+
+
+
+\subsection{GitHub only?}
+\label{sec:gh-only}
+The mechanism described so far seems to depend a lot on GitHub's API.
+So one might wonder is there not a danger of locking us to GitHub.
+
+The answer is actually no. We chose GitHub just as \textbf{one} possible
+data source.w
+It is possible to enhance \impact\ with other ``connectors'' to other existing
+package hosting solutions (private or public).
+As long as the schema is known to \impact\ it can then  pull its data
+from basically all possible places.
+
+One example is the API of the GitLab project\cite{gl-api} but there exist
+many more.
+
+
+
+
+
+
+
+
 
 \section{Package Index}
 \label{sec:index}
@@ -378,7 +490,8 @@ should be used:
 
 \begin{verbatim}
 $ impact.py refresh <source1> \
-      <source2> ... <sourcen> -o <output file>
+      <source2> ... <sourcen> \
+      -o <output file>
 \end{verbatim}
 
 where each source is a URL encoding information about a potential
