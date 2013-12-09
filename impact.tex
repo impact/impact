@@ -83,7 +83,7 @@ updating and installation capabilities that the command-line tool
 provides.
 
 \paragraph{Keywords:}
-\emph{modelica, package manager, github, dependency management, python}
+\emph{Modelica, package manager, GitHub, dependency management, Python}
 
 \section{Introduction}
 \label{sec:intro}
@@ -534,13 +534,28 @@ measures will lead to the highest possible chance of adoption.
 
 % MIKE
 
-% Relatively light implementation modeled on the Bower approach
+Inspired by the approach taken in Bower, we've created \impact, a
+package manager for the Modelica eco-system.  Like Bower, this
+approach is relatively light and relies heavily on the GitHub API to
+aggregate and index publicly available libraries.  Also like Bower,
+our approach relies on semantic versioning, a widely adopted approach
+for associating concrete meaning to the various elements of a version.
+We use these meanings to help validate and organize the tags
+associated with Modelica libraries.
 
-% Leverages Git (and/or potentially other version control systems, if
-% people want to add support) to build package index
+The \impact\ tool also provides one of the key elements of a package
+manager, the ability to automatically pull in dependencies during
+installation.  With this feature, users can list the libraries they
+directly depend on and \impact\ will automatically install any
+additional dependencies.  The dependency information is constructed
+automatically from the \code{version} annotation already present in
+Modelica libraries.
 
-% Relies on semantic versioning
+The index of publicly available libraries is hosted on
+\code{modelica.org}.  But \impact\ can also be used to index and
+install private libraries as well.  All \impact\ functionality
+(installing, searching, \textit{etc.}) is available for both public
+and private libraries.
 
-% Handles dependencies
 \printbibliography
 \end{document}
