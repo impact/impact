@@ -8,5 +8,7 @@
 *.dvi
 *.fdb_latexmk
 *.fls
+*.bcf
+*.run.xml
 *#*
 impact.pdf
