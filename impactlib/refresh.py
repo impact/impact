@@ -21,7 +21,7 @@ def extract_dependencies(fp):
         deps[m[0]] = m[1]+m[2]
     ret = []
     for dep in deps:
-        ret.append((dep, deps[dep]))
+        ret.append({"name": dep, "version": deps[dep]})
     return ret
 
 def strip_extra(version):

@@ -25,7 +25,13 @@
 			    "version": { "type": "string" },
 			    "dependencies": {
 				"type": "array",
-				"items": { "type": "array" }
+				"items": {
+				    "type": "object",
+				    "properties": {
+					"name": { "type": "string" },
+					"version": { "type": "string" }
+				    }
+				}
 			    }
 			}
 		    }
