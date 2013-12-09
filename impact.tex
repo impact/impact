@@ -381,16 +381,18 @@ has the following structure:
     "description": "<description string>",
     "versions": [
       "<version number>": {
-        "version": "<version number string>",
+        "version": "<version number>",
         "major": <major version number>,
         "minor": <minor version number>,
         "patch": <patch version number>,
         "tarball_url": "<URL to tarball>",
         "zipball_url": "<URL to zipball>",
-        "path": "<path within repository to library>",
+        "path": "<path to library>",
         "dependencies": [
-          ["<DepLibName1>", "<version string>"],
-          ["<DepLibName2>", "<version string>"],
+          {"name": "<DepLibName1>",
+           "version": "<version string>"},
+          {"name": "<DepLibName2>",
+           "version": "<version string>"},
           ...
         ]
       }
