@@ -17,7 +17,6 @@
 \bibliography{impact}
 
 % some additional packages
-\usepackage{listings} % for code listings
 \usepackage{color}
 \usepackage[hidelinks=true]{hyperref}
 
@@ -153,23 +152,22 @@ dependencies can be extended to support this improved expressiveness.
 The \impact\ tool is available from ``PyPI''\cite{pypi} and
 can be simply installed by running either
 
-\lstset{language=bash}
 % Start your code-block
-\begin{lstlisting}
+\begin{verbatim}
 $ pip install impact
-\end{lstlisting}
+\end{verbatim}
 or
-\begin{lstlisting}
+\begin{verbatim}
 $ easy_install impact
-\end{lstlisting}
+\end{verbatim}
 
 As an alternative one can also download the souces from
 \url{https://github.com/xogeny/impact} or
 \url{https://pypi.python.org/pypi/PyFMI},
 unpack and run
-\begin{lstlisting}
+\begin{verbatim}
 $ python setup.py install
-\end{lstlisting}
+\end{verbatim}
 
 in order to install it.
 
@@ -188,18 +186,18 @@ in order to install it.
 
 Search for librararies is done by executed by doing:
 
-\begin{lstlisting}
+\begin{verbatim}
 $ impact search <search term>
-\end{lstlisting}
+\end{verbatim}
 
 This will return a list of all package which names and/or description strings
 contain the ``\code{<search term>}''. The returned list contains also the URL
 from where the Modelica package originates.
 
 The output can also be made more verbose with:
-\begin{lstlisting}
+\begin{verbatim}
 $ impact search -v <search term>
-\end{lstlisting}
+\end{verbatim}
 which then will return the description string and the available versions
 in addition.
 
@@ -207,9 +205,9 @@ in addition.
 \label{cmd:install-pkg}
 Once a package of interest is found with the use of \code{search} it can
 be installed by executing:
-\begin{lstlisting}
+\begin{verbatim}
 $ impact install <package name>
-\end{lstlisting}
+\end{verbatim}
 This will then fetch not only the package itself and extract it in a
 configurable target directory but will also fetch the dependencies of
 the packages as long as those are available to \impact.
@@ -218,9 +216,9 @@ In case several versions of one package are available, \impact will choose
 the latest available. If this is not desirable then one can also specify the
 version explicitely. E.g., in order to install Modelica version 2.2.2
 one would do:
-\begin{lstlisting}
+\begin{verbatim}
 $ impact install Modelica#2.2.2
-\end{lstlisting}
+\end{verbatim}
 
 Just like for the \code{search} sub-command there is also a verbose switch
 ``\code{-v}'' available for \code{install} this will give information on what
@@ -303,7 +301,7 @@ Semantic versioning has the simple rule of:
 }
 }
 In addition also pre- and post-releases are taken care of in this system,
-details can be found in the manual page~\cite{semver}.
+details can be found in the manual page\cite{semver}.
 
 % Discuss the Github API, how we walk it, what we produce from it and
 % where we store the results
@@ -337,8 +335,6 @@ possibilities such an API opens up.
 It was offering the very information we needed in order to build a catalog of
 available packages including the different tagged versions for download.
 
-
-
 \subsection{GitHub only?}
 \label{sec:gh-only}
 The mechanism described so far seems to depend a lot on GitHub's API.
@@ -353,13 +349,6 @@ from basically all possible places.
 
 One example is the API of the GitLab project\cite{gl-api} but there exist
 many more.
-
-
-
-
-
-
-
 
 
 \section{Package Index}
