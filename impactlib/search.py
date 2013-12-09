@@ -27,7 +27,7 @@ def search(term, description, verbose):
     if len(matches)==0:
         print "No matches found for search term '"+term+"'"
     else:
-        for m in matches:
+        for m in sorted(matches):
             if description:
                 if use_color:
                     print Fore.RED+m[0]+Fore.RESET+" - "+Fore.GREEN+m[1]
