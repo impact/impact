@@ -27,7 +27,7 @@ def search(term, verbose):
     if len(matches)==0:
         print "No matches found for search term '"+term+"'"
     else:
-        for m in matches:
+        for m in sorted(matches):
             if verbose:
                 if len(m[2].keys())==0:
                     versions = "None"
