@@ -9,7 +9,7 @@ try:
 except:
     use_color = False
 
-def search(term, description, verbose):
+def search(term, verbose):
     repo_data = load_repo_data()
 
     matches = []
@@ -28,23 +28,19 @@ def search(term, description, verbose):
         print "No matches found for search term '"+term+"'"
     else:
         for m in matches:
-            if description:
-                if use_color:
-                    print Fore.RED+m[0]+Fore.RESET+" - "+Fore.GREEN+m[1]
-                else:
-                    print m[0]+" - "+m[1]
-            else:
-                if use_color:
-                    print Fore.RED + m[0]
-                else:
-                    print m[0]
             if verbose:
                 if len(m[2].keys())==0:
                     versions = "None"
                 else:
                     versions = ", ".join(m[2].keys())
-                msg = "  Available versions: "+versions
+                msg = "\n  Available versions: "+versions
                 if use_color:
-                    print Fore.GREEN + msg
+                    print (Fore.RED+m[0]+Fore.RESET+" - "+Fore.GREEN+m[1]
+                           + Fore.CYAN + msg)
                 else:
-                    print msg
+                    print m[0]+" - "+m[1] + msg
+            else:
+                if use_color:
+                    print Fore.RED + m[0]
+                else:
+                    print m[0]

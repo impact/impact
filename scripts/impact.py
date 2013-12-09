@@ -24,8 +24,7 @@ def call_refresh(args):
 def call_search(args):
     if args.config!=None:
         os.environ[ENVVAR]=args.config
-    search(term=args.term[0], description=args.description,
-           verbose=args.verbose)
+    search(term=args.term[0], verbose=args.verbose)
 
 def call_install(args):
     if args.config!=None:
@@ -55,9 +54,8 @@ parser_search.add_argument("term", nargs=1)
 parser_search.add_argument("-c", "--config", default=None,
                             help="Configuration file", required=False)
 parser_search.add_argument("-v", "--verbose", action="store_true",
-                           help="Verbose mode", required=False)
-parser_search.add_argument("-d", "--description", action="store_true",
-                           help="Include description", required=False)
+                           help="Verbose mode includes versions and description",
+                           required=False)
 parser_search.set_defaults(func=call_search)
 
 parser_install = subparsers.add_parser('install',
