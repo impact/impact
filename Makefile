@@ -1,5 +1,6 @@
-impact.pdf: impact.dvi
-	dvipdf impact.dvi
-
-impact.dvi: impact.tex
-	latexmk impact.tex
+impact.pdf: impact.tex impact.bib
+	pdflatex impact.tex
+	bibtex impact
+	pdflatex impact.tex
+clean:
+	rm *.aux *.bbl *.blg *-blx.bib *.log *.out *.run.xml
