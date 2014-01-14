@@ -162,23 +162,13 @@ $ easy_install impact
 
 As an alternative one can also download the souces from
 \url{https://github.com/xogeny/impact} or
-\url{https://pypi.python.org/pypi/PyFMI},
+\url{https://pypi.python.org/pypi/impact},
 unpack and run
 \begin{verbatim}
 $ python setup.py install
 \end{verbatim}
 
 in order to install it.
-
-% DIETMAR
-
-% Talk about installation (we need to get this up on PyPI, right?!)
-% DONE
-
-% Talk about the various commands available with impact (search, list,
-% install, etc).  Don't talk about generating indices...we'll talk about
-% that later.
-% DONE
 
 \subsection{Searching} % Make each command a subsection
 \label{cmd:search}
@@ -243,9 +233,6 @@ It makes sense to use the ``dry-run'' option always in combination with the
 The question that might arise now is, how does \impact\ know of all the
 available packages and their available versions.
 
-% DIETMAR
-% Discuss how we construct the pool of packages to consider for impact.
-% DONE
 \subsection{Making packages visible}
 \label{sec:collection}
 Right from the beginning the Modelica Association (MA) was always keen to list
@@ -273,8 +260,6 @@ the packages automatically in order to generate an up-to-date listing on
 Section~\ref{sec:gh-api}.
 \end{itemize}
 
-% Discuss semantic versioning, tags, github
-% DONE
 \subsection{Semantic versioning}
 \label{sec:semver}
 One thing that is important when trying to build up a package manager that can
@@ -322,7 +307,7 @@ This includes also a new API-url for retrieving the tags of a specific
 repository.
 
 E.g., by visiting \url{https://api.github.com/repos/modelica/Modelica/tags}
-we get a list of all tags for the Modelica Standard library repository including
+we get a list of all tags for the Modelica Standard Library repository including
 download links for a zipped version of the tagged source code.
 
 As mentioned before, all data is returned as JSON according to a proper schema.
