@@ -10,4 +10,6 @@ setup(name="impact",
       license="MIT",
       url="http://www.xogeny.com/",
       scripts=['scripts/impact.py'],
-      packages=['impactlib'])
+      packages=['impactlib'],
+      include_package_data=True,
+      zip_safe=False)
