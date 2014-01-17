@@ -30,3 +30,8 @@ any manual configuration.  Here are the conventions that *Impact* expects:
   * `./<LibraryName> <Version>/package.mo` (i.e., within a directory sharing
     the name of the library followed by a space followed by the tag name,
     without any leading `v` present)
+
+Development
+-----------
+
+The development takes place on https://github.com/xogeny/impact
