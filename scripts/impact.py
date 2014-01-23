@@ -10,6 +10,15 @@ from impactlib.config import ENVVAR
 parser = argparse.ArgumentParser(prog='impact')
 subparsers = parser.add_subparsers(help='command help')
 
+def call_info(args):
+    from impactlib.config import get_config_file, get, get_indices
+    print "Configuration file: "+get_config_file()
+    print "  indices="+str(get_indices())
+    for key in ["token", "username", "password", "source_list"]:
+        val = get("Impact", key)
+        if val:
+            print "  %s=%s" % (key, get("Impact",key))
+
 def call_refresh(args):
     if args.source_list==[] or args.source_list==None:
         source_list = None
@@ -68,6 +77,9 @@ parser_install.add_argument("-v", "--verbose", action="store_true",
 parser_install.add_argument("-d", "--dry_run", action="store_true",
                             help="Suppress installation", required=False)
 parser_install.set_defaults(func=call_install)
+
+parser_info = subparsers.add_parser("info", help="Show config settings")
+parser_info.set_defaults(func=call_info)
 
 args = parser.parse_args()
 
