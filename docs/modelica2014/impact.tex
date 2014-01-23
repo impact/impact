@@ -50,17 +50,18 @@ promote modular code and reusability.  For the remainder of this
 paper, we will simply refer to these organizational units as
 \emph{packages} (as they are called in Modelica).
 
-Also common to many modern programming languages are tools that can be
-used to manage these packages.  These tools are generally called
-\emph{package managers} and they allow developers to quickly ``fetch''
-any packages they may need for a given project.  The main functions of
+Also common to many modern programming languages are tools to manage
+these packages.  These tools are generally called \emph{package
+  managers} and they allow developers to quickly ``fetch'' any
+packages they may need for a given project.  The main functions of
 package managers are to allow developers to search, install, update
 and uninstall packages with a simple command-line or graphical
 interface.  In the Java world, the most common package manager is
-\code{maven}.  For Python, tools like \code{easy\_install}\cite{easy_install}
-and \code{pip}\cite{pip} are used for managing packages.  For client-side web
-development, \code{bower} is used.  For server-side JavaScript, the
-tool of choice is \code{npm}\cite{npm}.  For compiled languages, these package
+\code{maven}.  For Python, tools like
+\code{easy\_install}\cite{easy_install} and \code{pip}\cite{pip} are
+used for managing packages.  For client-side web development,
+\code{bower} is used.  For server-side JavaScript, the tool of choice
+is \code{npm}\cite{npm}.  For compiled languages, these package
 managers often include some additional build functionality as well.
 
 This paper introduces \emph{\impact}, a package manager for
@@ -76,9 +77,8 @@ of developers.
 The \impact\ package manager is provided to the Modelica community as
 a free, open-source tool.  Furthermore, the protocols involved are all
 documented and we encourage tool vendors to integrate them into their
-own tools so that graphical tools can provide the same searching,
-updating and installation capabilities that the command-line tool
-provides.
+own tools so they can provide the same searching, updating and
+installation capabilities that the command-line tool provides.
 
 \paragraph{Keywords:}
 \emph{Modelica, package manager, GitHub, dependency management, Python}
@@ -87,8 +87,8 @@ provides.
 \label{sec:intro}
 
 It is increasingly the case that the adoption of new technologies
-hinges more and more on automating away the tedious tasks required to
-learn and adopt the technologies.  For programming languages or
+hinges on automating away the tedious tasks required to learn and
+adopt these new technologies.  For programming languages or
 frameworks, this means streamlining the process by which libraries can
 be found and installed.
 
@@ -103,18 +103,19 @@ In the Modelica world, this issue has been largely overlooked.
 Although there have been proposals for formats to list network
 accessible libraries, these efforts have remained mere proposals
 without any concrete functionality.  The \impact\ project was inspired
-by the \code{Bower}\cite{Bower} project's approach.  This lightweight,
-\code{git}-centric approach (discussed in Section~\ref{sec:candidates})
-turned out to be relatively straightforward to implement and provides
-functionality otherwise unavailable in the Modelica world.
+by the Bower\cite{Bower} project's approach.  This lightweight,
+\code{git}-centric approach (discussed in
+Section~\ref{sec:candidates}) turned out to be relatively
+straightforward to implement and provides functionality otherwise
+unavailable in the Modelica world.
 
 The goal of this project is to provide the same basic package
-management features found across most of the examples listed so far.
-These features will be discussed in detail in subsequent sections of
-this paper (see Section~\ref{sec:command_line}).  Our goal is to lower
-the barrier for users to find, install and update libraries.  At the
-same time, we expect that the \impact\ tool itself will be just as
-easy to install as the libraries it supports.
+management features found in most package managers.  These features
+will be discussed in detail in subsequent sections of this paper (see
+Section~\ref{sec:command_line}).  Our goal is to lower the barrier for
+users to find, install and update libraries.  At the same time, we
+expect that the \impact\ tool itself will be just as easy to install
+as the libraries it supports.
 
 The problem that \impact\ addresses is making installation of Modelica
 packages as easy as possible.  There are actually three important
@@ -148,8 +149,8 @@ dependencies can be extended to support this improved expressiveness.
 \subsection{Installation of \impact}
 \label{sec:install}
 
-The \impact\ tool is available from ``PyPI''\cite{pypi} and
-can be simply installed by running either
+The \impact\ tool is available from ``PyPI''\cite{pypi} and can be
+installed by running either
 
 % Start your code-block
 \begin{verbatim}
@@ -160,7 +161,7 @@ or
 $ easy_install impact
 \end{verbatim}
 
-As an alternative one can also download the souces from
+As an alternative one can also download the sources from
 \url{https://github.com/xogeny/impact} or
 \url{https://pypi.python.org/pypi/impact},
 unpack and run
