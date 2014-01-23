@@ -174,52 +174,53 @@ in order to install it.
 \subsection{Searching} % Make each command a subsection
 \label{cmd:search}
 
-Search for librararies is done by executing:
+Searching for librararies is done by executing:
 
 \begin{verbatim}
 $ impact search <search term>
 \end{verbatim}
 
-This will return a list of all package which names and/or description strings
-contain the ``\code{<search term>}''. The returned list contains also the URL
-from where the Modelica package originates.
+This will return a list of all package whose names and/or description
+strings contain the ``\code{<search term>}''. The returned list also
+contains the URL where the Modelica package is hosted.
 
 The output can also be made more verbose with:
 \begin{verbatim}
 $ impact search -v <search term>
 \end{verbatim}
-which then will return the description string and the available versions
-in addition.
+which, in addition, will return the description string and the
+available versions.
 
 \subsection{Installing packages} % Make each command a subsection
 \label{cmd:install-pkg}
-Once a package of interest is found with the use of \code{search} it can
-be installed by executing:
+Once a package of interest is found using \code{search}, it can be
+installed by executing:
 \begin{verbatim}
 $ impact install <package name>
 \end{verbatim}
 This will then fetch not only the package itself and extract it in a
-configurable target directory but will also fetch the dependencies of
-the packages as long as those are available to \impact.
+configurable target directory but \textbf{it will also fetch the
+  dependencies of the packages} as long as those are available to
+\impact.
 
-In case several versions of one package are available, \impact will choose
-the latest available. If this is not desirable then one can also specify the
-version explicitely. E.g., in order to install Modelica version 2.2.2
-one would do:
+If several versions of a package are available, \impact will choose
+the latest one. If this is not desirable then one can also specify the
+version explicitly. For example, in order to install Modelica version
+2.2.2 one would execute the command:
 \begin{verbatim}
 $ impact install Modelica#2.2.2
 \end{verbatim}
 
-Just like for the \code{search} sub-command there is also a verbose switch
-``\code{-v}'' available for \code{install} this will give information on what
-versions are available, which version is going to be installed, what are the
-dependencies and which file is downloaded from where.
+Just like for the \code{search} sub-command there is also a verbose
+switch ``\code{-v}'' available for \code{install} which will give
+information on what versions are available, which version is going to
+be installed, what the dependencies are and where the version will be
+downloaded from.
 
-In addition there is also a ``\code{[--dry-run|-d]}'' option available which
-does not actually download or extract any files but will simply report what
-\impact\ \emph{would} do.
-It makes sense to use the ``dry-run'' option always in combination with the
-``verbose'' option.
+In addition there is also a ``\code{[--dry-run|-d]}'' option available
+which does not download or extract any files but will simply report
+what \impact\ \emph{would} do.  It makes sense to use the ``dry-run''
+option always in combination with the ``verbose'' option.
 
 % Discuss "refresh" command here?  I assumed no when I wrote the
 % section on private repositories.  But now I'm struggling with how
@@ -231,25 +232,25 @@ It makes sense to use the ``dry-run'' option always in combination with the
 \section{Candidate Packages}
 \label{sec:candidates}
 
-The question that might arise now is, how does \impact\ know of all the
-available packages and their available versions.
+The question that might arise now is, how does \impact\ know what
+packages and which versions of those packages are available.
 
 \subsection{Making packages visible}
 \label{sec:collection}
-Right from the beginning the Modelica Association (MA) was always keen to list
+The Modelica Association (MA) has always maintained a list of
 available Modelica libraries on their website under
-\url{https://modelica.org/libraries}.
-That website used to be a static page which listed the different packages and
-their latest version as submitted to the webmasters of the MA.
-Keeping the list of packages up-to-date was a manual job for both, the website
-maintainers and package developers.
+\url{https://modelica.org/libraries}.  Initially, the list was a
+static web page which listed the different packages and their latest
+version as submitted to the webmasters of the MA.  Keeping the list of
+packages up-to-date was a manual job for both the website maintainers
+and package developers.
 
 In spring 2013, all the free packages listed on
-\url{https://modelica.org/libraries} were moved to individual repositories
-on GitHub. Third-party packages can be found under
-\url{https://github.com/modelica-3rdparty}
-and packages by the MA under \url{https://github.com/modelica}
-This had the following benefits:
+\url{https://modelica.org/libraries} were moved to individual
+repositories on GitHub. Third-party packages can be found under
+\url{https://github.com/modelica-3rdparty} and packages by the MA
+under \url{https://github.com/modelica} This had the following
+benefits:
 \begin{itemize}
 \item Package developers can access their package repository directly without
 having to involve the webmasters of the MA thus submitting updates any time.
@@ -258,20 +259,20 @@ service in place.
 \item The webmasters of the MA can now collect the latest information on all
 the packages automatically in order to generate an up-to-date listing on
 \url{https://modelica.org/libraries} (more on this later in
-Section~\ref{sec:gh-api}.
+Section~\ref{sec:gh-api}).
 \end{itemize}
 
 \subsection{Semantic versioning}
 \label{sec:semver}
-One thing that is important when trying to build up a package manager that can
-also handle version dependencies is that we need a proper system for the
-versioning.
+One thing that is important when trying to build up a package manager
+that can also handle version dependencies is the need for a proper
+approach to version numbering.
 
-We decided to base our package manager on the system called
-Semantic Versioning\cite{semver}.
-Therefore we also advice all package developers to use semantic versioning
-so that they are compatible with \impact\ and also give a proper meaning to
-their package versions.
+We decided to base our package manager on a system called Semantic
+Versioning\cite{semver}.  As a result, package developers are strongly
+encouraged to use semantic versioning so that they are compatible with
+\impact.  This has the additional benefit of being a well-documented
+and logical approach.
 
 Semantic versioning has the simple rule of:
 
@@ -285,8 +286,9 @@ Semantic versioning has the simple rule of:
 \end{enumerate}
 }
 }
-In addition also pre- and post-releases are taken care of in this system,
-details can be found in the manual page\cite{semver}.
+
+In addition, pre- and post-releases are also taken care of in this
+system, details can be found in the manual page\cite{semver}.
 
 % Discuss the Github API, how we walk it, what we produce from it and
 % where we store the results
@@ -295,57 +297,54 @@ details can be found in the manual page\cite{semver}.
 
 \subsection{GitHub API}
 \label{sec:gh-api}
-Having all packages available as GitHub repositories means also that we can use
-the \emph{GitHub API v3}\cite{gh-api} in order to collect data.
-All API access is over HTTPS, and accessed from the \url{api.github.com} domain.
-All data is sent and received as JSON\cite{json}.
+Having all packages available as GitHub repositories means that we can
+use the \emph{GitHub API v3}\cite{gh-api} in order to collect data
+about those packages.  All API access is over HTTPS, and accessed from
+the \url{api.github.com} domain.  All data is sent and received as
+JSON\cite{json}.
 
 For example if one visits:
-\url{https://api.github.com/users/modelica/repos }
-a verbose JSON list containing a series of information of all repositories
-that exist under the user \code{modelica}.
-This includes also a new API-url for retrieving the tags of a specific
-repository.
+\url{https://api.github.com/users/modelica/repos } a verbose list
+containing a series of information of all repositories that exist
+under the user \code{modelica} is returned in JSON format.  This
+includes also a new API-url for retrieving the tags of a specific
+repository.  For example, by visiting
+\url{https://api.github.com/repos/modelica/Modelica/tags} we get a
+list of all tags for the Modelica Standard Library repository
+including download links for a zipped version of the tagged source
+code.
 
-E.g., by visiting \url{https://api.github.com/repos/modelica/Modelica/tags}
-we get a list of all tags for the Modelica Standard Library repository including
-download links for a zipped version of the tagged source code.
-
-As mentioned before, all data is returned as JSON according to a proper schema.
-This makes it easy to pull out all the information we need.
-In a first step the information was used to generate an up-to-date listing of
-all MA and third-party packages to be displayed on
-\url{https://modelica.org/libraries} but we also noticed quite quickly the
-possibilities such an API opens up.
-It was offering the very information we needed in order to build a catalog of
-available packages including the different tagged versions for download.
+As mentioned before, all data is returned as JSON according to a
+proper schema.  This makes it easy to pull out all the information we
+need.  Initially, this information was used to generate an up-to-date
+listing of all MA and third-party packages to be displayed on
+\url{https://modelica.org/libraries} but we also noticed quite quickly
+the possibilities such an API opens up.  It was offering the very
+information we needed in order to build a catalog of available
+packages including the different tagged versions for download.
 
 \subsection{GitHub only?}
 \label{sec:gh-only}
 The mechanism described so far seems to depend a lot on GitHub's API.
-So one might wonder is there not a danger of locking us to GitHub.
+So one might wonder is there a danger of locking us to GitHub.
 
-The answer is actually no. We chose GitHub just as \textbf{one} possible
-data source.
-It is possible to enhance \impact\ with other ``connectors'' to other existing
-package hosting solutions (private or public).
-As long as the schema is known to \impact\ it can then  pull its data
-from basically all possible places.
-
-One example is the API of the GitLab project\cite{gl-api} but there exist
-many more.
-
+The answer is actually no. We chose GitHub just as \textbf{one}
+possible data source.  It is possible to enhance \impact\ with other
+``connectors'' to other existing package hosting solutions (private or
+public).  As long as the schema is known to \impact\ it can then pull
+its data from basically all possible places.  For example, it would
+also be possible to use the API of the GitLab project\cite{gl-api} to
+extract the same information.
 
 \section{Package Index}
 \label{sec:index}
 
-% MIKE
-
-% This is an awkward way to introduce this topic (without already
-% discussing where these index files come from)...
-
-The index file used by \impact\ is stored in JSON format.  The index file
-has the following structure:
+Package information is maintained in an index file.  This index file
+is also generated by \impact\ but the process of building an index is
+not normally used by the user or tool vendors so all discussion about
+the creation of index files is presented later in
+Section~\ref{sec:private}.  The index file is stored in JSON format
+and has the following structure:
 
 {\footnotesize
 \begin{verbatim}
@@ -381,21 +380,22 @@ All quantities listed within angle brackets, \code{<...>}, are library
 specific details.  The \code{<LibraryName>} is the name of the
 \code{package} in Modelica.  Generally speaking, all version numbers
 follow the semantic versioning approach.  However, since not all
-Modelica libraries follow semantic version conventions, indices can
-include semantic duplicates (\textit{e.g.,} \code{1.0} and
-\code{1.0.0}) amount the set of listed versions.  Any non-semantic
-conforming versions (\textit{e.g.,} \code{1.0}) will act as
-``redirects'' to the semantic version (\textit{e.g.,} \code{1.0.0}).
+Modelica libraries currently follow semantic version conventions,
+indices can include semantic duplicates (\textit{e.g.,} \code{1.0} and
+\code{1.0.0}) which reference the same underlying version.  Therefore,
+any non-semantic conforming versions (\textit{e.g.,} \code{1.0}) will
+act as ``redirects'' to the semantic version (\textit{e.g.,}
+\code{1.0.0}).
 
 The \code{homepage} field is a URL to a web site that contains
 additional information about the library.  The \code{zipball\_url} and
 \code{tarball\_url} fields point to archives that can be downloaded,
-in the \code{zip} and \code{tar} formats respectively, and extracted.
-The \code{dependencies} field lists all the libraries dependencies.
-These are the libraries that will also be installed when installing
-the library and version they are listed under.  The \code{path} field
-specifies the name of the directory or file representing the Modelica
-library within the specified archive.
+in the \code{zip} and \code{tar} formats, respectively.  The
+\code{dependencies} field lists all the libraries dependencies.  These
+are the libraries that will also be installed when installing the
+specified library version they are listed under.  The \code{path}
+field specifies the name of the directory or file representing the
+Modelica library within the specified archive.
 
 Note, we have not currently defined a schema for this format.  To
 promote interoperability we recognize that a formal schema would be the
@@ -416,10 +416,9 @@ be found at \url{https://impact.modelica.org/impact\_data.json}.
 
 As mentioned in Section~\ref{sec:index}, there will be a package index
 hosted on \href{https://modelica.org}{\code{modelica.org}} that lists
-any packages connected to
-special Modelica related GitHub accounts.  This provides a means for
-library developers to quickly add their libraries to the set of
-libraries that are publicly indexed.
+any packages connected to special Modelica related GitHub accounts.
+This provides a means for library developers to quickly add their
+libraries to the set of libraries that are publicly indexed.
 
 However, we recognize that many users will depend on libraries that
 cannot be hosted publicly.  At the same time, we would like for those
@@ -432,8 +431,8 @@ the index hosted on \href{https://modelica.org}{\code{modelica.org}}.
 But through custom configurations, users can specify any collection of
 indices (public or private) they wish to use.
 
-To specify an alternative list of indices, a user simply edit their
-user configuration file and add the following text:
+To specify an alternative list of indices, a user would simply edit
+their user configuration file and add the following text:
 
 \begin{verbatim}
 [Impact]
