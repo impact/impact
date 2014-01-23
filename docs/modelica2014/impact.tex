@@ -475,7 +475,7 @@ $ impact.py refresh <source1> \
       -o <output file>
 \end{verbatim}
 
-where each source is a URL encoding information about a potential
+where each source is a URL that encodes information about a potential
 source.  For example, the default sources are
 \code{github://modelica-3rdparty/.*} and \code{github://modelica/.*}
 (in other words, all repositories belonging to the GitHub user
@@ -484,7 +484,8 @@ user \code{modelica}, respectively).  Note that later sources have a
 higher priority than earlier sources.  Also, at the moment the only
 types of repositories supported are GitHub repositories although by
 using a URL based approach it is easy to extend the possibilities to
-include Git, Subversion or other types of repositories.
+include Git, Subversion or other types of repositories as long as the
+information required for the index file is available.
 
 The output file generated from this command should then be made
 accessible to users so they can incorporate it into the set of indices
@@ -493,11 +494,11 @@ they search (see Section~\ref{sec:use_private} for more details).
 \section{Source Code and Licensing}
 \label{sec:source}
 
-The \impact\ project started off a simple script, then a gist and
+The \impact\ project started off as a simple script, then a gist and
 eventually a complete repository.  The repository for the source code
 is hosted on GitHub at \url{https://github.com/xogeny/impact}.
 Potential contributors are invited to fork the repository and add more
-functionality.
+functionality.  Contributions to improve \impact\ are very welcome.
 
 The software is distributed under an MIT license.  As such, there are
 no significant restrictions on using the code in open-source,
@@ -532,11 +533,10 @@ automatically from the \code{version} annotation already present in
 Modelica libraries.
 
 The index of publicly available libraries is hosted on
-\href{https://modelica.org}{\code{modelica.org}}.
-But \impact\ can also be used to index and
-install private libraries as well.  All \impact\ functionality
-(installing, searching, \textit{etc.}) is available for both public
-and private libraries.
+\href{https://modelica.org}{\code{modelica.org}}.  But \impact\ can
+also be used to index and install private libraries as well.  All
+\impact\ functionality (installing, searching, \textit{etc.}) is
+available for both public and private libraries.
 
 \printbibliography
 \end{document}
