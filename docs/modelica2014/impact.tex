@@ -110,7 +110,7 @@ Section~\ref{sec:candidates}) turned out to be relatively
 straightforward to implement and provides functionality otherwise
 unavailable in the Modelica world.
 
-The goal of this project is to provide the same basic package
+The goal of the \impact\ project is to provide the same basic package
 management features found in most package managers.  These features
 will be discussed in detail in subsequent sections of this paper (see
 Section~\ref{sec:command_line}).  Our goal is to lower the barrier for
@@ -118,18 +118,18 @@ users to find, install and update libraries.  At the same time, we
 expect that the \impact\ tool itself will be just as easy to install
 as the libraries it supports.
 
-The problem that \impact\ addresses is making installation of Modelica
-packages as easy as possible.  There are actually three important
-aspects to the problem.  The most obvious aspect is providing a
-command-line interface that can be used by users to easily install not
-just a given Modelica library, but \textbf{also its dependencies}.
-However, such a command line tool must rely on the second aspect which
-is the avialability of a centrally served, up to date index of
-packages.  The final aspect is making it easy for library developers
-\textbf{to publish} their libraries in such a way that they are
-available to other Modelica users through the \impact\ package
-manager.  Each of these aspects will be discussed as part of this
-paper.
+The contribution of the \impact\ project is making installation of
+Modelica packages as easy as possible.  There are actually three
+important aspects in our approach.  The first aspect is the one most
+apparent to the user, a command-line interface that can be used to
+easily install not just a given Modelica library, but \textbf{also its
+  dependencies}.  However, such a command line tool must rely on the
+second aspect which is the avialability of a centrally served, up to
+date index of packages.  The final aspect is making it easy for
+library developers \textbf{to publish} their libraries in such a way
+that they are available to other Modelica users through the
+\impact\ package manager.  Each of these aspects will be discussed as
+part of this paper.
 
 It is worth noting that while \impact\ can handle dependences, it
 does not solve some of the problems currently inherent in Modelica.  At
@@ -181,7 +181,7 @@ Searching for librararies is done by executing:
 $ impact search <search term>
 \end{verbatim}
 
-This will return a list of all package whose names and/or description
+This will print a list of all package whose names and/or description
 strings contain the ``\code{<search term>}''. The returned list also
 contains the URL where the Modelica package is hosted.
 
@@ -220,8 +220,8 @@ downloaded from.
 
 In addition there is also a ``\code{[--dry-run|-d]}'' option available
 which does not download or extract any files but will simply report
-what \impact\ \emph{would} do.  It makes sense to use the ``dry-run''
-option always in combination with the ``verbose'' option.
+what \impact\ \emph{would} do.  Users will generally use the
+``dry-run'' option in combination with the ``verbose'' option.
 
 % Discuss "refresh" command here?  I assumed no when I wrote the
 % section on private repositories.  But now I'm struggling with how
@@ -288,8 +288,10 @@ Semantic versioning has the simple rule of:
 }
 }
 
-In addition, pre- and post-releases are also taken care of in this
-system, details can be found in the manual page\cite{semver}.
+In addition, pre-releases (\textit{e.g.,} beta releases, release
+candidates) and build metadata (\textit{e.g.,} version control hashes)
+are also taken care of in this system, details can be found in the
+manual page\cite{semver}.
 
 % Discuss the Github API, how we walk it, what we produce from it and
 % where we store the results
@@ -392,7 +394,7 @@ The \code{homepage} field is a URL to a web site that contains
 additional information about the library.  The \code{zipball\_url} and
 \code{tarball\_url} fields point to archives that can be downloaded,
 in the \code{zip} and \code{tar} formats, respectively.  The
-\code{dependencies} field lists all the libraries dependencies.  These
+\code{dependencies} field lists all the library's dependencies.  These
 are the libraries that will also be installed when installing the
 specified library version they are listed under.  The \code{path}
 field specifies the name of the directory or file representing the
