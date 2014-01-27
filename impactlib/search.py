@@ -32,7 +32,7 @@ def search(term, verbose):
                 if len(m[2].keys())==0:
                     versions = "None"
                 else:
-                    versions = ", ".join(m[2].keys())
+                    versions = ", ".join(sorted(m[2].keys()))
                 msg = "\n  Available versions: "+versions
                 if use_color:
                     print (Fore.RED+m[0]+Fore.RESET+" - "+Fore.GREEN+m[1]
