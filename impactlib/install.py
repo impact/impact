@@ -33,7 +33,7 @@ def latest_version(versions):
         return None
     keys = versions.keys()
     svs = map(lambda x: (SemanticVersion(x, tolerant=True), x), keys)
-    sorted_versions = sorted(svs, cmp=lambda x, y: x[0]>y[0])
+    sorted_versions = sorted(svs, reverse=True)
     print "sorted_versions = "+str(sorted_versions)
     return sorted_versions[0][1]
 
