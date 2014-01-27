@@ -3,7 +3,6 @@ from fnmatch import fnmatch
 
 try:
     import colorama
-    from colorama import Fore, Back, Style
     colorama.init()
     use_color = True
 except:
@@ -35,12 +34,12 @@ def search(term, verbose):
                     versions = ", ".join(sorted(m[2].keys()))
                 msg = "\n  Available versions: "+versions
                 if use_color:
-                    print (Fore.RED+m[0]+Fore.RESET+" - "+Fore.GREEN+m[1]
-                           + Fore.CYAN + msg)
+                    print (colorama.Fore.RED+m[0]+colorama.Fore.RESET+" - "
+                           +colorama.Fore.GREEN+m[1]+colorama.Fore.CYAN + msg)
                 else:
                     print m[0]+" - "+m[1] + msg
             else:
                 if use_color:
-                    print Fore.RED + m[0]
+                    print colorama.Fore.RED + m[0]
                 else:
                     print m[0]
