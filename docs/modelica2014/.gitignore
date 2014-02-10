@@ -11,5 +11,5 @@
 *.bcf
 *.run.xml
 *#*
-impact.pdf
-impact-blx.bib
+*.pdf
+*-blx.bib

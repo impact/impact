@@ -1,3 +1,5 @@
+all: impact.pdf abstract.pdf
+
 impact.pdf: impact.tex impact.bib
 	pdflatex impact.tex
 	bibtex impact
@@ -5,7 +7,7 @@ impact.pdf: impact.tex impact.bib
 clean:
 	rm *.aux *.bbl *.blg *-blx.bib *.log *.out *.run.xml
 
-abstract: abstract.tex impact.bib
+abstract.pdf: abstract.tex impact.bib
 	pdflatex abstract.tex
 	bibtex abstract
 	pdflatex abstract.tex
