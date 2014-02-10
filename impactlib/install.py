@@ -12,7 +12,6 @@ from impactlib import config
 
 try:
     import colorama
-    from colorama import Fore, Back, Style
     colorama.init()
     use_color = True
 except:
@@ -23,7 +22,7 @@ def get_package(pkg):
     if not pkg in repo_data:
         msg = "No package named '"+pkg+"' found"
         if use_color:
-            print Fore.RED+msg
+            print colorama.Fore.RED+msg
         else:
             print msg
         return None
@@ -34,7 +33,7 @@ def latest_version(versions):
         return None
     keys = versions.keys()
     svs = map(lambda x: (SemanticVersion(x, tolerant=True), x), keys)
-    sorted_versions = sorted(svs, cmp=lambda x, y: x[0]>y[0])
+    sorted_versions = sorted(svs, reverse=True)
     print "sorted_versions = "+str(sorted_versions)
     return sorted_versions[0][1]
 
@@ -55,7 +54,7 @@ def install_version(pkg, version, github, dryrun, verbose):
     if vdata==None:
         msg = "No version '"+str(version)+"' found for package '"+str(pkg)+"'"
         if use_color:
-            print Fore.RED+msg
+            print colorama.Fore.RED+msg
         else:
             print msg
         return
@@ -134,7 +133,7 @@ def install(pkgname, verbose, dry_run):
         version = pkg_data[1]
     else:
         raise ValueError("Package name must be of the form name[#version]")
-    
+
     pdata = get_package(pkg)
 
     if pdata==None:
@@ -148,14 +147,14 @@ def install(pkgname, verbose, dry_run):
         if version==None:
             msg = "No (semantic) versions found for package '"+pkg+"'"
             if use_color:
-                print Fore.RED+msg
+                print colorama.Fore.RED+msg
             else:
                 print msg
             return
 
     msg = "Installing version '"+version+"' of package '"+pkg+"'"
     if use_color:
-        print Fore.GREEN+msg
+        print colorama.Fore.GREEN+msg
     else:
         print msg
 
@@ -164,7 +163,7 @@ def install(pkgname, verbose, dry_run):
                     token=token)
 
     pkgversions = elaborate_dependencies(pkg, version, current={})
-    
+
     if verbose:
         print "Libraries to install:"
         for pkgname in pkgversions:
