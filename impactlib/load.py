@@ -53,6 +53,7 @@ def load_repo_data():
             ret.update(data)
         except Exception as e:
             print "Unable to load repo data from: "+str(url)+", skipping"
+            print "Error: "+str(e)
 
     cached_data = ret
     return ret
