@@ -86,6 +86,11 @@
 	    </div>
 	    <div id="/section-1/page-2" class="ft-page" data-id="page-2">
 	      <h1>What is Impact?</h1>
+	      <div class="markdown">
+  * Item1
+  * Item2
+  * Item3
+	      </div>
 	    </div>
 	  </div>
 	  <div class="ft-section" data-id="section-2">
@@ -154,6 +159,8 @@
 	
 	<script src="js/brav1toolbox.js"></script>
 	<script src="js/flowtime.js"></script>
+	<script src="js/jquery.js"></script>
+	<script src="js/showdown.js"></script>
 	<script src="assets/js/prism.js"></script>
 
 	<script type="text/javascript">
@@ -188,7 +195,17 @@
       // var value = Math.round(e.progress * 100 / e.total);
       // console.log('Completion: ' + value + '%');
       }
+      var converter = new Showdown.converter();
+
       // starts the application with configuration options
+      $(".markdown").each(function (d, v) {
+        var orig = $(v).html()
+        var proc = converter.makeHtml(orig);
+        $(v).html(proc);
+        console.log("Element: "+v);
+        console.log("Orig: "+orig);
+        console.log("Proc: "+proc);
+      });
       Flowtime.start();
 </script>
 </body>
