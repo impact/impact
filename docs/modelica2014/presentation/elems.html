@@ -1,0 +1,17 @@
+<polymer-element name="title-slide"
+		 attributes="title">
+
+	<template extend="div">
+	  <div class="stack-center">
+	    <div class="stacked-center">
+	      <h1>{{title}}</h1>
+	    </div>
+	  </div>
+	</template>
+
+	<script>
+		Polymer('title-slide', {
+                    title: "",
+		});
+	</script>
+</polymer-element>
