@@ -4,13 +4,17 @@
 	  <div class="stack-center">
 	    <div class="stacked-center">
 	      <h1>{{text}}</h1>
+	      <div id="foo"></div>
 	    </div>
 	  </div>
 	</template>
 
 	<script>
 	  Polymer("title-slide", {
-	    "text": "Default Title"
+	    "text": "Default Title",
+            "ready": function() {
+	      this.$.foo.innerHTML = this.innerHTML;
+	    }
 	  });
 	</script>
 </polymer-element>
