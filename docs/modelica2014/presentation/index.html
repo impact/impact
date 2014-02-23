@@ -31,7 +31,12 @@
 
 	<title>Impact</title>
 
-	<script src="js/polymer.min.js"></script>
+	<script src="./bower_components/marked/lib/marked.js"></script>
+
+	<script src="./bower_components/platform/platform.js"></script>
+	<script src="./bower_components/polymer/polymer.js"></script>
+
+	<!-- <script src="js/polymer.min.js"></script> -->
 
 	<link rel="import" href="elems.html">
 
@@ -92,38 +97,28 @@
 	  </div>
 	  <div class="ft-section" data-id="intro">
 	    <div id="/intro/header" class="ft-page mike" data-id="header">
-	      <title-slide title="Introduction (Mike)"/>
-<!--
-	      <div class="stack-center">
-		<div class="stacked-center">
-		  <h1>Introduction<br>(Mike)</h1>
-		</div>
-	      </div>
--->
+	      <title-slide text="Introduction (Mike)"/>
 	    </div>
 	    <div id="/intro/insp" class="ft-page mike" data-id="insp">
 	      <h1>Inspiration</h1>
 	    </div>
 	    <div id="/intro/langs" class="ft-page mike" data-id="langs">
 	      <h1>Talk about other package managers for other languages</h1>
-	      <div class="markdown">
-  * Bower
-  * NPM
-  * Pip/easy_install
-  * Go
-  * Maven
-  * SBT
-	      </div>
+	      <mark-down>
+		* Bower
+		* NPM
+		* Pip/easy_install
+		* Go
+		* Maven
+		* SBT
+	      </mark-down>
 	    </div>
 	  </div>
 	  <div class="ft-section" data-id="how">
 	    <div id="/how/header" class="ft-page dietmar" data-id="header">
-	      <div class="stack-center">
-		<div class="stacked-center">
-		  <h1>How Impact Works<br>(Dietmar)</h1>
-		  <img src="img/logo_glossy.svg">
-		</div>
-	      </div>
+	      <title-slide text="How Impact Works (Dietmar)">
+		<img src="img/logo_glossy.svg">
+	      </title-slide>
 	    </div>
 	    <div id="/how/git" class="ft-page dietmar" data-id="git">
 	      <h1>Packages as repositories</h1>
@@ -143,11 +138,7 @@
 	  </div>
 	  <div class="ft-section" data-id="cmdline">
 	    <div id="/cmdline/header" class="ft-page dietmar" data-id="header">
-	      <div class="stack-center">
-		<div class="stacked-center">
-		  <h1>Command Line</h1>
-		</div>
-	      </div>
+	      <title-slide text="Command Line (Dietmar)"/>
 	    </div>
 	    <div id="/cmdline/pip" class="ft-page dietmar" data-id="pip">
 	      <h1>Installing impact</h1>
@@ -164,11 +155,7 @@
 	  </div>
 	  <div class="ft-section" data-id="uses">
 	    <div id="/uses/header" class="ft-page mike" data-id="header">
-	      <div class="stack-center">
-		<div class="stacked-center">
-		  <h1>Additional Use Cases<br>(Mike)</h1>
-		</div>
-	      </div>
+	      <title-slide text="Additional Use Cases (Mike)"/>
 	    </div>
 	    <div id="/uses/tools" class="ft-page mike" data-id="tools">
 	      <h1>Tool Integration</h1>
@@ -235,7 +222,6 @@
 	<script src="js/brav1toolbox.js"></script>
 	<script src="js/flowtime.js"></script>
 	<script src="js/jquery.js"></script>
-	<script src="js/showdown.js"></script>
 	<script src="assets/js/prism.js"></script>
 
 	<script type="text/javascript">
@@ -270,15 +256,6 @@
       // var value = Math.round(e.progress * 100 / e.total);
       // console.log('Completion: ' + value + '%');
       }
-
-      /* This code does Markdown substitution on all 
-         <div> elements that have the 'markdown' class. */
-      var converter = new Showdown.converter();
-      $(".markdown").each(function (d, v) {
-        var orig = $(v).html()
-        var proc = converter.makeHtml(orig);
-        $(v).html(proc);
-      });
 
       // starts the application with configuration options
       Flowtime.start();

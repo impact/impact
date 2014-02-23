@@ -1,17 +1,45 @@
-<polymer-element name="title-slide"
-		 attributes="title">
+<polymer-element name="title-slide" attributes="text">
 
 	<template extend="div">
 	  <div class="stack-center">
 	    <div class="stacked-center">
-	      <h1>{{title}}</h1>
+	      <h1>{{text}}</h1>
 	    </div>
 	  </div>
 	</template>
 
 	<script>
-		Polymer('title-slide', {
-                    title: "",
-		});
+	  Polymer("title-slide", {
+	    "text": "Default Title"
+	  });
 	</script>
+</polymer-element>
+
+<!-- mark-down definition -->
+<polymer-element name="mark-down" attributes="text">
+  <template>
+    <style>
+      /* Old Busted */
+      @host { * { display: block; } }
+      /* New Hotness */
+      *:host { display: block; }
+    </style>
+    <div id="markdown" part="markdown"></div>
+  </template>
+  <script>
+    Polymer("mark-down", {
+      ready: function() {
+        this.text = this.trim(this.innerHTML);
+      },
+      textChanged: function() {
+        this.$.markdown.innerHTML = marked(this.text);
+      },
+      // Thanks Ryan Seddon! (https://github.com/ryanseddon/markdown-component)
+      // Remove all leading/trailing whitespace so it's not confused as 
+      // a code block
+      trim: function(str) {
+        return str.replace(/^[^\S\n]+/gm,'');
+      }
+    });
+  </script>
 </polymer-element>

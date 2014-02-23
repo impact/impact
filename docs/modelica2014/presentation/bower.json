@@ -1,0 +1,22 @@
+{
+  "name": "Modelica 2014 Presentation",
+  "version": "0.2.2",
+  "homepage": "https://github.com/xogeny/impact",
+  "authors": [
+    "Michael Tiller <michael.tiller@gmail.com>"
+  ],
+  "main": "index.html",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "latest",
+    "marked": "~0.2.10"
+  }
+}
