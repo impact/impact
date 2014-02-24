@@ -59,7 +59,7 @@
       <body class="">
 	<div class="flowtime">
 	  <div class="ft-section" data-id="section-1">
-	    <div id="/section-1/page-1" class="ft-page" data-id="page-1"
+	    <div class="ft-page" data-id="page-1"
 		 data-title="Impact -- A Modelica Package Manager">
 	      <div class="stack-center">
 		<div class="stacked-center">
@@ -177,21 +177,21 @@
 	    </div>
 	  </div>
 	  <div class="ft-section" data-id="how">
-	    <div id="/how/header" class="ft-page dietmar" data-id="header">
+	    <div class="ft-page dietmar" data-id="header">
 	      <title-slide text="How Impact Works (Dietmar)">
 		<img src="img/logo_glossy.svg">
 	      </title-slide>
 	    </div>
-	    <div id="/how/git" class="ft-page dietmar" data-id="git">
+	    <div class="ft-page dietmar" data-id="git">
 	      <h1>Packages as repositories</h1>
 	      <h1>Tags</h1>
 	      <h1>Semantic Versioning</h1>
 	      <h1>Easy to Publish</h1>
 	    </div>
-	    <div id="/how/libpage" class="ft-page dietmar" data-id="libpage">
+	    <div class="ft-page dietmar" data-id="libpage">
 	      <h1>Sync'd with modelica.org/libraries</h1>
 	    </div>
-	    <div id="/how/indexing" class="ft-page dietmar" data-id="indexing">
+	    <div class="ft-page dietmar" data-id="indexing">
 	      <h1>Indexing</h1>
 	      <h2>Spider GitHub API</h2>
 	      <h2>Identifies packages</h2>
@@ -199,57 +199,113 @@
 	    </div>
 	  </div>
 	  <div class="ft-section" data-id="cmdline">
-	    <div id="/cmdline/header" class="ft-page dietmar" data-id="header">
+	    <div class="ft-page dietmar" data-id="header">
 	      <title-slide text="Command Line (Dietmar)"/>
 	    </div>
-	    <div id="/cmdline/pip" class="ft-page dietmar" data-id="pip">
+	    <div class="ft-page dietmar" data-id="pip">
 	      <h1>Installing impact</h1>
 	      <pre>
 		<code class="language-shell">$ pip install impact</code>
 	      </pre>
 	    </div>
-	    <div id="/cmdline/search" class="ft-page dietmar" data-id="search">
+	    <div class="ft-page dietmar" data-id="search">
 	      <h1>Searching</h1>
 	    </div>
-	    <div id="/cmdline/install" class="ft-page dietmar" data-id="install">
+	    <div class="ft-page dietmar" data-id="install">
 	      <h1>Installing Packages</h1>
 	    </div>
 	  </div>
 	  <div class="ft-section" data-id="uses">
-	    <div id="/uses/header" class="ft-page mike" data-id="header">
-	      <title-slide text="Additional Use Cases (Mike)"/>
+	    <div class="ft-page mike" data-id="header">
+	      <title-slide text="Additional Use Cases"/>
 	    </div>
-	    <div id="/uses/tools" class="ft-page mike" data-id="tools">
+	    <div class="ft-page mike" data-id="tools">
 	      <h1>Tool Integration</h1>
-	      <h2>Stand-alone library</h2>
-	      <h2>Open access index</h2>
+	      <ul>
+		<li class="ft-fragment step">
+		  <h2>
+		    Goes beyond previous repository
+		    format <i>proposal</i> to create an actual
+		    repository
+		  </h2>
+		</li>
+		<li class="ft-fragment step">
+		  <h2>
+		    Reference implementation in Python is both a tool <b>and a library</b>
+		  </h2>
+		</li>
+		<li class="ft-fragment step">
+		  <h2>
+		    For non-Python platforms, <code>index.json</code>
+		    file is available for all implementations
+		    via <code>modelica.org</code>
+		  </h2>
+		</li>
+	      </ul>
 	    </div>
-	    <div id="/uses/private" class="ft-page mike" data-id="private">
-	      <h1>Indexing Private Repos</h1>
+	    <div class="ft-page mike" data-id="private">
+	      <h1>Private Repositories</h1>
+	      <ul>
+		<li class="ft-fragment step">
+		  <h2>
+		    Currently supported:
+		  </h2>
+		  <ul>
+		    <li><h3>Via private indices</h3></li>
+		    <li><h3>Private index needs to be privately hosted</h3></li>
+		    <li><h3>Repositories must private GitHub repositories</h3></li>
+		    <li><h3>OAuth tokens</h3></li>
+		    <li><h3>Edit configurations files</h3></li>
+		  </ul>
+		</li>
+		<li class="ft-fragment step">
+		  <h2>
+		    Goal:
+		  </h2>
+		  <ul>
+		    <li>
+		      <h3>
+			Support other repository types (<code>git</code>, <code>svn</code>)
+		      </h3>
+		    </li>
+		    <li><h3>Simpler and streamlined</h3></li>
+		  </ul>
+		</li>
+	      </ul>
 	    </div>
-	    <div id="/uses/automation" class="ft-page mike" data-id="automation">
+	    <div class="ft-page mike" data-id="automation">
 	      <h1>Automation</h1>
-	      <h2>Continuous Integration</h2>
-	      <h2>Simulation Services</h2>
-	      <h3>FMQ Demo</h3>
+	      <ul>
+		<li class="ft-fragment step">
+		  <h2>
+		    Mechanism to support continuous integration
+		    involving Modelica models (Jenkins/Hudson)
+		  </h2>
+		</li>
+		<li class="ft-fragment step">
+		  <h2>
+		    Simulation services
+		  </h2>
+		  <h3>FMQ Demo</h3>
+		</li>
 	    </div>
 	  </div>
 	  <div class="ft-section" data-id="future">
-	    <div id="/future/header" class="ft-page mike" data-id="header">
+	    <div class="ft-page mike" data-id="header">
 	      <h1>Future Work</h1>
 	    </div>
-	    <div id="/future/cmdline" class="ft-page mike" data-id="cmdline">
+	    <div class="ft-page mike" data-id="cmdline">
 	      <h1>More Command Line Features</h1>
 	      <h2>upgrade</h2>
 	      <h2>package.json</h2>
 	      <h2>???</h2>
 	    </div>
-	    <div id="/future/repotypes" class="ft-page mike" data-id="repotypes">
+	    <div class="ft-page mike" data-id="repotypes">
 	      <h1>Support other repository types</h1>
 	    </div>
 	  </div>
 	  <div class="ft-section" data-id="conclusions">
-	    <div id="/conclusions/summary" class="ft-page" data-id="summary">
+	    <div class="ft-page" data-id="summary">
 	      <h1>Conclusions</h1>
 	      <h2>Open source license</h2>
 	      <h2>Command-line tool and library</h2>
@@ -258,7 +314,7 @@
 	      <h2>Integrates with modelica.org/libraries</h2>
 	    </div>
 
-	    <div id="/conclusions/thanks" class="ft-page" data-id="thanks">
+	    <div class="ft-page" data-id="thanks">
 	      <title-slide text="Thanks!">
 		  <a href="http://github.com/xogeny/impact">
 		    <img src="img/logo_glossy.svg">
