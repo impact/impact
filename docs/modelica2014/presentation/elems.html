@@ -1,22 +1,40 @@
+<polymer-element name="step-item2" attributes="text">
+  <template extend="li">
+    <li class="ft-fragment step">
+      <h2 id="foo">
+	{{text}}
+      </h2>
+    </li>
+  </template>
+
+  <script>
+    Polymer("step-item2", {
+      "text": "",
+      "ready": function() {
+        this.$.foo.innerHTML = this.innerHTML;
+      }
+    });
+  </script>
+</polymer-element>
+
 <polymer-element name="title-slide" attributes="text">
+  <template extend="div">
+    <div class="stack-center">
+      <div class="stacked-center">
+	<h1>{{text}}</h1>
+	<div id="foo"></div>
+      </div>
+    </div>
+  </template>
 
-	<template extend="div">
-	  <div class="stack-center">
-	    <div class="stacked-center">
-	      <h1>{{text}}</h1>
-	      <div id="foo"></div>
-	    </div>
-	  </div>
-	</template>
-
-	<script>
-	  Polymer("title-slide", {
-	    "text": "Default Title",
-            "ready": function() {
-	      this.$.foo.innerHTML = this.innerHTML;
-	    }
-	  });
-	</script>
+  <script>
+    Polymer("title-slide", {
+      "text": "Default Title",
+      "ready": function() {
+        this.$.foo.innerHTML = this.innerHTML;
+      }
+    });
+  </script>
 </polymer-element>
 
 <!-- mark-down definition -->
