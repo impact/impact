@@ -34,10 +34,9 @@ def latest_version(versions):
     keys = versions.keys()
     svs = map(lambda x: (SemanticVersion(x, tolerant=True), x), keys)
     sorted_versions = sorted(svs, reverse=True)
-    print "sorted_versions = "+str(sorted_versions)
     return sorted_versions[0][1]
 
-def install_version(pkg, version, github, dryrun, verbose):
+def install_version(pkg, version, github, dryrun, verbose, target):
     repo_data = load_repo_data()
 
     pdata = get_package(pkg)
@@ -67,7 +66,7 @@ def install_version(pkg, version, github, dryrun, verbose):
         zfp = StringIO.StringIO(github.getDownload(zipurl).read())
         zf = zipfile.ZipFile(zfp)
         root = zf.infolist()[0].filename
-        dst = os.path.join(".", str(pkg)+" "+str(strip_extra(version)))
+        dst = os.path.join(target, str(pkg)+" "+str(strip_extra(version)))
         if os.path.exists(dst):
             print "  Directory "+dst+" already exists, skipping"
         else:
@@ -116,7 +115,7 @@ def elaborate_dependencies(pkgname, version, current):
             ret[sub] = subs[sub]
     return ret
 
-def install(pkgname, verbose, dry_run):
+def install(pkgname, verbose, dry_run, target):
     username = config.get("Impact", "username", None)
     password = config.get("Impact", "password", None)
     token = config.get("Impact", "token", None)
@@ -172,4 +171,4 @@ def install(pkgname, verbose, dry_run):
 
     for pkgname in pkgversions:
         install_version(pkgname, pkgversions[pkgname], github,
-                        dryrun=dry_run, verbose=verbose)
+                        dryrun=dry_run, verbose=verbose, target=target)
