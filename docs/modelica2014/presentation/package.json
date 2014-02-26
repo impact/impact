@@ -1,9 +1,0 @@
-{
-   "name": "Impact presentation",
-   "main": "index.html",
-   "window": {
-     "kiosk": true,
-	 "toolbar": false,
-	 "fullscreen": true
-   }
-}
