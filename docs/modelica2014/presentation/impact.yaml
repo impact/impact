@@ -1,0 +1,33 @@
+metadata:
+  title: Impact
+  styles:
+    - css/impact.css
+slides:
+  Title:
+    - title.html
+  Introduction:
+    - <splash><h1>Introduction</h1></splash>
+    - intro/slides.yaml
+  How Impact Works (Dietmar):
+    metadata:
+      id: how
+      class: dietmar
+    pages:
+      - <splash><h1>How Impact Works</h1><img src="img/logo_glossy.svg"></splash>
+      - how/slides.yaml
+  Command Line (Dietmar):
+    metadata:
+      id: cmdline
+      class: dietmar
+    pages:
+      - <splash><h1>Command Line (Dietmar)</h1></splash>
+      - cli/slides.yaml
+  Additional Use Cases:
+    - <splash><h1>Additional Use Cases</h1></splash>
+    - use_cases/slides.yaml
+  Future Work:
+    - <splash><h1>Future Work</h1></splash>
+    - cmdline_future.html
+  Conclusions:
+    - conclusions.html
+    - thanks.html

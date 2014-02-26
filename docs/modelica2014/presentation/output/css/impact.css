@@ -1,0 +1,25 @@
+/* Customization of CSS */
+
+.pull-right {
+    float: right;
+}
+
+.right-justify {
+    text-align: right;
+}
+
+.pull-left {
+    float: left;
+}
+
+.left-justify {
+    text-align: left;
+}
+
+.mike {
+    background-color: rgba(128,128,255,0.2);
+}
+
+.dietmar {
+    background-color: rgba(255,128,128,0.2);
+}
