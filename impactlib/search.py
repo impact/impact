@@ -22,24 +22,32 @@ def search(term, verbose):
         if "description" in data and data["description"].find(term)>=0:
             match = True
         if match:
-            matches.append((repo, data["description"], data["versions"]))
+            matches.append((repo, data["description"], data["versions"],
+                            data.get("homepage", None)))
     if len(matches)==0:
         print "No matches found for search term '"+term+"'"
     else:
         for m in sorted(matches):
+            libpage = m[3]
+            libdesc = m[1]
+            libvers = m[2]
+            if libpage==None:
+                libname = m[0]
+            else:
+                libname = "%s <%s>" % (m[0], libpage)
             if verbose:
-                if len(m[2].keys())==0:
+                if len(libvers.keys())==0:
                     versions = "None"
                 else:
-                    versions = ", ".join(sorted(m[2].keys()))
+                    versions = ", ".join(sorted(libvers.keys()))
                 msg = "\n  Available versions: "+versions
                 if use_color:
-                    print (colorama.Fore.RED+m[0]+colorama.Fore.RESET+" - "
-                           +colorama.Fore.GREEN+m[1]+colorama.Fore.CYAN + msg)
+                    print (colorama.Fore.RED+libname+colorama.Fore.RESET+" - "
+                           +colorama.Fore.GREEN+libdesc+colorama.Fore.CYAN + msg)
                 else:
-                    print m[0]+" - "+m[1] + msg
+                    print libname+" - "+libdesc + msg
             else:
                 if use_color:
-                    print colorama.Fore.RED + m[0]
+                    print colorama.Fore.RED + libname
                 else:
-                    print m[0]
+                    print libname
