@@ -129,6 +129,8 @@ def process_github_user(repo_data, user, pat, github, verbose,
             tagdata = ver.json()
             tagdata["zipball_url"] = tagurlbase+".zip"
             tagdata["tarball_url"] = tagurlbase+".tar.gz"
+            if "commit" in tag and "sha" in tag["commit"]:
+                tagdata["sha"] = tag["commit"]["sha"]
             tagdata["path"] = path
             tagdata["dependencies"] = deps
 
