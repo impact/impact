@@ -1,5 +1,7 @@
 metadata:
   title: Impact
+  image: https://raw2.github.com/xogeny/impact/master/images/logo_glossy.svg
+  url: http://github.com/xogeny/impact
   draft: true
   styles:
     - css/impact.css
