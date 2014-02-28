@@ -28,13 +28,13 @@ def search(term, verbose):
         print "No matches found for search term '"+term+"'"
     else:
         for m in sorted(matches):
-            libpage = m[3]
+            libname = m[0]
             libdesc = m[1]
             libvers = m[2]
-            if libpage==None:
-                libname = m[0]
+            if  m[3] == None:
+                libpage = ""
             else:
-                libname = "%s <%s>" % (m[0], libpage)
+                libpage = " <" + m[3] + ">"
             if verbose:
                 if len(libvers.keys())==0:
                     versions = "None"
@@ -42,12 +42,20 @@ def search(term, verbose):
                     versions = ", ".join(sorted(libvers.keys()))
                 msg = "\n  Available versions: "+versions
                 if use_color:
-                    print (colorama.Fore.RED+libname+colorama.Fore.RESET+" - "
-                           +colorama.Fore.GREEN+libdesc+colorama.Fore.CYAN + msg)
+                    print (colorama.Style.BRIGHT
+                           + colorama.Fore.YELLOW + libname
+                           + colorama.Style.NORMAL
+                           + colorama.Fore.RED + libpage
+                           + colorama.Fore.RESET + " - "
+                           + colorama.Fore.GREEN + libdesc
+                           + colorama.Fore.CYAN + msg)
                 else:
-                    print libname+" - "+libdesc + msg
+                    print libname + libpage + " - " + libdesc + msg
             else:
                 if use_color:
-                    print colorama.Fore.RED + libname
+                    print (colorama.Style.BRIGHT
+                           + colorama.Fore.YELLOW + libname
+                           + colorama.Style.NORMAL
+                           + colorama.Fore.RED + libpage)
                 else:
-                    print libname
+                    print libname + libpage
