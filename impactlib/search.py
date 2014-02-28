@@ -34,7 +34,7 @@ def search(term, verbose):
             if  m[3] == None:
                 libpage = ""
             else:
-                libpage =" <"+m[3]+">"
+                libpage = " <" + m[3] + ">"
             if verbose:
                 if len(libvers.keys())==0:
                     versions = "None"
