@@ -2,7 +2,7 @@ from setuptools import setup
 from os.path import join, dirname
 
 setup(name="impact",
-      version="0.3.0",
+      version="0.5.0",
       description="Modelica package manager",
       long_description=open(join(dirname(__file__), 'README.md')).read(),
       author="Michael Tiller",
