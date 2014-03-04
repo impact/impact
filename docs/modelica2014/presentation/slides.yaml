@@ -5,30 +5,34 @@ metadata:
   draft: true
   styles:
     - css/impact.css
+  includes:
+    - templates/macros.html
+
+
 slides:
   Title:
     - title.html
   Introduction:
     - <hero><h1>Introduction</h1></hero>
     - intro/slides.yaml
-  How Impact Works (Dietmar):
+  HowImpactWorks_DW:
     metadata:
       id: how
       class: dietmar
     pages:
       - <hero><h1>How Impact Works</h1><img src="img/logo_glossy.svg"></hero>
       - how/slides.yaml
-  Command Line (Dietmar):
+  CommandLine_DW:
     metadata:
       id: cmdline
       class: dietmar
     pages:
-      - <hero><h1>Command Line (Dietmar)</h1></hero>
+      - <hero><h1>Command Line</h1><img src="img/logo_glossy.svg"></hero>
       - cli/slides.yaml
-  Additional Use Cases:
+  AdditionalUseCases:
     - <hero><h1>Additional Use Cases</h1></hero>
     - use_cases/slides.yaml
-  Future Work:
+  FutureWork:
     - <hero><h1>Future Work</h1></hero>
     - cmdline_future.html
   Conclusions:
