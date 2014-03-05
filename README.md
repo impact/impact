@@ -1,7 +1,9 @@
 Impact
 ------
 
-*Impact* is a Modelica package loader.
+*Impact* is a Modelica package manager.
+
+![ImpactLogo](images/logo_glossy.svg)
 
 Conventions
 -----------
