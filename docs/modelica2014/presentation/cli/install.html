@@ -1,1 +1,22 @@
 <h1>Installing Packages</h1>
+<pre class="language-shell">
+  $ impact install <i>"PackageName &lt;version&gt;"</i>
+  $ impact install <i>PackageName#&lt;version&gt;</i>
+  $ impact install <i>PackageName</i>
+</pre>
+
+<h3>Example</h3>
+<pre class="language-shell">
+$ impact install PowerSystems
+Installing version '0.2.0' of package 'PowerSystems'
+  No information for package Complex, skipping
+  No information for package ModelicaServices, skipping
+</pre>
+
+<h3>Result</h3>
+<pre class="language-shell">
+$ tree -L 1
+.
+├── Modelica 3.2
+└── PowerSystems 0.2.0
+</pre>

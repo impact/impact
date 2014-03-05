@@ -2,7 +2,7 @@ metadata:
   title: Impact
   image: https://raw2.github.com/xogeny/impact/master/images/logo_glossy.svg
   url: http://github.com/xogeny/impact
-  draft: true
+  draft: false
   styles:
     - css/impact.css
   includes:
@@ -13,27 +13,25 @@ slides:
   Title:
     - title.html
   Introduction:
-    - <hero><h1>Introduction</h1></hero>
+    - <hero><h1>Introduction</h1><img src="img/logo_glossy.svg"></hero>
     - intro/slides.yaml
-  HowImpactWorks_DW:
+  HowImpactWorks:
     metadata:
       id: how
-      class: dietmar
     pages:
       - <hero><h1>How Impact Works</h1><img src="img/logo_glossy.svg"></hero>
       - how/slides.yaml
-  CommandLine_DW:
+  CommandLine:
     metadata:
       id: cmdline
-      class: dietmar
     pages:
       - <hero><h1>Command Line</h1><img src="img/logo_glossy.svg"></hero>
       - cli/slides.yaml
   AdditionalUseCases:
-    - <hero><h1>Additional Use Cases</h1></hero>
+    - <hero><h1>Additional Use Cases</h1><img src="img/logo_glossy.svg"></hero>
     - use_cases/slides.yaml
   FutureWork:
-    - <hero><h1>Future Work</h1></hero>
+    - <hero><h1>Future Work</h1><img src="img/logo_glossy.svg"></hero>
     - cmdline_future.html
   Conclusions:
     - conclusions.html
