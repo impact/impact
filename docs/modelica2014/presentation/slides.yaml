@@ -7,7 +7,10 @@ metadata:
     - css/impact.css
   includes:
     - templates/macros.html
-  package: {}
+  package:
+    window:
+      width: 1024
+      height: 768
 slides:
   Title:
     - title.html
