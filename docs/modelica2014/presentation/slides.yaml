@@ -9,6 +9,8 @@ metadata:
     - templates/macros.html
   package:
     window:
+      kiosk: false
+      toolbar: false
       width: 1024
       height: 768
 slides:
