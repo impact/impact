@@ -3,7 +3,7 @@ Impact
 
 *Impact* is a Modelica package manager.
 
-![ImpactLogo](images/logo_glossy.svg)
+![ImpactLogo](https://rawgithub.com/xogeny/impact/master/images/logo_glossy.svg)
 
 Conventions
 -----------
