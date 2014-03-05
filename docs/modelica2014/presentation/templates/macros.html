@@ -1,4 +1,6 @@
 {% macro item(p1, p2) %}
-  <h3 style="margin-bottom: 10px"><span class="c-step">{{p1}}</span></h3>
-  <span style="margin-top: 10px" class="c-step">{{p2|safe}}</span>
+  <div  class="c-dim">
+  <h3 style="margin-bottom: 10px"><span>{{p1}}</span></h3>
+  <span style="margin-top: 10px">{{p2|safe}}</span>
+  </div>
 {% endmacro %}
