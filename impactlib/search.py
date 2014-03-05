@@ -10,22 +10,23 @@ except:
 
 def search(term, verbose):
     repo_data = load_repo_data()
+    terml = term.lower()
 
     matches = []
     for repo in repo_data:
         match = False
         data = repo_data[repo]
-        if repo.find(term)>=0:
+        if repo.lower().find(terml)>=0:
             match = True
-        if fnmatch(repo, term):
+        if fnmatch(repo, terml):
             match = True
-        if "description" in data and data["description"].find(term)>=0:
+        if "description" in data and data["description"].lower().find(terml)>=0:
             match = True
         if match:
             matches.append((repo, data["description"], data["versions"],
                             data.get("homepage", None)))
     if len(matches)==0:
-        print "No matches found for search term '"+term+"'"
+        print "No matches found for search term '"+term+"' or '"+terml+"'"
     else:
         for m in sorted(matches):
             libname = m[0]
