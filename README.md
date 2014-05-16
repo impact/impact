@@ -5,6 +5,12 @@ Impact
 
 ![ImpactLogo](https://rawgithub.com/xogeny/impact/master/images/logo_glossy.svg)
 
+The concept was first presented in [impact - A Modelica Package Manager](docs/modelica2014/paper/impact.md)
+
+> Michael Tiller, Dietmar Winkler (2014). impact - A Modelica Package Manager,
+> Proceedings of the 10th International Modelica Conference, March 10-12, 2014,
+> Lund, Sweden http://dx.doi.org/10.3384/ecp14096543
+
 Conventions
 -----------
 
@@ -32,6 +38,10 @@ any manual configuration.  Here are the conventions that *Impact* expects:
   * `./<LibraryName> <Version>/package.mo` (i.e., within a directory sharing
     the name of the library followed by a space followed by the tag name,
     without any leading `v` present)
+
+References
+----------
+
 
 Development
 -----------
