@@ -9,7 +9,9 @@ setup(name="impact",
       author_email="michael.tiller@gmail.com",
       license="MIT",
       url="https://github.com/xogeny/impact",
-      scripts=['scripts/impact'],
+      entry_points = {
+          'console_scripts': ['impact = impactlib.cli:main']
+      },
       packages=['impactlib'],
       include_package_data=True,
       zip_safe=False)
