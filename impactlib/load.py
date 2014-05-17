@@ -1,12 +1,23 @@
-import urllib2
 import json
+# urllib2 is now split into several urllib modules in python3
+try:
+    from urllib.request import (urlopen, Request, HTTPSHandler,
+                                install_opener, build_opener)
+except ImportError:
+    from urllib2 import (urlopen, Request, HTTPSHandler,
+                         install_opener, build_opener)
 
 from impactlib import config
 
 cached_data = None
 
 ### I stole this from http://bugs.python.org/issue11220 ###
-import httplib, ssl, socket
+try:
+    import http.client as httplib
+except ImportError:
+    import httplib
+
+import ssl, socket
 
 class HTTPSConnectionV3(httplib.HTTPSConnection):
     def __init__(self, *args, **kwargs):
@@ -25,7 +36,7 @@ class HTTPSConnectionV3(httplib.HTTPSConnection):
             self.sock = ssl.wrap_socket(sock, self.key_file, self.cert_file,
                                         ssl_version=ssl.PROTOCOL_SSLv23)
 
-class HTTPSHandlerV3(urllib2.HTTPSHandler):
+class HTTPSHandlerV3(HTTPSHandler):
     def https_open(self, req):
         return self.do_open(HTTPSConnectionV3, req)
 ######
@@ -46,9 +57,9 @@ def load_repo_data():
     # anyway.
     for url in urls:
         try:
-            urllib2.install_opener(urllib2.build_opener(HTTPSHandlerV3()))
-            req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
+            install_opener(build_opener(HTTPSHandlerV3()))
+            req = Request(url)
+            response = urlopen(req)
             data = json.loads(response.read())
             ret.update(data)
         except Exception as e:

@@ -1,6 +1,11 @@
 import json
 import re
-import urlparse
+import os
+# urlparse is split up in python 3:
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 
 from impactlib.github import GitHub
 from impactlib.semver import SemanticVersion
@@ -178,7 +183,7 @@ def refresh(output, verbose, tolerant, ignore_empty, source_list=None):
     for source in source_list:
         if verbose:
             print("Scanning "+source)
-        data = urlparse.urlparse(source)
+        data = urlparse(source)
         if data.scheme=="github":
             user = data.netloc
             repo_pat = data.path[1:]

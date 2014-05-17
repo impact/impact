@@ -1,5 +1,5 @@
 import zipfile
-import StringIO
+import io
 import tempfile
 import shutil
 import os
@@ -22,7 +22,7 @@ def get_package(pkg):
     if not pkg in repo_data:
         msg = "No package named '"+pkg+"' found"
         if use_color:
-            print(colorama.Fore.RED+msg)
+            print((colorama.Fore.RED+msg))
         else:
             print(msg)
         return None
@@ -31,8 +31,8 @@ def get_package(pkg):
 def latest_version(versions):
     if len(versions)==0:
         return None
-    keys = versions.keys()
-    svs = map(lambda x: (SemanticVersion(x, tolerant=True), x), keys)
+    keys = list(versions.keys())
+    svs = [(SemanticVersion(x, tolerant=True), x) for x in keys]
     sorted_versions = sorted(svs, reverse=True)
     return sorted_versions[0][1]
 
@@ -63,7 +63,7 @@ def install_version(pkg, version, github, dryrun, verbose, target):
     if verbose:
         print("  URL: "+zipurl)
     if not dryrun:
-        zfp = StringIO.StringIO(github.getDownload(zipurl).read())
+        zfp = io.StringIO(github.getDownload(zipurl).read())
         zf = zipfile.ZipFile(zfp)
         root = zf.infolist()[0].filename
         dst = os.path.join(target, str(pkg)+" "+str(strip_extra(version)))

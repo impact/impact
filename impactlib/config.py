@@ -1,6 +1,10 @@
-from ConfigParser import SafeConfigParser, NoSectionError, NoOptionError
 import os
 import sys
+# ConfigParser has been renamed in Python 3 to configparser:
+try:
+    from configparser import SafeConfigParser, NoSectionError, NoOptionError
+except ImportError:
+    from ConfigParser import SafeConfigParser, NoSectionError, NoOptionError
 
 ENVVAR = "IMPACT_CONFIG_FILE"
 

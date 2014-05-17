@@ -1,7 +1,13 @@
 import sys
 import base64
 import json
-import urllib2
+# urllib2 is now split into several urllib modules in python3
+try:
+    from urllib.request import urlopen, Request
+    from urllib.error import HTTPError
+except ImportError:
+    from urllib2 import urlopen, HTTPError, Request
+
 
 # This is (yet another) Python interface to the GitHub v3 API.
 # There is no reason to invent our own here except that it is
@@ -40,10 +46,10 @@ class GitHub(object):
 
         # Formulate request
         # print "url = "+str(url)
-        req = urllib2.Request(url, headers=headers)
+        req = Request(url, headers=headers)
 
         # Get response
-        response = urllib2.urlopen(req)
+        response = urlopen(req)
 
         if raw:
             # If the request is for the raw response, return the
@@ -73,8 +79,8 @@ class GitHub(object):
         try:
             req = self._req(url, isurl=True, raw=True)
             return req
-        except urllib2.HTTPError as e:
-            print("Error trying to open %s: %s" % (url, str(e)))
+        except HTTPError as e:
+            #print("Error trying to open %s: %s" % (url, str(e)))
             return None
     def getDownload(self, url):
         try:
