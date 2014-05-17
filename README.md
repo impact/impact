@@ -11,6 +11,20 @@ The concept was first presented in [impact - A Modelica Package Manager](docs/mo
 > Proceedings of the 10th International Modelica Conference, March 10-12, 2014,
 > Lund, Sweden http://dx.doi.org/10.3384/ecp14096543
 
+Installation and Usage
+----------------------
+
+Install by using [pip](http://www.pip-installer.org):
+
+ * Linux/Mac:`$ pip install impact`
+ * Windows:`c:\> pip.exe install impact`
+
+and you should be able to use the command
+
+    impact -h
+
+to get the usage information displayed.
+
 Conventions
 -----------
 
@@ -38,10 +52,6 @@ any manual configuration.  Here are the conventions that *Impact* expects:
   * `./<LibraryName> <Version>/package.mo` (i.e., within a directory sharing
     the name of the library followed by a space followed by the tag name,
     without any leading `v` present)
-
-References
-----------
-
 
 Development
 -----------
