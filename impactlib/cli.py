@@ -12,12 +12,12 @@ subparsers = parser.add_subparsers(help='command help')
 
 def call_info(args):
     from impactlib.config import get_config_file, get, get_indices
-    print "Configuration file: "+get_config_file()
-    print "  indices="+str(get_indices())
+    print("Configuration file: "+get_config_file())
+    print("  indices="+str(get_indices()))
     for key in ["token", "username", "password", "source_list"]:
         val = get("Impact", key)
         if val:
-            print "  %s=%s" % (key, get("Impact",key))
+            print("  %s=%s" % (key, get("Impact",key)))
 
 def call_refresh(args):
     if args.source_list==[] or args.source_list==None:

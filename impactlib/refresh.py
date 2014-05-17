@@ -1,5 +1,4 @@
 import json
-import os
 import re
 import urlparse
 
@@ -43,14 +42,14 @@ def get_package_details(user, repo, tag, github, ver, verbose):
         root.close()
         return (".", deps)
     elif verbose:
-        print "Not in root directory"
+        print("Not in root directory")
     unver_dir = github.getRawFile(user, repo, tag, repo+"/package.mo")
     if unver_dir!=None:
         deps = extract_dependencies(unver_dir)
         unver_dir.close()
         return (repo, deps)
     elif verbose:
-        print "Not in unversioned directory of the same name"
+        print("Not in unversioned directory of the same name")
     version = tag
     if version[0]=="v":
         version = version[1:]
@@ -63,7 +62,7 @@ def get_package_details(user, repo, tag, github, ver, verbose):
         ver_dir.close()
         return (ver_name, deps)
     elif verbose:
-        print "Not in versioned directory ("+ver_name+")"
+        print("Not in versioned directory ("+ver_name+")")
     return (None, [])
 
 def process_github_user(repo_data, user, pat, github, verbose,
@@ -79,7 +78,7 @@ def process_github_user(repo_data, user, pat, github, verbose,
         name = repo["name"]
         if c.match(name)==None:
             continue
-        print "Repository: "+name
+        print("Repository: "+name)
 
         # Initialize data for current repository
         data = {}
@@ -102,26 +101,26 @@ def process_github_user(repo_data, user, pat, github, verbose,
             # Get the name of the tag
             tagname = tag["name"]
             if verbose:
-                print "  Tag: "+tagname
+                print("  Tag: "+tagname)
 
             # Parse the tag to see if it is a semantic version number
             try:
                 ver = SemanticVersion(tagname, tolerant=tolerant)
             except ValueError as e:
                 if verbose:
-                    print "Exception: "+str(e)
+                    print("Exception: "+str(e))
                 continue
 
             # TODO: extract dependency information
             (path, deps) = get_package_details(user, name, tagname,
                                                github, ver, verbose)
             if path==None:
-                print "Couldn't find Modelica package root"
+                print("Couldn't find Modelica package root")
                 continue
 
-            print "  Semantic version info: "+str(ver)
-            print "    Path: "+str(path)
-            print "    Dependencies: "+str(deps)
+            print("  Semantic version info: "+str(ver))
+            print("    Path: "+str(path))
+            print("    Dependencies: "+str(deps))
 
             # Create a data structure for information related to this version
             tagurlbase = ('https://github.com/%s/%s/archive/%s'
@@ -141,11 +140,11 @@ def process_github_user(repo_data, user, pat, github, verbose,
                 tver = tver[1:]
             if str(ver)!=tver:
                 if verbose:
-                    print "  Also storing under version: "+tver
+                    print("  Also storing under version: "+tver)
                 data["versions"][tver] = tagdata
 
         if len(data["versions"])==0:
-            print "  No useable version tags found"
+            print("  No useable version tags found")
             if ignore_empty:
                 continue
 
@@ -164,9 +163,9 @@ def refresh(output, verbose, tolerant, ignore_empty, source_list=None):
 
     if verbose:
         if username!=None:
-            print "Using username: "+username+" to authenticate"
+            print("Using username: "+username+" to authenticate")
         if token!=None:
-            print "Using API token to authenticate"
+            print("Using API token to authenticate")
 
     # Setup connection to github
     github = GitHub(username=username, password=password,
@@ -178,7 +177,7 @@ def refresh(output, verbose, tolerant, ignore_empty, source_list=None):
 
     for source in source_list:
         if verbose:
-            print "Scanning "+source
+            print("Scanning "+source)
         data = urlparse.urlparse(source)
         if data.scheme=="github":
             user = data.netloc
@@ -187,7 +186,7 @@ def refresh(output, verbose, tolerant, ignore_empty, source_list=None):
                                 verbose=verbose, tolerant=tolerant,
                                 ignore_empty=ignore_empty)
         else:
-            print "Unknown scheme: "+data.scheme+" in "+source+", skipping"
+            print("Unknown scheme: "+data.scheme+" in "+source+", skipping")
 
     # Process all 3rd party libraries
     #process_github_user(repo_data, user="modelica-3rdparty", github=github,
@@ -200,11 +199,11 @@ def refresh(output, verbose, tolerant, ignore_empty, source_list=None):
 
     # Write out repository data collected
     if output==None:
-        print json.dumps(repo_data, indent=4)
+        print(json.dumps(repo_data, indent=4))
     else:
         if verbose:
-            print "Output file: "+output
+            print("Output file: "+output)
         with open(output, "w") as fp:
             json.dump(repo_data, fp, indent=4)
     if verbose:
-        print "Refresh completed"
+        print("Refresh completed")

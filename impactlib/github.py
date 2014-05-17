@@ -2,7 +2,6 @@ import sys
 import base64
 import json
 import urllib2
-import urllib
 
 # This is (yet another) Python interface to the GitHub v3 API.
 # There is no reason to invent our own here except that it is
@@ -60,14 +59,14 @@ class GitHub(object):
             repos = self._req("/users/"+user+"/repos")
             return repos
         except Exception as e:
-            print "Error fetching repositories: "+str(e)
+            print("Error fetching repositories: "+str(e))
             sys.exit(1)
     def getTags(self, user, repo):
         try:
             tags = self._req("/repos/"+user+"/"+repo+"/tags")
             return tags
         except Exception as e:
-            print "Error accessing repository tags: "+str(e)
+            print("Error accessing repository tags: "+str(e))
             sys.exit(1)
     def getRawFile(self, user, repo, tag, path):
         url = "https://raw.github.com/%s/%s/%s/%s" % (user, repo, tag, path)
@@ -75,11 +74,11 @@ class GitHub(object):
             req = self._req(url, isurl=True, raw=True)
             return req
         except urllib2.HTTPError as e:
-            # print "Error trying to open %s: %s" % (url, str(e))
+            print("Error trying to open %s: %s" % (url, str(e)))
             return None
     def getDownload(self, url):
         try:
             return self._req(url, isurl=True, raw=True)
         except Exception as e:
-            print "Error downloading file: "+str(e)
+            print("Error downloading file: "+str(e))
             sys.exit(1)

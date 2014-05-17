@@ -22,9 +22,9 @@ def get_package(pkg):
     if not pkg in repo_data:
         msg = "No package named '"+pkg+"' found"
         if use_color:
-            print colorama.Fore.RED+msg
+            print(colorama.Fore.RED+msg)
         else:
-            print msg
+            print(msg)
         return None
     return repo_data[pkg]
 
@@ -37,7 +37,7 @@ def latest_version(versions):
     return sorted_versions[0][1]
 
 def install_version(pkg, version, github, dryrun, verbose, target):
-    repo_data = load_repo_data()
+    # repo_data = load_repo_data()
 
     pdata = get_package(pkg)
     if pdata==None:
@@ -53,42 +53,42 @@ def install_version(pkg, version, github, dryrun, verbose, target):
     if vdata==None:
         msg = "No version '"+str(version)+"' found for package '"+str(pkg)+"'"
         if use_color:
-            print colorama.Fore.RED+msg
+            print(colorama.Fore.RED+msg)
         else:
-            print msg
+            print(msg)
         return
 
     zipurl = vdata["zipball_url"]
     vpath = vdata["path"]
     if verbose:
-        print "  URL: "+zipurl
+        print("  URL: "+zipurl)
     if not dryrun:
         zfp = StringIO.StringIO(github.getDownload(zipurl).read())
         zf = zipfile.ZipFile(zfp)
         root = zf.infolist()[0].filename
         dst = os.path.join(target, str(pkg)+" "+str(strip_extra(version)))
         if os.path.exists(dst):
-            print "  Directory "+dst+" already exists, skipping"
+            print("  Directory "+dst+" already exists, skipping")
         else:
             td = tempfile.mkdtemp()
             zf.extractall(td)
             src = os.path.join(td, root, vpath)
             if verbose:
-                print "  Root zip directory: "+root
-                print "  Temp directory: "+str(td)
-                print "  Version path: "+str(vpath)
-                print "  Source: "+str(src)
-                print "  Destination: "+str(dst)
+                print("  Root zip directory: "+root)
+                print("  Temp directory: "+str(td))
+                print("  Version path: "+str(vpath))
+                print("  Source: "+str(src))
+                print("  Destination: "+str(dst))
             shutil.copytree(src,dst)
             shutil.rmtree(td)
 
 def elaborate_dependencies(pkgname, version, current):
     repo_data = load_repo_data()
     if not pkgname in repo_data:
-        print "  No information for package "+pkgname+", skipping"
+        print("  No information for package "+pkgname+", skipping")
         return current
     if not version in repo_data[pkgname]["versions"]:
-        print "  No version "+version+" of package "+pkgname+" found, skipping"
+        print("  No version "+version+" of package "+pkgname+" found, skipping")
         return current
     ret = current.copy()
     ret[pkgname] = version
@@ -142,20 +142,20 @@ def install(pkgname, verbose, dry_run, target):
     if version==None:
         version = latest_version(pdata["versions"])
         if verbose:
-            print "  Choosing latest version: "+version
+            print("  Choosing latest version: "+version)
         if version==None:
             msg = "No (semantic) versions found for package '"+pkg+"'"
             if use_color:
-                print colorama.Fore.RED+msg
+                print(colorama.Fore.RED+msg)
             else:
-                print msg
+                print(msg)
             return
 
     msg = "Installing version '"+version+"' of package '"+pkg+"'"
     if use_color:
-        print colorama.Fore.GREEN+msg
+        print(colorama.Fore.GREEN+msg)
     else:
-        print msg
+        print(msg)
 
     # Setup connection to github
     github = GitHub(username=username, password=password,
@@ -164,10 +164,10 @@ def install(pkgname, verbose, dry_run, target):
     pkgversions = elaborate_dependencies(pkg, version, current={})
 
     if verbose:
-        print "Libraries to install:"
+        print("Libraries to install:")
         for pkgname in pkgversions:
-            print "  "+pkgname+" version "+pkgversions[pkgname]
-        print "Installation..."
+            print("  "+pkgname+" version "+pkgversions[pkgname])
+        print("Installation...")
 
     for pkgname in pkgversions:
         install_version(pkgname, pkgversions[pkgname], github,
