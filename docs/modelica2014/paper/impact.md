@@ -1,15 +1,14 @@
 # `impact` - A Modelica Package Manager
 
----
-authors:
-- |
-    Michael Tiller\
-    [Xogeny Inc.](http://xogeny.com), USA\
+Authors:
+-  Michael Tiller,
+    [Xogeny Inc.](http://xogeny.com), USA,
     [michael.tiller@xogeny.com](mailto:michael.tiller@xogeny.com)
-- |
-    Dietmar Winkler\
-    [Telemark University College](http://www.hit.no), Norway\
+-  Dietmar Winkler,
+    [Telemark University College](http://www.hit.no), Norway,
     [dietmar.winkler@hit.no](mailto:dietmar.winkler@hit.no)
+
+---
 
 Abstract
 ========
