@@ -1,3 +1,16 @@
+# `impact` - A Modelica Package Manager
+
+---
+authors:
+- |
+    Michael Tiller\
+    [Xogeny Inc.](http://xogeny.com), USA\
+    [michael.tiller@xogeny.com](mailto:michael.tiller@xogeny.com)
+- |
+    Dietmar Winkler\
+    [Telemark University College](http://www.hit.no), Norway\
+    [dietmar.winkler@hit.no](mailto:dietmar.winkler@hit.no)
+
 Abstract
 ========
 
@@ -16,9 +29,11 @@ a given project. The main functions of package managers are to allow
 developers to search, install, update and uninstall packages with a
 simple command-line or graphical interface. In the Java world, the most
 common package manager is `maven`. For Python, tools like
-`easy_install`@easy_install and `pip`@pip are used for managing
+[`easy_install`]({https://pypi.python.org/pypi/setuptools}) and
+[`pip`](http://www.pip-installer.org) are used for managing
 packages. For client-side web development, `bower` is used. For
-server-side JavaScript, the tool of choice is `npm`@npm. For compiled
+server-side JavaScript, the tool of choice is [`npm`](https://npmjs.org/).
+For compiled
 languages, these package managers often include some additional build
 functionality as well.
 
@@ -28,7 +43,7 @@ and update Modelica libraries. In this paper, we will discuss the
 functionality provided by `impact`. In addition, we will discuss how the
 functionality was implemented. As part of this we will discuss the
 importance of collaborative platforms, like
-[GitHub](https://github.com)@github in our case, for providing a means
+[GitHub](https://github.com) in our case, for providing a means
 for collecting, curating and distributing packages within a community of
 developers.
 
@@ -60,7 +75,8 @@ In the Modelica world, this issue has been largely overlooked. Although
 there have been proposals for formats to list network accessible
 libraries, these efforts have remained mere proposals without any
 concrete functionality. The `impact` project was inspired by the
-Bower@Bower project’s approach. This lightweight, `git`-centric approach
+[Bower](http://bower.io) project’s approach. This lightweight,
+`git`-centric approach
 (discussed in Section [sec:candidates]) turned out to be relatively
 straightforward to implement and provides functionality otherwise
 unavailable in the Modelica world.
@@ -104,7 +120,8 @@ Command Line Interface
 Installation of `impact`
 ------------------------
 
-The `impact` tool is available from “PyPI”@pypi and can be installed by
+The `impact` tool is available from ["PyPI"](https://pypi.python.org/pypi)
+and can be installed by
 running either
 
     $ pip install impact
@@ -210,8 +227,8 @@ One thing that is important when trying to build up a package manager
 that can also handle version dependencies is the need for a proper
 approach to version numbering.
 
-We decided to base our package manager on a system called Semantic
-Versioning@semver. As a result, package developers are strongly
+We decided to base our package manager on a system called [Semantic
+Versioning](http://semverg.org). As a result, package developers are strongly
 encouraged to use semantic versioning so that they are compatible with
 `impact`. This has the additional benefit of being a well-documented and
 logical approach.
@@ -222,16 +239,16 @@ Semantic versioning has the simple rule of:
 
 In addition, pre-releases (*e.g.,* beta releases, release candidates)
 and build metadata (*e.g.,* version control hashes) are also taken care
-of in this system, details can be found in the manual page@semver.
+of in this system, details can be found in the [manual page](http://semver.org).
 
 GitHub API
 ----------
 
 Having all packages available as GitHub repositories means that we can
-use the *GitHub API v3*@gh-api in order to collect data about those
+use the[GitHub API v3](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/README.md) in order to collect data about those
 packages. All API access is over HTTPS, and accessed from the
 [api.github.com](api.github.com) domain. All data is sent and received
-as JSON@json.
+as [JSON](http://www.json.org).
 
 For example if one visits:
 [https://api.github.com/users/modelica/repos ](https://api.github.com/users/modelica/repos )
@@ -263,7 +280,8 @@ source. It is possible to enhance `impact` with other “connectors” to
 other existing package hosting solutions (private or public). As long as
 the schema is known to `impact` it can then pull its data from basically
 all possible places. For example, it would also be possible to use the
-API of the GitLab project@gl-api to extract the same information.
+[API of the GitLab project](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/README.md)
+to extract the same information.
 
 Package Index
 =============
