@@ -47,11 +47,11 @@ class SemanticVersion(object):
         else:
             return "%d.%d.%d" % (self.major, self.minor, self.patch)
 
-    def __cmp__(self, other):
+    def __lt__(self, other):
         if self.major==other.major:
             if self.minor==other.minor:
                 if self.prerelease==None and other.prerelease==None:
-                    return self.patch-other.patch
+                    return self.patch < other.patch
                 elif self.prerelease!=None and other.prerelease==None:
                     return -1
                 elif self.prerelease==None and other.prerelease!=None:
@@ -60,9 +60,9 @@ class SemanticVersion(object):
                     if self.build!=other.build:
                         msg = "Identical versions with different build: "
                         raise ValueError(msg+str(self)+", "+str(other))
-                    return cmp(self.prerelease.split("."),
+                    return (self.prerelease.split(".") <
                                other.prerelease.split("."))
             else:
-                return self.minor-other.minor
+                return self.minor < other.minor
         else:
-            return self.major-other.major
+            return self.major < other.major
