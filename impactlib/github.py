@@ -58,7 +58,7 @@ class GitHub(object):
         else:
             # Convert reponse (which should be JSON) into a python dictionary
             # and return it
-            return json.loads(response.read())
+            return json.loads(response.read().decode(encoding='utf8'))
 
     def getRepos(self, user):
         try:
