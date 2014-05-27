@@ -92,7 +92,8 @@ def main(args=None):
         args.func(args)
     except AttributeError:
         parser.print_help()
-        sys.exit(0)
+        return True
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv))
+    status = not main(sys.argv)
+    sys.exit(status)
