@@ -13,7 +13,18 @@ from impactlib import config
 
 def extract_dependencies(fp):
     deps = {}
-    contents = fp.read()
+    try:
+        contents = fp.read().decode(encoding='utf8')
+    except UnicodeDecodeError:
+        try:
+            contents = fp.read().decode(encoding='latin1')
+            print("WARNING: Library uses non-standard latin1 encoding.\n"
+                  "Consider converting the library to UTF8!\n")
+        except UnicodeDecodeError:
+            print("ERROR: Library uses illegal text encoding.\n"
+                  "Skipping check for dependencies.\n"
+                  "The library needs to get updated to UTF8!\n")
+            return
     contents = contents.replace("\n","")
     contents = contents.replace("\r","")
     pat = """([A-Za-z]\w*)\s*\(\s*version\s*=\s*"(\d+\.\d+)(\.\d+)?"\s*\)"""
