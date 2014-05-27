@@ -86,7 +86,13 @@ def main(args=None):
 
     args = parser.parse_args()
 
-    args.func(args)
+    # workaround for Python3 in case no argument is given
+    # See also http://bugs.python.org/issue16308#msg173685
+    try:
+        args.func(args)
+    except AttributeError:
+        parser.print_help()
+        sys.exit(0)
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
