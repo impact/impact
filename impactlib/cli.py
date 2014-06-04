@@ -6,14 +6,13 @@ from pkg_resources import get_distribution
 from impactlib.refresh import refresh
 from impactlib.search import search
 from impactlib.install import install
-from impactlib.config import ENVVAR
+from impactlib.config import ENVVAR, get_config_file, get, get_indices
 
 
 parser = argparse.ArgumentParser(prog='impact')
 subparsers = parser.add_subparsers(help='command help')
 
 def call_info(args):
-    from impactlib.config import get_config_file, get, get_indices
     print("impact version: %s" % get_distribution("impact").version )
     print("Configuration file: "+get_config_file())
     print("  indices="+str(get_indices()))
