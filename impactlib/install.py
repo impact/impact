@@ -63,7 +63,7 @@ def install_version(pkg, version, github, dryrun, verbose, target):
     if verbose:
         print("  URL: "+zipurl)
     if not dryrun:
-        zfp = io.StringIO(github.getDownload(zipurl).read())
+        zfp = io.BytesIO(github.getDownload(zipurl).read())
         zf = zipfile.ZipFile(zfp)
         root = zf.infolist()[0].filename
         dst = os.path.join(target, str(pkg)+" "+str(strip_extra(version)))
