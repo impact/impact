@@ -20,7 +20,7 @@ def call_info(args):
         val = get("Impact", key)
         if val:
             print("  %s=%s" % (key, get("Impact", key)))
-    print("Default target dir: %s" % os.getcwd())
+    print("Current working dir(default target): %s" % os.getcwd())
 
 def call_refresh(args):
     if args.source_list==[] or args.source_list==None:
