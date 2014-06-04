@@ -17,7 +17,8 @@ def call_info(args):
     for key in ["token", "username", "password", "source_list"]:
         val = get("Impact", key)
         if val:
-            print("  %s=%s" % (key, get("Impact",key)))
+            print("  %s=%s" % (key, get("Impact", key)))
+    print("Default target dir: %s" % os.getcwd())
 
 def call_refresh(args):
     if args.source_list==[] or args.source_list==None:
@@ -78,7 +79,7 @@ def main(args=None):
     parser_install.add_argument("-d", "--dry_run", action="store_true",
                                 help="Suppress installation", required=False)
     parser_install.add_argument("-t", "--target", default=".",
-                                help="Target installation directory", required=False)
+                                help="Target installation directory (default: current dir)", required=False)
     parser_install.set_defaults(func=call_install)
 
     parser_info = subparsers.add_parser("info", help="Show config settings")
