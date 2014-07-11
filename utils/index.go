@@ -1,4 +1,7 @@
-package impact
+package utils
+
+import "encoding/json"
+import "io/ioutil"
 
 type Dependency struct {
 	Name string `json:"name"`
@@ -24,3 +27,12 @@ type Library struct {
 };
 
 type Index map[string]Library;
+
+func ReadIndex(name string, index *Index) error {
+	file, err := ioutil.ReadFile(name)
+	str := string(file)
+	if (err==nil) {
+		err = json.Unmarshal([]byte(str), index)
+	}
+	return err;
+}
