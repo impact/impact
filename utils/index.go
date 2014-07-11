@@ -20,11 +20,16 @@ type Version struct {
 	Sha string `json:"sha"`
 };
 
+type VersionString string;
+type LibraryName string;
+
 type Library struct {
 	Homepage string `json:"homepage"`
 	Description string `json:"description"`
-	Versions map[string]Version `json:"versions"`
+	Versions map[VersionString]Version `json:"versions"`
 };
+
+type Libraries map[LibraryName]Version;
 
 type Index map[string]Library;
 
@@ -35,4 +40,8 @@ func ReadIndex(name string, index *Index) error {
 		err = json.Unmarshal([]byte(str), index)
 	}
 	return err;
+}
+
+func (index *Index) Dependencies(name LibraryName, version VersionString) Libraries {
+	return Libraries{};
 }

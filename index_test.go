@@ -20,7 +20,7 @@ func Test_Creation(t* testing.T) {
 	lib := utils.Library{
 		Homepage: "http://mylib.modelica.org",
 		Description: "A dummy library",
-		Versions: map[string]utils.Version{"0.1.0": version},
+		Versions: map[utils.VersionString]utils.Version{"0.1.0": version},
 	};
 
 	index := map[string]utils.Library{"Dummy": lib}
