@@ -170,7 +170,7 @@ func Test_UnmarshallIndex(t* testing.T) {
 
 func Test_ReadFile(t* testing.T) {
 	index := utils.Index{};
-	err := utils.ReadIndex("sample2.json", &index);
+	err := utils.ReadIndex("sample.json", &index);
 	if (err!=nil) { t.Fatal("Error reading file: "+err.Error()); }
 	_, ok := index["Physiolibrary"];
 	if (!ok) { t.Fatal("Couldn't find Physiolibrary"); }
