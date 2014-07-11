@@ -31,7 +31,7 @@ type Library struct {
 
 type Libraries map[LibraryName]Version;
 
-type Index map[string]Library;
+type Index map[LibraryName]Library;
 
 func ReadIndex(name string, index *Index) error {
 	file, err := ioutil.ReadFile(name)
@@ -42,6 +42,17 @@ func ReadIndex(name string, index *Index) error {
 	return err;
 }
 
-func (index *Index) Dependencies(name LibraryName, version VersionString) Libraries {
-	return Libraries{};
+func (index *Index) Dependencies(name LibraryName,
+	                             version VersionString) (libs Libraries, err error) {
+	// Find the specified library and find its version information
+	// Then loop over all its dependencies and find call this function
+	//   recursively for those.
+	// Then collect all the individual libraries and check for version conflicts
+	me, _ := (*index)[name];
+	// TODO: Check that it is ok
+	myver, _ := me.Versions[version];
+	// TODO: Check that it is ok
+
+	libs  = Libraries{name: myver};
+	return;
 }
