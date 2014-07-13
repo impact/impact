@@ -2,6 +2,7 @@ package cmds
 
 import "fmt"
 import "xogeny/gimpact/utils"
+import "github.com/wsxiaoys/terminal/color"
 import "strings"
 
 func Search(index utils.Index, term string, verbose bool) {
@@ -18,7 +19,7 @@ func Search(index utils.Index, term string, verbose bool) {
 			match = true;
 		}
 		if (match) {
-			fmt.Println(string(libname)+": "+string(lib.Description));
+			color.Println("@{g}"+string(libname)+":\n@{c}  - "+string(lib.Description))
 		}
 	}
 }
