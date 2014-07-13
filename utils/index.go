@@ -37,7 +37,7 @@ type Libraries map[LibraryName]Version;
 
 type Index map[LibraryName]Library;
 
-func ReadIndex(name string, index *Index) error {
+func (index *Index) ReadIndex(name string) error {
 	file, err := ioutil.ReadFile(name)
 	str := string(file)
 	if (err==nil) {

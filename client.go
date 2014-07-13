@@ -17,7 +17,7 @@ func main() {
 
 	index := utils.Index{};
 
-	err := utils.ReadIndex("sample.json", &index);
+	err := index.ReadIndex("sample.json");
 	if (err!=nil) {
 		fmt.Println("Error reading file: "+err.Error());
 	} else {
