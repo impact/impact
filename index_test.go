@@ -38,7 +38,7 @@ func Test_UnmarshallDependency(t* testing.T) {
 	sample := []byte(ds);
 	dep := utils.Dependency{};
 	err := json.Unmarshal(sample, &dep);
-	assert.Nil(t, err, "Unmarshal failed");
+	assert.NoError(t, err);
 	assert.Equal(t, dep.Name, "Modelica", "name mismatch");
 	assert.Equal(t, dep.Version, "3.2", "version");
 }
@@ -63,13 +63,13 @@ func Test_UnmarshallVersion(t* testing.T) {
 	sample := []byte(ds);
 	dep := utils.Version{};
 	err := json.Unmarshal(sample, &dep);
-	assert.Nil(t, err, "Unmarshal failed");
-	if (dep.Major!=1) { t.Fatal("major mismatch"); }
-	if (dep.Minor!=1) { t.Fatal("minor mismatch"); }
-	if (dep.Patch!=0) { t.Fatal("patch mismatch"); }
-	if (dep.Sha!="3075b23c214b65a510eb58654464f54507901378") { t.Fatal("sha mismatch"); }
-	if (dep.Version!="1.1.0") { t.Fatal("version mismatch"); }
-	if (dep.Path!="Physiolibrary 1.1.0") { t.Fatal("version mismatch"); }
+	assert.NoError(t, err);
+	assert.Equal(t, dep.Major, 1, "major mismatch");
+	assert.Equal(t, dep.Minor, 1, "minor mismatch");
+	assert.Equal(t, dep.Patch, 0, "patch mismatch");
+	assert.Equal(t, dep.Sha, "3075b23c214b65a510eb58654464f54507901378", "sha mismatch");
+	assert.Equal(t, dep.Version, "1.1.0", "version mismatch");
+	assert.Equal(t, dep.Path, "Physiolibrary 1.1.0", "path mismatch");
 }
 
 func Test_UnmarshallLibrary(t* testing.T) {
@@ -81,9 +81,9 @@ func Test_UnmarshallLibrary(t* testing.T) {
 	sample := []byte(ds);
 	dep := utils.Library{};
 	err := json.Unmarshal(sample, &dep);
-	if (err!=nil) { t.Fatal("Unmarshal failed"); }
-	if (dep.Homepage!="http://www.modelica.org") { t.Fatal("homepage mismatch"); }
-	if (dep.Description!="A dummy library") { t.Fatal("description mismatch"); }
+	assert.NoError(t, err);
+	assert.Equal(t, dep.Homepage, "http://www.modelica.org", "homepage mismatch");
+	assert.Equal(t, dep.Description, "A dummy library", "description mismatch");
 }
 
 func Test_UnmarshallIndex(t* testing.T) {
@@ -166,13 +166,13 @@ func Test_UnmarshallIndex(t* testing.T) {
 	sample := []byte(ds);
 	dep := utils.Index{};
 	err := json.Unmarshal(sample, &dep);
-	if (err!=nil) { t.Fatal("Unmarshal failed"); }
+	assert.NoError(t, err);
 }
 
 func Test_ReadFile(t* testing.T) {
 	index := utils.Index{};
 	err := utils.ReadIndex("sample.json", &index);
-	if (err!=nil) { t.Fatal("Error reading file: "+err.Error()); }
+	assert.NoError(t, err);
 	_, ok := index["Physiolibrary"];
-	if (!ok) { t.Fatal("Couldn't find Physiolibrary"); }
+	assert.Equal(t, ok, true, "Couldn't find Physiolibrary");
 }
