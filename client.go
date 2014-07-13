@@ -21,6 +21,11 @@ func main() {
 		"Install named libraries",
 		&cmds.Install)
 
+	parser.AddCommand("info",
+		"Print information about a specific library",
+		"Print information about a specific library",
+		&cmds.Info)
+
 	if _, err := parser.Parse(); err != nil {
 		os.Exit(1)
 	}
