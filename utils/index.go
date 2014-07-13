@@ -2,6 +2,7 @@ package utils
 
 import "encoding/json"
 import "io/ioutil"
+import "strings"
 import "io"
 import "os"
 
@@ -30,10 +31,22 @@ func (v1 Version) Equals(v2 Version) bool {
 }
 
 type Library struct {
+	Name LibraryName
 	Homepage string `json:"homepage"`
 	Description string `json:"description"`
 	Versions map[VersionString]Version `json:"versions"`
 };
+
+func (lib Library) Matches(term string) bool {
+	var match = false;
+	if (strings.Contains(string(lib.Name), term)) {
+		match = true;
+	}
+	if (strings.Contains(string(lib.Description), term)) {
+		match = true;
+	}
+	return match;
+}
 
 type Libraries map[LibraryName]Version;
 
@@ -55,6 +68,7 @@ func (index *Index) BuildIndex(read io.Reader) error {
 		err = json.Unmarshal([]byte(str), &latest)
 	}
 	for lib, v := range latest {
+		v.Name = lib; // Let the library know its name
 		(*index)[lib] = v;
 	}
 	return err;
