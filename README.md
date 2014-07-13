@@ -20,11 +20,13 @@ Building
 To build this, you need create the proper build environment.  This means you need to
 create the following directory structure somewhere on your computer:
 
+```
 SomeDir/
   bin/
   pkg/
   src/
     xogeny/
+```
 
 Inside the `xogeny` directory, you need to do:
 
