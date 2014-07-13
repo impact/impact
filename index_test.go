@@ -172,7 +172,7 @@ func Test_UnmarshallIndex(t* testing.T) {
 
 func Test_ReadFile(t* testing.T) {
 	index := utils.Index{};
-	err := index.ReadIndex("sample.json");
+	err := index.BuildIndexFromFile("sample.json");
 	assert.NoError(t, err);
 	_, ok := index["Physiolibrary"];
 	assert.Equal(t, ok, true, "Couldn't find Physiolibrary");
@@ -189,7 +189,7 @@ func contains(t* testing.T, libs utils.Libraries, name utils.LibraryName, ver ut
 
 func Test_Dependencies(t* testing.T) {
 	index := utils.Index{};
-	err := index.ReadIndex("sample.json");
+	err := index.BuildIndexFromFile("sample.json");
 	deps, err := index.Dependencies("MotorcycleLib", "1.0");
 	assert.NoError(t, err);
 	for k, v := range deps {

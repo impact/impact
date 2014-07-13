@@ -2,6 +2,8 @@ package utils
 
 import "encoding/json"
 import "io/ioutil"
+import "io"
+import "os"
 
 type VersionString string;
 type LibraryName string;
@@ -37,11 +39,23 @@ type Libraries map[LibraryName]Version;
 
 type Index map[LibraryName]Library;
 
-func (index *Index) ReadIndex(name string) error {
-	file, err := ioutil.ReadFile(name)
-	str := string(file)
+func (index *Index) BuildIndexFromFile(filename string) error {
+	file, err := os.Open(filename);
+	if (err!=nil) { return err; }
+	defer file.Close();
+	return index.BuildIndex(file);
+}
+
+func (index *Index) BuildIndex(read io.Reader) error {
+	data, err := ioutil.ReadAll(read);
+	str := string(data)
+
+	latest := Index{};
 	if (err==nil) {
-		err = json.Unmarshal([]byte(str), index)
+		err = json.Unmarshal([]byte(str), &latest)
+	}
+	for lib, v := range latest {
+		(*index)[lib] = v;
 	}
 	return err;
 }
@@ -56,10 +70,6 @@ func (index *Index) Find(name LibraryName, version VersionString) (v Version, er
 
 func (index *Index) Dependencies(name LibraryName,
 	                             version VersionString) (libs Libraries, err error) {
-	// Find the specified library and find its version information
-	// Then loop over all its dependencies and find call this function
-	//   recursively for those.
-	// Then collect all the individual libraries and check for version conflicts
 	myver, err := index.Find(name, version);
 	if (err!=nil) { return; }
 

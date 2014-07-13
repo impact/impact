@@ -1,25 +1,24 @@
 package main
 
 import "fmt"
-import "encoding/json"
 import "xogeny/gimpact/utils"
+import "net/http"
 
 func main() {
-	var ds = `{
-                  "version": "3.2", 
-                  "name": "Modelica"
-              }`
-	sample := []byte(ds);
-	var dep utils.Dependency;
-	dep = utils.Dependency{};
-	json.Unmarshal(sample, &dep);
-	fmt.Println(dep);
+	var master = "http://impact.modelica.org/impact_data.json";
+
+	resp, err := http.Get(master)
+	if err != nil {
+		fmt.Println("Unable to locate index file at "+master);
+		return;
+	}
+	defer resp.Body.Close()
 
 	index := utils.Index{};
 
-	err := index.ReadIndex("sample.json");
+	err = index.BuildIndex(resp.Body);
 	if (err!=nil) {
-		fmt.Println("Error reading file: "+err.Error());
+		fmt.Println("Error reading index: "+err.Error());
 	} else {
 		fmt.Println(index);
 	}
