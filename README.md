@@ -30,6 +30,9 @@ Inside the `xogeny` directory, you need to do:
 
 `$ git clone https://github.com/xogeny/gimpact`
 
+Finally, it is essential to set the GOPATH environment variable to the
+full name of `SomeDir`.
+
 Once this is setup, you can go to the `gimpact` directory and do:
 
 `$ go get`
