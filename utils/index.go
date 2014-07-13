@@ -33,6 +33,23 @@ type Libraries map[LibraryName]Version;
 
 type Index map[LibraryName]Library;
 
+type MissingLibraryError struct {
+	Name LibraryName
+}
+
+func (e MissingLibraryError) Error() string {
+	return "No library named '"+string(e.Name)+"' found";
+}
+
+type MissingVersionError struct {
+	Name LibraryName
+	Version VersionString
+}
+
+func (e MissingVersionError) Error() string {
+	return "No version '"+string(e.Version)+"' of library named '"+string(e.Name)+"' found";
+}
+
 func ReadIndex(name string, index *Index) error {
 	file, err := ioutil.ReadFile(name)
 	str := string(file)
@@ -48,10 +65,10 @@ func (index *Index) Dependencies(name LibraryName,
 	// Then loop over all its dependencies and find call this function
 	//   recursively for those.
 	// Then collect all the individual libraries and check for version conflicts
-	me, _ := (*index)[name];
-	// TODO: Check that it is ok
-	myver, _ := me.Versions[version];
-	// TODO: Check that it is ok
+	me, ok := (*index)[name];
+	if (!ok) { err = MissingLibraryError{Name: name}; }
+	myver, ok := me.Versions[version];
+	if (!ok) { err = MissingVersionError{Name: name, Version: version}; }
 
 	libs  = Libraries{name: myver};
 	return;
