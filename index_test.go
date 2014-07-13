@@ -3,6 +3,7 @@ package main
 import "testing"
 import "xogeny/gimpact/utils"
 import "encoding/json"
+import "github.com/stretchr/testify/assert"
 
 func Test_Creation(t* testing.T) {
 	dep := utils.Dependency{Name: "Foo", Version: "1.0.0"};
@@ -26,7 +27,7 @@ func Test_Creation(t* testing.T) {
 	index := map[string]utils.Library{"Dummy": lib}
 
 	_, ok := index["Dummy"]
-	if (!ok) { t.Fatal("Library not in index"); }
+	assert.Equal(t, ok, true, "Library not in index");
 }
 
 func Test_UnmarshallDependency(t* testing.T) {
@@ -37,9 +38,9 @@ func Test_UnmarshallDependency(t* testing.T) {
 	sample := []byte(ds);
 	dep := utils.Dependency{};
 	err := json.Unmarshal(sample, &dep);
-	if (err!=nil) { t.Fatal("Unmarshal failed"); }
-	if (dep.Name!="Modelica") { t.Fatal("name mismatch"); }
-	if (dep.Version!="3.2") { t.Fatal("version mismatch"); }
+	assert.Nil(t, err, "Unmarshal failed");
+	assert.Equal(t, dep.Name, "Modelica", "name mismatch");
+	assert.Equal(t, dep.Version, "3.2", "version");
 }
 
 func Test_UnmarshallVersion(t* testing.T) {
@@ -62,7 +63,7 @@ func Test_UnmarshallVersion(t* testing.T) {
 	sample := []byte(ds);
 	dep := utils.Version{};
 	err := json.Unmarshal(sample, &dep);
-	if (err!=nil) { t.Fatal("Unmarshal failed"); }
+	assert.Nil(t, err, "Unmarshal failed");
 	if (dep.Major!=1) { t.Fatal("major mismatch"); }
 	if (dep.Minor!=1) { t.Fatal("minor mismatch"); }
 	if (dep.Patch!=0) { t.Fatal("patch mismatch"); }
