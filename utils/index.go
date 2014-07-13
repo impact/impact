@@ -3,13 +3,16 @@ package utils
 import "encoding/json"
 import "io/ioutil"
 
+type VersionString string;
+type LibraryName string;
+
 type Dependency struct {
-	Name string `json:"name"`
-	Version string `json:"version"`
+	Name LibraryName `json:"name"`
+	Version VersionString `json:"version"`
 }
 
 type Version struct {
-	Version string `json:"version"`
+	Version VersionString `json:"version"`
 	Major int `json:"major"`
 	Minor int `json:"minor"`
 	Patch int `json:"patch"`
@@ -20,8 +23,9 @@ type Version struct {
 	Sha string `json:"sha"`
 };
 
-type VersionString string;
-type LibraryName string;
+func (v1 Version) Equals(v2 Version) bool {
+	return v1.Version==v2.Version;
+}
 
 type Library struct {
 	Homepage string `json:"homepage"`
@@ -33,23 +37,6 @@ type Libraries map[LibraryName]Version;
 
 type Index map[LibraryName]Library;
 
-type MissingLibraryError struct {
-	Name LibraryName
-}
-
-func (e MissingLibraryError) Error() string {
-	return "No library named '"+string(e.Name)+"' found";
-}
-
-type MissingVersionError struct {
-	Name LibraryName
-	Version VersionString
-}
-
-func (e MissingVersionError) Error() string {
-	return "No version '"+string(e.Version)+"' of library named '"+string(e.Name)+"' found";
-}
-
 func ReadIndex(name string, index *Index) error {
 	file, err := ioutil.ReadFile(name)
 	str := string(file)
@@ -59,17 +46,39 @@ func ReadIndex(name string, index *Index) error {
 	return err;
 }
 
+func (index *Index) Find(name LibraryName, version VersionString) (v Version, err error) {
+	me, ok := (*index)[name];
+	if (!ok) { err = MissingLibraryError{Name: name}; return; }
+	v, ok = me.Versions[version];
+	if (!ok) { err = MissingVersionError{Name: name, Version: version}; return; }
+	return
+}
+
 func (index *Index) Dependencies(name LibraryName,
 	                             version VersionString) (libs Libraries, err error) {
 	// Find the specified library and find its version information
 	// Then loop over all its dependencies and find call this function
 	//   recursively for those.
 	// Then collect all the individual libraries and check for version conflicts
-	me, ok := (*index)[name];
-	if (!ok) { err = MissingLibraryError{Name: name}; }
-	myver, ok := me.Versions[version];
-	if (!ok) { err = MissingVersionError{Name: name, Version: version}; }
+	myver, err := index.Find(name, version);
+	if (err!=nil) { return; }
 
-	libs  = Libraries{name: myver};
+	libs = Libraries{name: myver};
+
+	for _, dep := range myver.Dependencies {
+		deps, lerr := index.Dependencies(dep.Name, dep.Version);
+		if (lerr!=nil) { return; }
+		for dn, dv := range deps {
+			ev, exists := libs[dn];
+			if (exists) {
+				if (dv.Equals(ev)) {
+					err = VersionMismatchError{Name: dn, Existing: ev, Additional: dv};
+					return;
+				}
+			} else {
+				libs[dn] = dv;
+			}
+		}
+	}
 	return;
 }

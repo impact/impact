@@ -4,6 +4,7 @@ import "testing"
 import "xogeny/gimpact/utils"
 import "encoding/json"
 import "github.com/stretchr/testify/assert"
+import "fmt"
 
 func Test_Creation(t* testing.T) {
 	dep := utils.Dependency{Name: "Foo", Version: "1.0.0"};
@@ -175,4 +176,29 @@ func Test_ReadFile(t* testing.T) {
 	assert.NoError(t, err);
 	_, ok := index["Physiolibrary"];
 	assert.Equal(t, ok, true, "Couldn't find Physiolibrary");
+}
+
+func contains(t* testing.T, libs utils.Libraries, name utils.LibraryName, ver utils.VersionString) {
+	v, ok := libs[name];
+	if (!ok) { t.Fatal("Version "+string(ver)+" of library "+string(name)+" not found"); }
+	if (v.Version!=ver) {
+		t.Fatal("Expected version "+string(ver)+" of library "+string(name)+
+			" but found "+string(v.Version));
+	}
+}
+
+func Test_Dependencies(t* testing.T) {
+	index := utils.Index{};
+	err := utils.ReadIndex("sample.json", &index);
+	deps, err := index.Dependencies("MotorcycleLib", "1.0");
+	assert.NoError(t, err);
+	for k, v := range deps {
+		fmt.Println(k);
+		fmt.Println(v.Version);
+	}
+	fmt.Println(deps);
+	contains(t, deps, "MotorcycleLib", "1.0.0");
+	contains(t, deps, "MultiBondLib", "1.3.0");
+	contains(t, deps, "Modelica", "2.2.1");
+	contains(t, deps, "WheelsAndTires", "1.0.0");
 }
