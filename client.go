@@ -16,6 +16,11 @@ func main() {
 		"Search for libraries associated with specific terms",
 		&cmds.Search)
 
+	parser.AddCommand("install",
+		"Install named libraries",
+		"Install named libraries",
+		&cmds.Install)
+
 	if _, err := parser.Parse(); err != nil {
 		os.Exit(1)
 	}
