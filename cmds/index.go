@@ -4,7 +4,7 @@ import "net/http"
 import "os"
 import "fmt"
 
-import "../utils"
+import "xogeny/gimpact/utils"
 
 func buildIndex() utils.Index {
 	var master = "http://impact.modelica.org/impact_data.json";

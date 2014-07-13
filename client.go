@@ -2,7 +2,7 @@ package main
 
 import "os"
 
-import "./cmds"
+import "xogeny/gimpact/cmds"
 
 import "github.com/jessevdk/go-flags"
 
