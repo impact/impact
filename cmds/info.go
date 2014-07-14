@@ -8,16 +8,21 @@ import "xogeny/gimpact/utils"
 
 type InfoCommand struct {
 	Verbose bool `short:"v" login:"verbose" description:"Turn on verbose output"`
+	Positional struct {
+		LibraryName string `description:"Library name"`
+	} `positional-args:"true" required:"true"`
 }
 
 var Info InfoCommand; // Instantiate option struct
 
 func (x *InfoCommand) Execute(args []string) error {
-	if (len(args)==0) {	return errors.New("No library specified"); }
-	if (len(args)>1) { return errors.New("Information requested for multiple libraries"); }
+	if (len(args)>0) {
+		fmt.Print("Ignoring (extra) unrecognized arguments: ");
+		fmt.Println(args);
+	}
 	index := buildIndex();
 
-	libname := utils.LibraryName(args[0]);
+	libname := utils.LibraryName(x.Positional.LibraryName);
 	lib, ok := index[libname];
 	if (!ok) {
 		return errors.New("Unable to locate library named '"+string(libname)+"'");
