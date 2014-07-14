@@ -4,6 +4,8 @@
 # Under Ubuntu Linux those are already available in the repo:
 #  sudo apt-get install golang-$GOOS-$GOARCH
 
+.PHONY: cross-compile clean install
+
 cross-compile:
 	mkdir -p build
 # Linux 32bit:
