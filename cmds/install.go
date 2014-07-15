@@ -121,12 +121,8 @@ func Install(ver utils.Version,	index utils.Index, target string, verbose bool) 
 	keep := path.Join(string(tdir), adir, ver.Path);
 
 	/* Figure out whether we are dealing with a package stored as a file or diretory */
-	f, err := os.Open(keep);
-	defer f.Close();
+	fi, err := os.Stat(keep);
 	if (err!=nil) { return err; }
-	fi, err := f.Stat();
-	if (err!=nil) { return err; }
-	f.Close();
 
 	/* Copy the Modelica code to our target installation directory */
 	if (fi.IsDir()) {
