@@ -71,6 +71,20 @@ func (lib Library) Matches(term string) bool {
 
 type Libraries map[LibraryName]Version;
 
+func (libs *Libraries) Merge(olibs Libraries) error {
+	for ln, lv := range(olibs) {
+		ev, exists := (*libs)[ln];
+		if (exists) {
+			if (lv.Equals(ev)) {
+				return VersionConflictError{Name: ln, Existing: ev, Additional: lv};
+			}
+		} else {
+			(*libs)[ln] = lv;
+		}
+	}
+	return nil;
+}
+
 type Index map[LibraryName]Library;
 
 func (index *Index) BuildIndexFromFile(filename string) error {
@@ -117,7 +131,7 @@ func (index *Index) Dependencies(name LibraryName,
 			ev, exists := libs[dn];
 			if (exists) {
 				if (dv.Equals(ev)) {
-					err = VersionMismatchError{Name: dn, Existing: ev, Additional: dv};
+					err = VersionConflictError{Name: dn, Existing: ev, Additional: dv};
 					return;
 				}
 			} else {

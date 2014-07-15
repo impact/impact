@@ -17,13 +17,13 @@ func (e MissingVersionError) Error() string {
 	return "No version '"+string(e.Version)+"' of library named '"+string(e.Name)+"' found";
 }
 
-type VersionMismatchError struct {
+type VersionConflictError struct {
 	Name LibraryName
 	Existing Version
 	Additional Version
 }
 
-func (e VersionMismatchError) Error() string {
+func (e VersionConflictError) Error() string {
 	return "Existing version '"+string(e.Existing.Version)+"' of '"+string(e.Name)+
 		"' conflicted with additional version '"+string(e.Additional.Version)+"'";
 }

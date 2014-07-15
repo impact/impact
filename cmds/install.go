@@ -2,7 +2,6 @@ package cmds
 
 import "os"
 import "io"
-import "fmt"
 import "path"
 import "errors"
 import "strings"
@@ -53,13 +52,14 @@ func (x *InstallCommand) Execute(args []string) error {
 		return errors.New("No libraries requested for installation");
 	}
 
-	todo := []utils.Dependency{};
+	todo := utils.Libraries{};
 
 	index := buildIndex();
 
 	for _, arg := range(args) {
 		var libname utils.LibraryName;
 		var ver utils.VersionString;
+		color.Println("Processing dependency: "+string(libname));
 
 		parts := strings.Split(arg, "#");
 
@@ -82,19 +82,17 @@ func (x *InstallCommand) Execute(args []string) error {
 		}
 		
 
-		_, ok = lib.Versions[ver];
-		if (!ok) {
-			return utils.MissingVersionError{Name:libname, Version: ver};
-		}
-
-		todo = append(todo, utils.Dependency{Name:libname, Version: ver});
+		deps, err := index.Dependencies(libname, ver);
+		if (err!=nil) { return err; }
+		err = todo.Merge(deps);
+		if (err!=nil) { return err; }
 	}
 
-	for _, d := range(todo) {
+	for ln, lv := range(todo) {
 		if (x.Verbose) {
-			color.Println("@!Installing @{c}"+string(d.Name)+", version "+string(d.Version));
+			color.Println("@!Installing @{c}"+string(ln)+", version "+string(lv.Version));
 		}
-		ierr := install(d.Name, d.Version, index, ".", x.Verbose);
+		ierr := install(ln, lv.Version, index, ".", x.Verbose);
 		if (ierr!=nil) { color.Println("@{r}Error: "+ierr.Error()) };
 	}
 	
@@ -117,33 +115,28 @@ func install(name utils.LibraryName, version utils.VersionString,
 	if (!ok) { return utils.MissingLibraryError{Name:name}; }
 	ver, ok := lib.Versions[version];
 	if (!ok) { return utils.MissingVersionError{Name:name, Version:version}; }
-	if (verbose) { fmt.Println("Installing "+string(name)+", version "+string(version)); }
 
 	// Identify Zip file
 	zipfile := ver.Zipball;
 
 	// Download Zip file
-	if (verbose) { fmt.Println("  Downloading source from: "+string(zipfile)); }
+	if (verbose) { color.Println("  @{y}Downloading source from: @{!y}"+string(zipfile)); }
 	resp, err := http.Get(zipfile);
 	if (err!=nil) { return err; }
-	//fmt.Println(resp);
 	defer resp.Body.Close();
 	tzf, err := ioutil.TempFile("", "gimpact");
 	defer func() {
 		tzf.Close();
-		//os.Remove(tzf.Name());
+		os.Remove(tzf.Name());
 	}();
 	zsize, err := io.Copy(tzf, resp.Body);
 	if (err!=nil) { return err; }
 	resp.Body.Close();
-	if (verbose) { fmt.Println("  Temporary zip file stored at: "+tzf.Name()); }
 
 	// Extract Zip file
 	var adir string = "";
-	if (verbose) { fmt.Println("  Extracting to: "+string(tdir)); }
 	err = zip.Unarchive(tzf, zsize, string(tdir), func(x string) {
 		if (adir=="") { adir = strings.Split(x, "/")[0]; }
-		//fmt.Println("    Extracting: "+x)
 	})
 	if (err!=nil) { return err; }
 
@@ -158,19 +151,24 @@ func install(name utils.LibraryName, version utils.VersionString,
 	f.Close();
 	if (fi.IsDir()) {
 		if (verbose) {
-			fmt.Println("  Copying directory "+keep+" to "+path.Join(target, fi.Name()));
+			color.Println("  @{y}Copying  @{!y}"+ver.Path+
+				"@{y} to @{!y}"+path.Join(target, fi.Name()));
 		}
 		copyrecur.CopyDir(keep, path.Join(target, fi.Name()));
 	} else {
-		copyrecur.CopyFile(keep, target);
+		if (verbose) {
+			color.Println("  @{y}Copying  @{!y}"+ver.Path+
+				"@{y} to @{!y}"+path.Join(target, fi.Name()));
+		}
+		copyrecur.CopyFile(keep, path.Join(target, fi.Name()));
 	}
 
 	// Get rid of temporary directory
-	//os.RemoveAll(string(tdir));
+	os.RemoveAll(string(tdir));
 
 	// Get rid of temporary file
 	tzf.Close();
-	//os.Remove(tzf.Name());
+	os.Remove(tzf.Name());
 
 	return nil;
 }
