@@ -48,3 +48,13 @@ To build an static executable, just run:
 `$ go install`
 
 This will create a static executable of called `gimpact` in `SomeDir/bin`.
+
+Cross Compiling
+===============
+
+The `Makefile` includes targets to build cross-compiled executables.
+Under OSX, the cross compiling Go compiler can be installed with the
+command:
+
+  $ brew install go --cross-compile-common
+
