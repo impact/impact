@@ -46,19 +46,24 @@ func ParseVersion(libver string, index utils.Index) (libname utils.LibraryName,
 }
 
 func (x *InstallCommand) Execute(args []string) error {
+	/* Check to make sure we have something to install */
 	if (len(args)==0) {
 		return errors.New("No libraries requested for installation");
 	}
 
-	todo := utils.Libraries{};
-
+	/* Build the index */
 	index := buildIndex();
 
+	/* Create an empty set of libraries */
+	todo := utils.Libraries{};
+
+	/* Loop over all the libraries to be installed */
 	for _, arg := range(args) {
+		/* Determine the version number requested */
 		var libname utils.LibraryName;
 		var ver utils.VersionString;
-		color.Println("Processing dependency: "+string(libname));
 
+		// TODO: Put all this in a function
 		parts := strings.Split(arg, "#");
 
 		libname = utils.LibraryName(parts[0]);
@@ -79,13 +84,16 @@ func (x *InstallCommand) Execute(args []string) error {
 				" (must be libraryName#version)");
 		}
 		
-
+		/* Get Version objects for this library and all its dependencies */
 		deps, err := index.Dependencies(libname, ver);
 		if (err!=nil) { return err; }
+	
+		/* Merge them with the master list of libraries we are going to install */
 		err = todo.Merge(deps);
 		if (err!=nil) { return err; }
 	}
 
+	/* Loop over all the libraries we have identified for installation and install them */
 	for ln, lv := range(todo) {
 		if (x.Verbose) {
 			color.Println("@!Installing @{c}"+string(ln)+", version "+string(lv.Version));
@@ -98,48 +106,51 @@ func (x *InstallCommand) Execute(args []string) error {
 }
 
 func Install(ver utils.Version,	index utils.Index, target string, verbose bool) error {
-	// Create temporary directory
-	tdir, err := ioutil.TempDir("", "gimpact");
-	defer func() {
-		os.RemoveAll(string(tdir));
-	}()
-	if (err!=nil) { return err; }
-
 	// TODO: Keep a cache
 
-	// Identify Zip file
-	zipfile := ver.Zipball;
-
-	// Download Zip file
-	if (verbose) { color.Println("  @{y}Downloading source from: @{!y}"+string(zipfile)); }
-	resp, err := http.Get(zipfile);
+	/* Download the Zipball to a temporary file */
+	if (verbose) { color.Println("  @{y}Downloading source from: @{!y}"+string(ver.Zipball)); }
+	/*   Do a GET request */
+	resp, err := http.Get(ver.Zipball);
 	if (err!=nil) { return err; }
-	defer resp.Body.Close();
+	defer resp.Body.Close(); // Make sure this gets closed
+	/*   Open a temporary file to direct the download into */
 	tzf, err := ioutil.TempFile("", "gimpact");
 	defer func() {
-		tzf.Close();
-		os.Remove(tzf.Name());
+		tzf.Close(); // Make sure we close this file and...
+		os.Remove(tzf.Name()); // ...delete it.
 	}();
+	/*   Copy the bytes to temporary file */
 	zsize, err := io.Copy(tzf, resp.Body);
 	if (err!=nil) { return err; }
 	resp.Body.Close();
 
-	// Extract Zip file
+	/* Create a temporary directory to extract into */
+	tdir, err := ioutil.TempDir("", "gimpact");
+	defer func() {
+		os.RemoveAll(string(tdir)); // Make sure this gets removed in case of a panic
+	}()
+	if (err!=nil) { return err; }
+
+	/* Extract the zip file into our temporary directory */
 	var adir string = "";
 	err = zip.Unarchive(tzf, zsize, string(tdir), func(x string) {
 		if (adir=="") { adir = strings.Split(x, "/")[0]; }
 	})
 	if (err!=nil) { return err; }
 
-	// Copy the 'path' content to the install directory
+	/* Figure out where the Modelica code is in our temporary directory */
 	keep := path.Join(string(tdir), adir, ver.Path);
 
+	/* Figure out whether we are dealing with a package stored as a file or diretory */
 	f, err := os.Open(keep);
 	defer f.Close();
 	if (err!=nil) { return err; }
 	fi, err := f.Stat();
 	if (err!=nil) { return err; }
 	f.Close();
+
+	/* Copy the Modelica code to our target installation directory */
 	if (fi.IsDir()) {
 		if (verbose) {
 			color.Println("  @{y}Copying  @{!y}"+ver.Path+
@@ -154,12 +165,10 @@ func Install(ver utils.Version,	index utils.Index, target string, verbose bool) 
 		copyrecur.CopyFile(keep, path.Join(target, fi.Name()));
 	}
 
-	// Get rid of temporary directory
-	os.RemoveAll(string(tdir));
-
-	// Get rid of temporary file
+	/* Close and clean up temporary stuff */
 	tzf.Close();
 	os.Remove(tzf.Name());
+	os.RemoveAll(string(tdir));
 
 	return nil;
 }
