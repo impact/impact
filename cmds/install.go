@@ -59,30 +59,8 @@ func (x *InstallCommand) Execute(args []string) error {
 
 	/* Loop over all the libraries to be installed */
 	for _, arg := range(args) {
-		/* Determine the version number requested */
-		var libname utils.LibraryName;
-		var ver utils.VersionString;
-
-		// TODO: Put all this in a function
-		parts := strings.Split(arg, "#");
-
-		libname = utils.LibraryName(parts[0]);
-
-		lib, ok := index[libname];
-		if (!ok) {
-			return utils.MissingLibraryError{Name:libname};
-		}
-
-		if (len(parts)==1) {
-			version, err := lib.Latest();
-			if (err!=nil) { return err; }
-			ver = version.Version;
-		} else if (len(parts)==2) {
-			ver = utils.VersionString(parts[1]);
-		} else if (len(parts)>2) {
-			return errors.New("Invalid version specification: "+arg+
-				" (must be libraryName#version)");
-		}
+		libname, ver, err := ParseVersion(arg, index);
+		if (err!=nil) { return err; }
 		
 		/* Get Version objects for this library and all its dependencies */
 		deps, err := index.Dependencies(libname, ver);
