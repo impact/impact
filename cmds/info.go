@@ -13,8 +13,6 @@ type InfoCommand struct {
 	} `positional-args:"true" required:"true"`
 }
 
-var Info InfoCommand; // Instantiate option struct
-
 func (x *InfoCommand) Execute(args []string) error {
 	if (len(args)>0) {
 		fmt.Print("Ignoring (extra) unrecognized arguments: ");

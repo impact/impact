@@ -19,8 +19,6 @@ type InstallCommand struct {
 	Verbose bool `short:"v" login:"verbose" description:"Turn on verbose output"`
 }
 
-var Install InstallCommand; // Instantiate option struct
-
 func ParseVersion(libver string, index utils.Index) (libname utils.LibraryName,
 	ver utils.VersionString, err error) {
 	parts := strings.Split(libver, "#");
@@ -92,29 +90,22 @@ func (x *InstallCommand) Execute(args []string) error {
 		if (x.Verbose) {
 			color.Println("@!Installing @{c}"+string(ln)+", version "+string(lv.Version));
 		}
-		ierr := install(ln, lv.Version, index, ".", x.Verbose);
+		ierr := Install(lv, index, ".", x.Verbose);
 		if (ierr!=nil) { color.Println("@{r}Error: "+ierr.Error()) };
 	}
 	
 	return nil;
 }
 
-func install(name utils.LibraryName, version utils.VersionString,
-	index utils.Index, target string, verbose bool) error {
+func Install(ver utils.Version,	index utils.Index, target string, verbose bool) error {
 	// Create temporary directory
 	tdir, err := ioutil.TempDir("", "gimpact");
 	defer func() {
-		//os.RemoveAll(string(tdir));
+		os.RemoveAll(string(tdir));
 	}()
 	if (err!=nil) { return err; }
 
 	// TODO: Keep a cache
-
-	// Extract Version data
-	lib, ok := index[name];
-	if (!ok) { return utils.MissingLibraryError{Name:name}; }
-	ver, ok := lib.Versions[version];
-	if (!ok) { return utils.MissingVersionError{Name:name, Version:version}; }
 
 	// Identify Zip file
 	zipfile := ver.Zipball;

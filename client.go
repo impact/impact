@@ -14,17 +14,17 @@ func main() {
 	parser.AddCommand("search",
 		"Search for libraries associated with specific terms",
 		"Search for libraries associated with specific terms",
-		&cmds.Search)
+		&cmds.SearchCommand{})
 
 	parser.AddCommand("install",
 		"Install named libraries",
 		"Install named libraries",
-		&cmds.Install)
+		&cmds.InstallCommand{})
 
 	parser.AddCommand("info",
 		"Print information about a specific library",
 		"Print information about a specific library",
-		&cmds.Info)
+		&cmds.InfoCommand{})
 
 	if _, err := parser.Parse(); err != nil {
 		os.Exit(1)

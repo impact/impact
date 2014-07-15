@@ -12,8 +12,6 @@ type SearchCommand struct {
     URL bool `short:"u" long:"url" description:"Include homepage"`
 }
 
-var Search SearchCommand; // Instantiate option struct
-
 /* This is the function called when the 'search' subcommand is executed */
 func (x *SearchCommand) Execute(args []string) error {
 	if (len(args)>0) {
