@@ -18,7 +18,7 @@ func (x *InfoCommand) Execute(args []string) error {
 		fmt.Print("Ignoring (extra) unrecognized arguments: ");
 		fmt.Println(args);
 	}
-	index := buildIndex();
+	index := utils.DownloadIndex();
 
 	libname := utils.LibraryName(x.Positional.LibraryName);
 	lib, ok := index[libname];

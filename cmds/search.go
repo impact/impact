@@ -2,6 +2,7 @@ package cmds
 
 import "fmt"
 
+import "xogeny/gimpact/utils"
 import "github.com/wsxiaoys/terminal/color"
 
 /* Define a struct listing all command line options for 'search' */
@@ -21,7 +22,7 @@ func (x *SearchCommand) Execute(args []string) error {
 	term := x.Positional.Term;
 	url := x.URL;
 
-	index := buildIndex();
+	index := utils.DownloadIndex();
 	for libname, lib := range(index) {
 		if (lib.Matches(term)) {
 			color.Println("@{g}"+string(libname)+":\n@{c}  - "+string(lib.Description))

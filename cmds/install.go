@@ -52,7 +52,7 @@ func (x *InstallCommand) Execute(args []string) error {
 	}
 
 	/* Build the index */
-	index := buildIndex();
+	index := utils.DownloadIndex();
 
 	/* Create an empty set of libraries */
 	todo := utils.Libraries{};

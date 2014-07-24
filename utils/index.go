@@ -1,10 +1,12 @@
 package utils
 
-import "encoding/json"
-import "io/ioutil"
-import "strings"
 import "io"
 import "os"
+import "fmt"
+import "strings"
+import "net/http"
+import "encoding/json"
+import "io/ioutil"
 
 type VersionString string;
 type LibraryName string;
@@ -86,6 +88,27 @@ func (libs *Libraries) Merge(olibs Libraries) error {
 }
 
 type Index map[LibraryName]Library;
+
+func DownloadIndex() Index {
+	var master = "http://impact.modelica.org/impact_data.json";
+
+	resp, err := http.Get(master)
+	if err != nil {
+		fmt.Println("Unable to locate index file at "+master);
+		os.Exit(1);
+	}
+	defer resp.Body.Close()
+
+	index := Index{};
+
+	err = index.BuildIndex(resp.Body);
+	if (err!=nil) {
+		fmt.Println("Error reading index: "+err.Error());
+		os.Exit(2);
+	}
+
+	return index;
+}
 
 func (index *Index) BuildIndexFromFile(filename string) error {
 	file, err := os.Open(filename);
