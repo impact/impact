@@ -84,14 +84,14 @@ func (x *InstallCommand) Execute(args []string) error {
 }
 
 func Install(ver utils.Version,	index utils.Index, target string, verbose bool) error {
-	// TODO: Keep a cache
-
 	/* Download the Zipball to a temporary file */
 	if (verbose) { color.Println("  @{y}Downloading source from: @{!y}"+string(ver.Zipball)); }
+
 	/*   Do a GET request */
 	resp, err := http.Get(ver.Zipball);
 	if (err!=nil) { return err; }
 	defer resp.Body.Close(); // Make sure this gets closed
+
 	/*   Open a temporary file to direct the download into */
 	tzf, err := ioutil.TempFile("", "gimpact");
 	defer func() {
@@ -101,7 +101,6 @@ func Install(ver utils.Version,	index utils.Index, target string, verbose bool) 
 	/*   Copy the bytes to temporary file */
 	zsize, err := io.Copy(tzf, resp.Body);
 	if (err!=nil) { return err; }
-	resp.Body.Close();
 
 	/* Create a temporary directory to extract into */
 	tdir, err := ioutil.TempDir("", "gimpact");
@@ -138,11 +137,6 @@ func Install(ver utils.Version,	index utils.Index, target string, verbose bool) 
 		}
 		copyrecur.CopyFile(keep, path.Join(target, fi.Name()));
 	}
-
-	/* Close and clean up temporary stuff */
-	tzf.Close();
-	os.Remove(tzf.Name());
-	os.RemoveAll(string(tdir));
 
 	return nil;
 }
