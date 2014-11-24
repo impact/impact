@@ -22,7 +22,7 @@ class GitHub(object):
         self.password = password
         self.token = token
         self.pager = "?per_page=100"
-    def _req(self, path, headers={}, raw=False, isurl=False):
+    def _req(self, path, headers={}, raw=False, isurl=False, params=""):
         # Construct base URL
         if isurl:
             url = path
@@ -31,6 +31,9 @@ class GitHub(object):
 
         # Add pagination part
         url = url+self.pager
+
+        # Add user params
+        url = url+params
 
         # If we have an OAuth token, add it to the URL
         if self.token!=None:
@@ -74,12 +77,13 @@ class GitHub(object):
         except Exception as e:
             print("Error accessing repository tags: "+str(e))
             sys.exit(1)
-    def getContents(self, user, repo):
+    def getContents(self, user, repo, ref):
         try:
-            contents = self._req("/repos/"+user+"/"+repo+"/contents/")
-            return tags
+            # https://api.github.com/repos/dietmarw/M_S_L/contents/?ref=release
+            contents = self._req("/repos/"+user+"/"+repo+"/contents/", params="&ref="+ref)
+            return contents
         except Exception as e:
-            print("Error accessing repository tags: "+str(e))
+            print("Error retrieving repo contents: "+str(e))
             sys.exit(1)
     def getRawFile(self, user, repo, tag, path):
         url = "https://raw.github.com/%s/%s/%s/%s" % (user, repo, tag, path)
