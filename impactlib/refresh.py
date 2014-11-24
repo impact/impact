@@ -45,7 +45,6 @@ def strip_extra(version):
 def get_package_details(user, repo, tag, github, ver, verbose):
     ret = []
 
-    print("Looking in root directory")
     # Check to see if the repo is a library (if so, we just RETURN)
     root = github.getRawFile(user, repo, tag, "package.mo")
     if root!=None:
@@ -59,13 +58,11 @@ def get_package_details(user, repo, tag, github, ver, verbose):
 
     # Now check all directories to see if any/all are packages
     for entry in contents:
-        print("entry = ");
-        print(entry)
         if entry["type"]=="dir":
-            print("Looking for "+entry["name"]+"/package.mo")
+            if verbose:
+                print("Looking for "+entry["name"]+"/package.mo")
             root = github.getRawFile(user, repo, tag, entry["name"]+"/package.mo")
             if root!=None:
-                print("Found it")
                 deps = extract_dependencies(root)
                 root.close()
                 ret.append((entry["name"], deps, entry["name"]))
