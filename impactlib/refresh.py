@@ -50,7 +50,7 @@ def get_package_details(user, repo, tag, github, ver, verbose):
     if root!=None:
         deps = extract_dependencies(root)
         root.close()
-        return [(".", deps, repo)]
+        return [(".", list(deps), repo)]
     elif verbose:
         print("Not in root directory")
 
@@ -64,8 +64,10 @@ def get_package_details(user, repo, tag, github, ver, verbose):
             root = github.getRawFile(user, repo, tag, entry["name"]+"/package.mo")
             if root!=None:
                 deps = extract_dependencies(root)
+                if verbose:
+                    print("  Dependencies: "+str(deps))
                 root.close()
-                ret.append((entry["name"], deps, entry["name"]))
+                ret.append((entry["name"], list(deps), entry["name"]))
             elif verbose:
                 print("No package in "+entry["name"]+" directory")
     return ret
@@ -124,19 +126,6 @@ def process_github_user(repo_data, user, pat, github, verbose,
             continue
         print("Repository: "+name)
 
-        # Initialize data for current repository
-        data = {}
-
-        # Pull out various pieces of information about the repository
-        # and store it.
-        data["description"] = repo["description"]
-
-        # If homepage field exist store this otherwise use repo home
-        data["homepage"] = repo["homepage"] or repo["html_url"]
-
-        # Prepare to extract all versions of this library
-        data["versions"] = {}
-
         # Get the list of tags from GitHub
         tags = github.getTags(user, name)
 
@@ -160,6 +149,19 @@ def process_github_user(repo_data, user, pat, github, verbose,
                                        github, ver, verbose)
             # Loop over all packages and build information
             for pkg in pkgs:
+                # Initialize data for current repository
+                data = {}
+
+                # Pull out various pieces of information about the repository
+                # and store it.
+                data["description"] = repo["description"]
+
+                # If homepage field exist store this otherwise use repo home
+                data["homepage"] = repo["homepage"] or repo["html_url"]
+
+                # Prepare to extract all versions of this library
+                data["versions"] = {}
+
                 (path, deps, pname) = pkg
 
                 if path==None:
@@ -167,8 +169,6 @@ def process_github_user(repo_data, user, pat, github, verbose,
                     continue
 
                 print("  Semantic version info: "+str(ver))
-                print("    Path: "+str(path))
-                print("    Dependencies: "+str(deps))
 
                 # Create a data structure for information related to this version
                 tagurlbase = ('https://github.com/%s/%s/archive/%s'
@@ -178,10 +178,14 @@ def process_github_user(repo_data, user, pat, github, verbose,
                 tagdata["tarball_url"] = tagurlbase+".tar.gz"
                 if "commit" in tag and "sha" in tag["commit"]:
                     tagdata["sha"] = tag["commit"]["sha"]
-                tagdata["path"] = path
-                tagdata["dependencies"] = deps
 
-                data["versions"][str(ver)] = tagdata
+                print("    Path: "+str(path))
+                tagdata["path"] = path
+
+                print("    Dependencies: "+str(deps))
+                tagdata["dependencies"] = list(deps)
+
+                data["versions"][str(ver)] = dict(tagdata)
                 # Useful for legacy (non-semver) versions
                 tver = tagname
                 if tver[0]=="v":
@@ -189,7 +193,7 @@ def process_github_user(repo_data, user, pat, github, verbose,
                 if str(ver)!=tver:
                     if verbose:
                         print("  Also storing under version: "+tver)
-                    data["versions"][tver] = tagdata
+                    data["versions"][tver] = dict(tagdata)
 
                 if len(data["versions"])==0:
                     print("  No useable version tags found")
@@ -197,7 +201,7 @@ def process_github_user(repo_data, user, pat, github, verbose,
                         continue
 
                 # Add data for this repository to master data structure
-                repo_data[pname] = data
+                repo_data[pname] = dict(data)
 
 def refresh(output, verbose, tolerant, ignore_empty, source_list=None):
     username = config.get("Impact", "username", None)
