@@ -60,7 +60,10 @@ def load_repo_data():
             install_opener(build_opener(HTTPSHandlerV3()))
             req = Request(url)
             response = urlopen(req)
-            data = json.loads(response.read().decode(encoding='utf8'))
+            try:
+                data = json.loads(response.read().decode(encoding='utf8'))
+            except TypeError:  # Python 2.6 backward compatibility
+                data = json.loads(response.read())
             ret.update(data)
         except Exception as e:
             print("Unable to load repo data from: "+str(url)+", skipping")

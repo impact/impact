@@ -14,7 +14,10 @@ from impactlib import config
 def extract_dependencies(fp):
     deps = {}
     try:
-        contents = fp.read().decode(encoding='utf8')
+        try:
+            contents = fp.read().decode(encoding='utf8')
+        except TypeError: # Python 2.6 backward compatibility
+            contents = fp.read()
     except UnicodeDecodeError:
         try:
             contents = fp.read().decode(encoding='latin1')

@@ -61,7 +61,10 @@ class GitHub(object):
         else:
             # Convert reponse (which should be JSON) into a python dictionary
             # and return it
-            return json.loads(response.read().decode(encoding='utf8'))
+            try:
+                return json.loads(response.read().decode(encoding='utf8'))
+            except TypeError:  # Python 2.6 backward compatibility
+                return json.loads(response.read())
 
     def getRepos(self, user):
         try:
