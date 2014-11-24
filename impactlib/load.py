@@ -61,6 +61,7 @@ def load_repo_data():
             req = Request(url)
             response = urlopen(req)
             try:
+                ''.decode(encoding='utf8') # dummy to trigger TypeError
                 data = json.loads(response.read().decode(encoding='utf8'))
             except TypeError:  # Python 2.6 backward compatibility
                 data = json.loads(response.read())

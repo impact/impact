@@ -15,6 +15,7 @@ def extract_dependencies(fp):
     deps = {}
     try:
         try:
+            ''.decode(encoding='utf8') # dummy to trigger possibleTypeError
             contents = fp.read().decode(encoding='utf8')
         except TypeError: # Python 2.6 backward compatibility
             contents = fp.read()

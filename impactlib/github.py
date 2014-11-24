@@ -62,6 +62,7 @@ class GitHub(object):
             # Convert reponse (which should be JSON) into a python dictionary
             # and return it
             try:
+                ''.decode(encoding='utf8') # dummy to trigger TypeError
                 return json.loads(response.read().decode(encoding='utf8'))
             except TypeError:  # Python 2.6 backward compatibility
                 return json.loads(response.read())
