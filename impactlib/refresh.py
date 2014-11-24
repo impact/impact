@@ -44,26 +44,26 @@ def strip_extra(version):
 
 def get_package_details(user, repo, tag, github, ver, verbose):
     """
-    This function returns a tuple.
+    This function returns a list of tuples.
 
-    The first element in the tuple is that path of the actual Modelica
+    The first element in each tuple is that path of the actual Modelica
     package.  This tells us what, after extracting the zipball, needs
     to be moved to the install path.
 
-    The second element in the tuple is the list of dependencies.
+    The second element in each tuple is the list of dependencies.
     """
     root = github.getRawFile(user, repo, tag, "package.mo")
     if root!=None:
         deps = extract_dependencies(root)
         root.close()
-        return (".", deps)
+        return [(".", deps)]
     elif verbose:
         print("Not in root directory")
     unver_dir = github.getRawFile(user, repo, tag, repo+"/package.mo")
     if unver_dir!=None:
         deps = extract_dependencies(unver_dir)
         unver_dir.close()
-        return (repo, deps)
+        return [(repo, deps)]
     elif verbose:
         print("Not in unversioned directory of the same name")
     version = tag
@@ -76,10 +76,10 @@ def get_package_details(user, repo, tag, github, ver, verbose):
     if ver_dir!=None:
         deps = extract_dependencies(ver_dir)
         ver_dir.close()
-        return (ver_name, deps)
+        return [(ver_name, deps)]
     elif verbose:
         print("Not in versioned directory ("+ver_name+")")
-    return (None, [])
+    return []
 
 def process_github_user(repo_data, user, pat, github, verbose,
                         tolerant, ignore_empty):
@@ -127,45 +127,50 @@ def process_github_user(repo_data, user, pat, github, verbose,
                     print("Exception: "+str(e))
                 continue
 
-            # TODO: extract dependency information
-            (path, deps) = get_package_details(user, name, tagname,
-                                               github, ver, verbose)
-            if path==None:
-                print("Couldn't find Modelica package root")
-                continue
+            # Identify all packages in the repository
+            pkgs = get_package_details(user, name, tagname,
+                                       github, ver, verbose)
+            # Loop over all packages and build information
+            for pkg in pkgs:
+                # TODO: extract dependency information
+                (path, deps) = get_package_details(user, name, tagname,
+                                                   github, ver, verbose)
+                if path==None:
+                    print("Couldn't find Modelica package root")
+                    continue
 
-            print("  Semantic version info: "+str(ver))
-            print("    Path: "+str(path))
-            print("    Dependencies: "+str(deps))
+                print("  Semantic version info: "+str(ver))
+                print("    Path: "+str(path))
+                print("    Dependencies: "+str(deps))
 
-            # Create a data structure for information related to this version
-            tagurlbase = ('https://github.com/%s/%s/archive/%s'
-                                      % (str(user), str(name), str(tagname)))
-            tagdata = ver.json()
-            tagdata["zipball_url"] = tagurlbase+".zip"
-            tagdata["tarball_url"] = tagurlbase+".tar.gz"
-            if "commit" in tag and "sha" in tag["commit"]:
-                tagdata["sha"] = tag["commit"]["sha"]
-            tagdata["path"] = path
-            tagdata["dependencies"] = deps
+                # Create a data structure for information related to this version
+                tagurlbase = ('https://github.com/%s/%s/archive/%s'
+                              % (str(user), str(name), str(tagname)))
+                tagdata = ver.json()
+                tagdata["zipball_url"] = tagurlbase+".zip"
+                tagdata["tarball_url"] = tagurlbase+".tar.gz"
+                if "commit" in tag and "sha" in tag["commit"]:
+                    tagdata["sha"] = tag["commit"]["sha"]
+                tagdata["path"] = path
+                tagdata["dependencies"] = deps
 
-            data["versions"][str(ver)] = tagdata
-            # Useful for legacy (non-semver) versions
-            tver = tagname
-            if tver[0]=="v":
-                tver = tver[1:]
-            if str(ver)!=tver:
-                if verbose:
-                    print("  Also storing under version: "+tver)
-                data["versions"][tver] = tagdata
+                data["versions"][str(ver)] = tagdata
+                # Useful for legacy (non-semver) versions
+                tver = tagname
+                if tver[0]=="v":
+                    tver = tver[1:]
+                if str(ver)!=tver:
+                    if verbose:
+                        print("  Also storing under version: "+tver)
+                    data["versions"][tver] = tagdata
 
-        if len(data["versions"])==0:
-            print("  No useable version tags found")
-            if ignore_empty:
-                continue
+                if len(data["versions"])==0:
+                    print("  No useable version tags found")
+                    if ignore_empty:
+                        continue
 
-        # Add data for this repository to master data structure
-        repo_data[name] = data
+                # Add data for this repository to master data structure
+                repo_data[name] = data
 
 def refresh(output, verbose, tolerant, ignore_empty, source_list=None):
     username = config.get("Impact", "username", None)
