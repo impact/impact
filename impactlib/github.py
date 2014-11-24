@@ -74,6 +74,13 @@ class GitHub(object):
         except Exception as e:
             print("Error accessing repository tags: "+str(e))
             sys.exit(1)
+    def getContents(self, user, repo):
+        try:
+            contents = self._req("/repos/"+user+"/"+repo+"/contents/")
+            return tags
+        except Exception as e:
+            print("Error accessing repository tags: "+str(e))
+            sys.exit(1)
     def getRawFile(self, user, repo, tag, path):
         url = "https://raw.github.com/%s/%s/%s/%s" % (user, repo, tag, path)
         try:
