@@ -43,6 +43,37 @@ def strip_extra(version):
     return (version.split("-")[0]).split("+")[0]
 
 def get_package_details(user, repo, tag, github, ver, verbose):
+    ret = []
+
+    print("Looking in root directory")
+    # Check to see if the repo is a library (if so, we just RETURN)
+    root = github.getRawFile(user, repo, tag, "package.mo")
+    if root!=None:
+        deps = extract_dependencies(root)
+        root.close()
+        return [(".", deps, repo)]
+    elif verbose:
+        print("Not in root directory")
+
+    contents = github.getContents(user, repo, tag)
+
+    # Now check all directories to see if any/all are packages
+    for entry in contents:
+        print("entry = ");
+        print(entry)
+        if entry["type"]=="dir":
+            print("Looking for "+entry["name"]+"/package.mo")
+            root = github.getRawFile(user, repo, tag, entry["name"]+"/package.mo")
+            if root!=None:
+                print("Found it")
+                deps = extract_dependencies(root)
+                root.close()
+                ret.append((entry["name"], deps, entry["name"]))
+            elif verbose:
+                print("No package in "+entry["name"]+" directory")
+    return ret
+
+def old_get_package_details(user, repo, tag, github, ver, verbose):
     """
     This function returns a list of tuples.
 
@@ -132,9 +163,8 @@ def process_github_user(repo_data, user, pat, github, verbose,
                                        github, ver, verbose)
             # Loop over all packages and build information
             for pkg in pkgs:
-                # TODO: extract dependency information
-                (path, deps) = get_package_details(user, name, tagname,
-                                                   github, ver, verbose)
+                (path, deps, pname) = pkg
+
                 if path==None:
                     print("Couldn't find Modelica package root")
                     continue
@@ -170,7 +200,7 @@ def process_github_user(repo_data, user, pat, github, verbose,
                         continue
 
                 # Add data for this repository to master data structure
-                repo_data[name] = data
+                repo_data[pname] = data
 
 def refresh(output, verbose, tolerant, ignore_empty, source_list=None):
     username = config.get("Impact", "username", None)
