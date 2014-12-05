@@ -7,8 +7,8 @@ import "xogeny/gimpact/cmds"
 import "github.com/jessevdk/go-flags"
 
 func main() {
-	var options struct {}; // No common flags
-	
+	var options struct{} // No common flags
+
 	parser := flags.NewParser(&options, flags.Default)
 
 	parser.AddCommand("search",
