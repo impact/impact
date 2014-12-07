@@ -6,45 +6,45 @@ import "encoding/json"
 import "github.com/stretchr/testify/assert"
 import "fmt"
 
-func Test_Creation(t* testing.T) {
-	dep := utils.Dependency{Name: "Foo", Version: "1.0.0"};
+func Test_Creation(t *testing.T) {
+	dep := utils.Dependency{Name: "Foo", Version: "1.0.0"}
 	version := utils.Version{
-		Version: "0.1.0",
-		Major: 0,
-		Minor: 1,
-		Patch: 0,
-		Tarball: "http://modelica.org/",
-		Zipball: "http://modelica.org/",
-		Path: "./ThisLibrary",
+		Version:      "0.1.0",
+		Major:        0,
+		Minor:        1,
+		Patch:        0,
+		Tarball:      "http://modelica.org/",
+		Zipball:      "http://modelica.org/",
+		Path:         "./ThisLibrary",
 		Dependencies: []utils.Dependency{dep},
-		Sha: "abcdefg",
-	};
+		Sha:          "abcdefg",
+	}
 	lib := utils.Library{
-		Homepage: "http://mylib.modelica.org",
+		Homepage:    "http://mylib.modelica.org",
 		Description: "A dummy library",
-		Versions: map[utils.VersionString]utils.Version{"0.1.0": version},
-	};
+		Versions:    map[utils.VersionString]utils.Version{"0.1.0": version},
+	}
 
 	index := map[string]utils.Library{"Dummy": lib}
 
 	_, ok := index["Dummy"]
-	assert.Equal(t, ok, true, "Library not in index");
+	assert.Equal(t, ok, true, "Library not in index")
 }
 
-func Test_UnmarshallDependency(t* testing.T) {
+func Test_UnmarshallDependency(t *testing.T) {
 	var ds = `{
                   "version": "3.2", 
                   "name": "Modelica"
               }`
-	sample := []byte(ds);
-	dep := utils.Dependency{};
-	err := json.Unmarshal(sample, &dep);
-	assert.NoError(t, err);
-	assert.Equal(t, dep.Name, "Modelica", "name mismatch");
-	assert.Equal(t, dep.Version, "3.2", "version");
+	sample := []byte(ds)
+	dep := utils.Dependency{}
+	err := json.Unmarshal(sample, &dep)
+	assert.NoError(t, err)
+	assert.Equal(t, dep.Name, "Modelica", "name mismatch")
+	assert.Equal(t, dep.Version, "3.2", "version")
 }
 
-func Test_UnmarshallVersion(t* testing.T) {
+func Test_UnmarshallVersion(t *testing.T) {
 	var ds = `{
                 "major": 1, 
                 "tarball_url": "https://github.com/modelica-3rdparty/Physiolibrary/archive/v1.1.0.tar.gz", 
@@ -60,34 +60,34 @@ func Test_UnmarshallVersion(t* testing.T) {
                 "path": "Physiolibrary 1.1.0", 
                 "zipball_url": "https://github.com/modelica-3rdparty/Physiolibrary/archive/v1.1.0.zip", 
                 "minor": 1
-            }`;
-	sample := []byte(ds);
-	dep := utils.Version{};
-	err := json.Unmarshal(sample, &dep);
-	assert.NoError(t, err);
-	assert.Equal(t, dep.Major, 1, "major mismatch");
-	assert.Equal(t, dep.Minor, 1, "minor mismatch");
-	assert.Equal(t, dep.Patch, 0, "patch mismatch");
-	assert.Equal(t, dep.Sha, "3075b23c214b65a510eb58654464f54507901378", "sha mismatch");
-	assert.Equal(t, dep.Version, "1.1.0", "version mismatch");
-	assert.Equal(t, dep.Path, "Physiolibrary 1.1.0", "path mismatch");
+            }`
+	sample := []byte(ds)
+	dep := utils.Version{}
+	err := json.Unmarshal(sample, &dep)
+	assert.NoError(t, err)
+	assert.Equal(t, dep.Major, 1, "major mismatch")
+	assert.Equal(t, dep.Minor, 1, "minor mismatch")
+	assert.Equal(t, dep.Patch, 0, "patch mismatch")
+	assert.Equal(t, dep.Sha, "3075b23c214b65a510eb58654464f54507901378", "sha mismatch")
+	assert.Equal(t, dep.Version, "1.1.0", "version mismatch")
+	assert.Equal(t, dep.Path, "Physiolibrary 1.1.0", "path mismatch")
 }
 
-func Test_UnmarshallLibrary(t* testing.T) {
+func Test_UnmarshallLibrary(t *testing.T) {
 	var ds = `{
                   "homepage": "http://www.modelica.org",
                   "description": "A dummy library",
                   "versions": {}
               }`
-	sample := []byte(ds);
-	dep := utils.Library{};
-	err := json.Unmarshal(sample, &dep);
-	assert.NoError(t, err);
-	assert.Equal(t, dep.Homepage, "http://www.modelica.org", "homepage mismatch");
-	assert.Equal(t, dep.Description, "A dummy library", "description mismatch");
+	sample := []byte(ds)
+	dep := utils.Library{}
+	err := json.Unmarshal(sample, &dep)
+	assert.NoError(t, err)
+	assert.Equal(t, dep.Homepage, "http://www.modelica.org", "homepage mismatch")
+	assert.Equal(t, dep.Description, "A dummy library", "description mismatch")
 }
 
-func Test_UnmarshallIndex(t* testing.T) {
+func Test_UnmarshallIndex(t *testing.T) {
 	var ds = `{
     "SPICELib": {
         "homepage": "https://github.com/modelica-3rdparty/SPICELib", 
@@ -164,41 +164,43 @@ func Test_UnmarshallIndex(t* testing.T) {
         }
     }
               }`
-	sample := []byte(ds);
-	dep := utils.Index{};
-	err := json.Unmarshal(sample, &dep);
-	assert.NoError(t, err);
+	sample := []byte(ds)
+	dep := utils.Index{}
+	err := json.Unmarshal(sample, &dep)
+	assert.NoError(t, err)
 }
 
-func Test_ReadFile(t* testing.T) {
-	index := utils.Index{};
-	err := index.BuildIndexFromFile("sample.json");
-	assert.NoError(t, err);
-	_, ok := index["Physiolibrary"];
-	assert.Equal(t, ok, true, "Couldn't find Physiolibrary");
+func Test_ReadFile(t *testing.T) {
+	index := utils.Index{}
+	err := index.BuildIndexFromFile("sample.json")
+	assert.NoError(t, err)
+	_, ok := index["Physiolibrary"]
+	assert.Equal(t, ok, true, "Couldn't find Physiolibrary")
 }
 
-func contains(t* testing.T, libs utils.Libraries, name utils.LibraryName, ver utils.VersionString) {
-	v, ok := libs[name];
-	if (!ok) { t.Fatal("Version "+string(ver)+" of library "+string(name)+" not found"); }
-	if (v.Version!=ver) {
-		t.Fatal("Expected version "+string(ver)+" of library "+string(name)+
-			" but found "+string(v.Version));
+func contains(t *testing.T, libs utils.Libraries, name utils.LibraryName, ver utils.VersionString) {
+	v, ok := libs[name]
+	if !ok {
+		t.Fatal("Version " + string(ver) + " of library " + string(name) + " not found")
+	}
+	if v.Version != ver {
+		t.Fatal("Expected version " + string(ver) + " of library " + string(name) +
+			" but found " + string(v.Version))
 	}
 }
 
-func Test_Dependencies(t* testing.T) {
-	index := utils.Index{};
-	err := index.BuildIndexFromFile("sample.json");
-	deps, err := index.Dependencies("MotorcycleLib", "1.0");
-	assert.NoError(t, err);
+func Test_Dependencies(t *testing.T) {
+	index := utils.Index{}
+	err := index.BuildIndexFromFile("sample.json")
+	deps, err := index.Dependencies("MotorcycleLib", "1.0")
+	assert.NoError(t, err)
 	for k, v := range deps {
-		fmt.Println(k);
-		fmt.Println(v.Version);
+		fmt.Println(k)
+		fmt.Println(v.Version)
 	}
-	fmt.Println(deps);
-	contains(t, deps, "MotorcycleLib", "1.0.0");
-	contains(t, deps, "MultiBondLib", "1.3.0");
-	contains(t, deps, "Modelica", "2.2.1");
-	contains(t, deps, "WheelsAndTires", "1.0.0");
+	fmt.Println(deps)
+	contains(t, deps, "MotorcycleLib", "1.0.0")
+	contains(t, deps, "MultiBondLib", "1.3.0")
+	contains(t, deps, "Modelica", "2.2.1")
+	contains(t, deps, "WheelsAndTires", "1.0.0")
 }
