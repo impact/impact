@@ -1,3 +1,13 @@
+<hr>
+## Warning:
+Due to some issues with missing TLS support in some of the used Python libraries this implementation is currently not able to `install` any Modelica packages.
+
+In the meantime we've started a [Go language](https://golang.org/) implementation that does not suffer those restrictions: https://github.com/xogeny/gimpact
+
+As of now it is planned to continue the *active* development with [gimpact](https://github.com/xogeny/gimpact) as it provides the user with self-contained ex ecutables that do **not**  depend on any installed run-time environment like the Python version does.
+
+<hr>
+
 Impact
 ------
 
