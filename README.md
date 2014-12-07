@@ -20,12 +20,12 @@ build the package index.
 Installation
 ============
 
-Self-contained executable binaries are available under the [release section](../../release)
+Self-contained executable binaries are available under the [release section](../../releases)
 for a whole range of operating systems.
 
-Simply download the matching archive and extract its content to a place to
-a place that suits you best (preferrable inside
-a directory which is part of your executable system `$PATH`).
+Simply download the matching archive and extract its content to a place
+that suits you best (preferrable inside a directory which is part of your
+executable system `$PATH`).
 
 
 Building
