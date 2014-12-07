@@ -1,7 +1,7 @@
 package main
 
 import "testing"
-import "xogeny/gimpact/utils"
+import "github.com/xogeny/gimpact/utils"
 import "encoding/json"
 import "github.com/stretchr/testify/assert"
 import "fmt"
