@@ -12,7 +12,21 @@ Status
 ======
 
 So far, this implementation can read the `impact` library data and
-implements the `search` subcommand.
+implements the `search`, `install` and `info` subcommands.
+
+It currently lacks support of the `refresh` subcommand which is needed to
+build the package index.
+
+Installation
+============
+
+Self-contained executable binaries are available under the [release section](../../release)
+for a whole range of operating systems.
+
+Simply download the matching archive and extract its content to a place to
+a place that suits you best (preferrable inside
+a directory which is part of your executable system `$PATH`).
+
 
 Building
 ========
@@ -57,4 +71,3 @@ Under OSX, the cross compiling Go compiler can be installed with the
 command:
 
   $ brew install go --cross-compile-common
-
