@@ -1,6 +1,5 @@
 package deps
 
-import "log"
 import "testing"
 import "github.com/blang/semver"
 import "github.com/stretchr/testify/assert"
@@ -40,11 +39,7 @@ func TestOrdering(t *testing.T) {
 		vers.Add(v)
 	}
 
-	log.Printf("Versions: %s", vers.String())
-
 	vers.Sort()
-
-	log.Printf("Versions: %s", vers.String())
 
 	for i := 0; i < vers.Len()-1; i++ {
 		v1 := vers.Get(i)
@@ -56,8 +51,6 @@ func TestOrdering(t *testing.T) {
 	}
 
 	vers.ReverseSort()
-
-	log.Printf("Versions: %s", vers.String())
 
 	for i := 0; i < vers.Len()-1; i++ {
 		v2 := vers.Get(i)

@@ -121,25 +121,54 @@ func (index LibraryIndex) Versions(lib LibraryName) *VersionList {
 		}
 	}
 
-	log.Printf("Present: %#v", present)
-
 	vl := NewVersionList()
 	for v, _ := range present {
 		vl.Add(v)
-		log.Printf("vl = %s", vl.String())
 	}
 
 	vl.ReverseSort()
 	return vl
 }
 
-func (index LibraryIndex) findFirstDepthFirst(mapped Configuration, verbose bool, avail Available, rest ...LibraryName) (config Configuration, err error) {
-	log.Printf("Call to findFirstDepthFirst...")
-	log.Printf("  Mapped: %v", mapped)
-	log.Printf("  Avail: %v", avail)
-	log.Printf("  Rest: %v", rest)
+/*
+ * This method
+ */
+func (index LibraryIndex) Dependencies(lib LibraryName, ver *semver.Version) Available {
+	depvers := Available{}
+
+	for _, dep := range index.libraries {
+		// Is this a dependency for the current library and version?
+		if dep.library.name == lib && ver.Compare(dep.library.ver) == 0 {
+			// If so, add it to the available set (if one exists)
+			dver, found := depvers[dep.dependsOn.name]
+			if !found {
+				dver = NewVersionList()
+				depvers[dep.dependsOn.name] = dver
+			}
+			dver.Add(dep.dependsOn.ver)
+		}
+	}
+	return depvers
+}
+
+func (index LibraryIndex) findFirst(
+	mapped Configuration, // Variables whose values have already been chosen
+	verbose bool, // Whether to generate verbose output
+	avail Available, // Constraints of possible values for remaining variables
+	rest ...LibraryName, // Libraries whose versions we still need to decide
+) (Configuration, error) {
+	if verbose {
+		log.Printf("Call to findFirst...")
+		log.Printf("  Mapped: %v", mapped)
+		log.Printf("  Avail: %v", avail)
+		log.Printf("  Rest: %v", rest)
+	}
+
 	// Nothing left to process...we are done!
 	if len(rest) == 0 {
+		if verbose {
+			log.Printf("End of the line, returning %v", mapped)
+		}
 		return mapped, nil
 	}
 
@@ -147,61 +176,55 @@ func (index LibraryIndex) findFirstDepthFirst(mapped Configuration, verbose bool
 	lib := rest[0]
 	rest = rest[1:]
 
-	log.Printf("  -> Lib = %v", lib)
-	log.Printf("  -> Rest = %v", rest)
+	if verbose {
+		log.Printf("  -> Lib = %v", lib)
+		log.Printf("  -> Rest = %v", rest)
+	}
 
-	// Determine all versions known for current library
+	// Determine all versions known for chosen library.  First, use restricted
+	// set of values if present in 'avail'.
 	vers, constrained := avail[lib]
 	if !constrained {
+		// If not present, any value known to the index is still possible
 		vers = index.Versions(LibraryName(lib))
 	}
 
-	// Loop over each of those versions
+	// Loop over each possible version of the chosen library
 	for _, ver := range *vers {
-		log.Printf("  Considering version %v of %s", ver, lib)
-
-		/* Create our own local copy of the configuration so we don't mutate mapped */
-		config = mapped.Clone()
-		// Create a list of versions that the current library depends on
-		depvers := Available{}
-		// Any new libraries
-		newlibs := []LibraryName{}
-
-		// Loop over dependencies
-		for _, dep := range index.libraries {
-			// Is this a dependency for the current library and version?
-			if dep.library.name == lib && ver.Compare(dep.library.ver) == 0 {
-				// If so, add it to the available set (if one exists)
-				dver, found := depvers[dep.dependsOn.name]
-				if !found {
-					dver = NewVersionList()
-					depvers[dep.dependsOn.name] = dver
-				}
-				dver.Add(dep.dependsOn.ver)
-			}
+		if verbose {
+			log.Printf("  Considering version %v of %s", ver, lib)
 		}
 
+		/* Create our own local copy of the configuration so we don't mutate 'mapped' */
+		config := mapped.Clone()
+		// A list of any new libraries to introduce to the search
+		newlibs := []LibraryName{}
+
+		// Find out all the libraries that this particular library+version depend on
+		depvers := index.Dependencies(lib, ver)
+
 		// Have any of this libraries dependencies already been chosen?
-		for d, v := range depvers {
+		for d, vl := range depvers {
 			choice, chosen := mapped[d]
 			if chosen {
 				// If our choice is not among the set that this library depends on,
 				// we are done.
-				if !v.Contains(choice) {
-					err = fmt.Errorf("No compatible version of %s", d)
-					return
+				if !vl.Contains(choice) {
+					return nil, fmt.Errorf("No compatible version of %s", d)
 				}
 				// Otherwise, the current choice is compatible
 			}
 		}
 
-		// Ignore any previous mapped libraries (we just checked those in the
-		// previous few lines of code)
+		// Ignore any previous mapped libraries (we just checked to make sure
+		// we were compatible with those in the previous few lines of code so
+		// we can safely ignore them)
 		for l, _ := range mapped {
 			delete(depvers, l)
 		}
 
-		// Add any new dependencies
+		// Add any new dependencies?  (Check to see if we were already planning on
+		// incuding them, if not add them)
 		for n1, _ := range depvers {
 			found := false
 			for _, n2 := range rest {
@@ -214,17 +237,17 @@ func (index LibraryIndex) findFirstDepthFirst(mapped Configuration, verbose bool
 			}
 		}
 
-		// Take the intersection of the available version with the dependent versions
+		// Take the intersection of the previously available versions with
+		// the dependent versions
 		intersection := avail.Refine(depvers)
 
 		// Make sure the current library is removed from this list
-		delete(avail, lib)
+		delete(intersection, lib)
 
 		// Are any of the available value sets empty?  If so, return an error
 		empty := intersection.Empty()
 		if len(empty) > 0 {
-			err = fmt.Errorf("No compatible versions of: %v", empty)
-			return
+			return nil, fmt.Errorf("No compatible versions of: %v", empty)
 		}
 
 		// Specify the current library and version choice
@@ -232,11 +255,11 @@ func (index LibraryIndex) findFirstDepthFirst(mapped Configuration, verbose bool
 
 		// Recurse to solve remaining variables
 		newlibs = append(newlibs, rest...)
-		return index.findFirstDepthFirst(config, verbose, intersection, newlibs...)
+		return index.findFirst(config, verbose, intersection, newlibs...)
 	}
-	return
+	return nil, fmt.Errorf("No compatible versions of %s found", lib)
 }
 
 func (index LibraryIndex) Resolve(libraries ...LibraryName) (config Configuration, err error) {
-	return index.findFirstDepthFirst(config, true, Available{}, libraries...)
+	return index.findFirst(config, true, Available{}, libraries...)
 }
