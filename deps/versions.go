@@ -12,6 +12,10 @@ func NewVersionList(init ...*semver.Version) *VersionList {
 	return &ret
 }
 
+func (vl *VersionList) Clone() *VersionList {
+	return NewVersionList((*vl)...)
+}
+
 func (vl *VersionList) Add(v *semver.Version) *VersionList {
 	*vl = append(*vl, v)
 	return vl

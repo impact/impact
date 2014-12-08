@@ -43,10 +43,11 @@ func (a Available) Refine(subset Available) Available {
 	for k, v := range a {
 		v2, exists := subset[k]
 		if !exists {
-			ret[k] = v
+			ret[k] = v.Clone()
 		} else {
 			ret[k] = (*v).Intersection(*v2)
 		}
+		ret[k].ReverseSort()
 	}
 	return ret
 }
