@@ -1,0 +1,29 @@
+<h1>Installing Packages</h1>
+
+<div class="c-dim">
+<pre class="language-shell" style="font-size: 0.95rem; white-space: pre">
+$ impact install "PackageName &lt;version&gt;"
+$ impact install PackageName#&lt;version&gt;
+$ impact install PackageName
+</pre>
+</div>
+
+<div class="c-dim">
+<h3>Example</h3>
+<pre class="language-shell" style="font-size: 0.95rem; white-space: pre">
+$ impact install PowerSystems
+Installing version '0.2.0' of package 'PowerSystems'
+  No information for package Complex, skipping
+  No information for package ModelicaServices, skipping
+</pre>
+</div>
+
+<div class="c-dim">
+<h3>Result</h3>
+<pre class="language-shell" style="font-size: 0.95rem; white-space: pre">
+$ tree -L 1
+.
+├── Modelica 3.2
+└── PowerSystems 0.2.0
+</pre>
+</div>

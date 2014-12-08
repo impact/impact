@@ -1,0 +1,15 @@
+*~
+*.bbl
+*.aux
+*.blg
+*.bak
+*.log
+*.out
+*.dvi
+*.fdb_latexmk
+*.fls
+*.bcf
+*.run.xml
+*#*
+*.pdf
+*-blx.bib

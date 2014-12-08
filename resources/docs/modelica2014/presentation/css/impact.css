@@ -1,0 +1,17 @@
+/* Customization of CSS */
+
+.pull-right {
+    float: right;
+}
+
+.right-justify {
+    text-align: right;
+}
+
+.pull-left {
+    float: left;
+}
+
+.left-justify {
+    text-align: left;
+}

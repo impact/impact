@@ -1,0 +1,97 @@
+%sample file for Modelica 2011 Abstract page
+
+\documentclass[11pt,a4paper]{article}
+\usepackage{graphicx}
+\graphicspath{{fig/}}
+% uncomment according to your operating system:
+% ------------------------------------------------
+%\usepackage[latin1]{inputenc}    %% european characters can be used (Windows, old Linux)
+\usepackage[utf8]{inputenc}     %% european characters can be used (Linux)
+%\usepackage[applemac]{inputenc} %% european characters can be used (Mac OS)
+% ------------------------------------------------
+\usepackage[T1]{fontenc}   %% get hyphenation and accented letters right
+\usepackage{mathptmx}      %% use fitting times fonts also in formulas
+\usepackage{lmodern,amsmath,mathptmx,url}      %% recommended for readable pdf
+% do not change these lines:
+\pagestyle{empty}                %% no page numbers!
+\usepackage[left=35mm, right=35mm, top=15mm, bottom=20mm, noheadfoot]{geometry}
+%% please don't change geometry settings!
+\setlength{\parindent}{10pt}
+\setlength{\parskip}{3 mm}
+
+% some additional packages
+\usepackage{color}
+\usepackage{indentfirst}
+\usepackage[hidelinks=true]{hyperref}
+\usepackage[hidelinks=true]{hyperref}
+\hypersetup{%
+  pdftitle = {impact -- A Modelica Package Manager},
+  pdfauthor = {Michael Tiller and Dietmar Winkler},
+  pdfsubject = {10th International Modelica Conference 2014},
+  pdfkeywords = {Modelica, package manager, GitHub, dependency management, Python}}
+\usepackage[backend=bibtex,sorting=none]{biblatex}
+\addbibresource{impact}
+
+% usefull commands
+\newcommand{\myr}{\textsuperscript{\textregistered}}
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\matx}[1]{\mathbf{#1}}
+\newcommand{\impact}{\texttt{impact}} % impact is going to get used quite a lot :)
+\newcommand{\code}[1]{\texttt{#1}} % make quoting code text a bit simpler
+
+% begin the document
+\begin{document}
+\thispagestyle{empty}
+
+\title{\impact\ -- A Modelica\myr\ Package Manager}
+
+\author{Michael Tiller\\
+  \href{http://xogeny.com}{Xogeny Inc.}, USA\\
+  \href{mailto:michael.tiller@xogeny.com}{\nolinkurl{michael.tiller@xogeny.com}} %
+  \and Dietmar Winkler\\
+  \href{http://www.hit.no}{Telemark University College}, Norway\\
+  \href{mailto:dietmar.winkler@hit.no}{\nolinkurl{dietmar.winkler@hit.no}}}
+\date{} % <--- leave date empty
+\maketitle\thispagestyle{empty} %% <-- you need this for the first page
+
+To manage complexity, modern programming languages use organizational
+units to group code related by some common purpose.  Depending on the
+programming language, these units might be called libraries, packages
+or modules.  But they all attempt to encapsulate functionality to
+promote modular code and reusability.  For the remainder of this
+paper, we will simply refer to these organizational units as
+\emph{packages} (as they are called in Modelica).
+
+Also common to many modern programming languages are tools to manage
+these packages.  These tools are generally called \emph{package
+  managers} and they allow developers to quickly ``fetch'' any
+packages they may need for a given project.  The main functions of
+package managers are to allow developers to search, install, update
+and uninstall packages with a simple command-line or graphical
+interface.  In the Java world, the most common package manager is
+\code{maven}.  For Python, tools like
+\code{easy\_install}\cite{easy_install} and \code{pip}\cite{pip} are
+used for managing packages.  For client-side web development,
+\code{bower} is used.  For server-side JavaScript, the tool of choice
+is \code{npm}\cite{npm}.  For compiled languages, these package
+managers often include some additional build functionality as well.
+
+This paper introduces \emph{\impact}, a package manager for
+Modelica. Using \impact, Modelica users and developers can quickly
+search for, install and update Modelica libraries.  In this paper, we
+will discuss the functionality provided by \impact.  In addition, we
+will discuss how the functionality was implemented.  As part of this
+we will discuss the importance of collaborative platforms, like
+\href{https://github.com}{GitHub}\cite{github} in our case, for providing
+a means for collecting, curating and distributing packages within a community
+of developers.
+
+The \impact\ package manager is provided to the Modelica community as
+a free, open-source tool.  Furthermore, the protocols involved are all
+documented and we encourage tool vendors to integrate them into their
+own tools so they can provide the same searching, updating and
+installation capabilities that the command-line tool provides.
+
+\printbibliography
+
+\end{document}

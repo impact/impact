@@ -1,0 +1,22 @@
+<h1>Indexing</h1>
+
+<h3>Spider GitHub API</h3>
+
+<steplist>
+<ul>
+  <li>Simple URL requests return data in JSON format</li>
+  <li>Identify  packages</li>
+  <li>Uses tags to identify versions</li>
+  <li>Example: <a href="https://api.github.com/repos/modelica/Modelica/tags">https://api.github.com/repos/modelica/Modelica/tags</a> returns:
+<pre class="language-javascript" style="font-size: 0.95rem; white-space: pre" >[
+  {
+    "name": "v3.2.1+build.2",
+    "zipball_url": "https://api.github.com/repos/modelica/Modelica/zipball/v3.2.1+build.2",
+    "tarball_url": "https://api.github.com/repos/modelica/Modelica/tarball/v3.2.1+build.2",
+    "commit": {
+      "sha": "be98e92324a992ac6a2f26e3ab5266c399e2bb57",
+      "url": "https://api.github.com/repos/modelica/Modelica/commits/be98e92..."
+    }
+  }, ...]</pre>
+</ul>
+</steplist>
