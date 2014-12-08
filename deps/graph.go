@@ -133,7 +133,11 @@ func (index LibraryIndex) Versions(lib LibraryName) *VersionList {
 	return vl
 }
 
-func (index LibraryIndex) findFirstDepthFirst(mapped Configuration, avail Available, rest ...LibraryName) (config Configuration, err error) {
+func (index LibraryIndex) findFirstDepthFirst(mapped Configuration, verbose bool, avail Available, rest ...LibraryName) (config Configuration, err error) {
+	log.Printf("Call to findFirstDepthFirst...")
+	log.Printf("  Mapped: %v", mapped)
+	log.Printf("  Avail: %v", avail)
+	log.Printf("  Rest: %v", rest)
 	// Nothing left to process...we are done!
 	if len(rest) == 0 {
 		return mapped, nil
@@ -143,6 +147,9 @@ func (index LibraryIndex) findFirstDepthFirst(mapped Configuration, avail Availa
 	lib := rest[0]
 	rest = rest[1:]
 
+	log.Printf("  -> Lib = %v", lib)
+	log.Printf("  -> Rest = %v", rest)
+
 	// Determine all versions known for current library
 	vers, constrained := avail[lib]
 	if !constrained {
@@ -151,7 +158,7 @@ func (index LibraryIndex) findFirstDepthFirst(mapped Configuration, avail Availa
 
 	// Loop over each of those versions
 	for _, ver := range *vers {
-		log.Printf("Considering version %v of %s", ver, lib)
+		log.Printf("  Considering version %v of %s", ver, lib)
 
 		/* Create our own local copy of the configuration so we don't mutate mapped */
 		config = mapped.Clone()
@@ -160,7 +167,7 @@ func (index LibraryIndex) findFirstDepthFirst(mapped Configuration, avail Availa
 		// Any new libraries
 		newlibs := []LibraryName{}
 
-		// Loop over depdencies
+		// Loop over dependencies
 		for _, dep := range index.libraries {
 			// Is this a dependency for the current library and version?
 			if dep.library.name == lib && ver.Compare(dep.library.ver) == 0 {
@@ -172,6 +179,26 @@ func (index LibraryIndex) findFirstDepthFirst(mapped Configuration, avail Availa
 				}
 				dver.Add(dep.dependsOn.ver)
 			}
+		}
+
+		// Have any of this libraries dependencies already been chosen?
+		for d, v := range depvers {
+			choice, chosen := mapped[d]
+			if chosen {
+				// If our choice is not among the set that this library depends on,
+				// we are done.
+				if !v.Contains(choice) {
+					err = fmt.Errorf("No compatible version of %s", d)
+					return
+				}
+				// Otherwise, the current choice is compatible
+			}
+		}
+
+		// Ignore any previous mapped libraries (we just checked those in the
+		// previous few lines of code)
+		for l, _ := range mapped {
+			delete(depvers, l)
 		}
 
 		// Add any new dependencies
@@ -190,6 +217,9 @@ func (index LibraryIndex) findFirstDepthFirst(mapped Configuration, avail Availa
 		// Take the intersection of the available version with the dependent versions
 		intersection := avail.Refine(depvers)
 
+		// Make sure the current library is removed from this list
+		delete(avail, lib)
+
 		// Are any of the available value sets empty?  If so, return an error
 		empty := intersection.Empty()
 		if len(empty) > 0 {
@@ -197,16 +227,16 @@ func (index LibraryIndex) findFirstDepthFirst(mapped Configuration, avail Availa
 			return
 		}
 
-		// Find the current library and version choice
+		// Specify the current library and version choice
 		config[lib] = ver
 
 		// Recurse to solve remaining variables
 		newlibs = append(newlibs, rest...)
-		return index.findFirstDepthFirst(config, intersection, newlibs...)
+		return index.findFirstDepthFirst(config, verbose, intersection, newlibs...)
 	}
 	return
 }
 
 func (index LibraryIndex) Resolve(libraries ...LibraryName) (config Configuration, err error) {
-	return index.findFirstDepthFirst(config, Available{}, libraries...)
+	return index.findFirstDepthFirst(config, true, Available{}, libraries...)
 }

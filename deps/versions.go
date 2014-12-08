@@ -6,8 +6,10 @@ import "github.com/blang/semver"
 
 type VersionList []*semver.Version
 
-func NewVersionList() *VersionList {
-	return &VersionList{}
+func NewVersionList(init ...*semver.Version) *VersionList {
+	ret := VersionList{}
+	ret = append(ret, init...)
+	return &ret
 }
 
 func (vl *VersionList) Add(v *semver.Version) *VersionList {
@@ -44,14 +46,20 @@ func (vl VersionList) ReverseSort() {
 func (vl VersionList) Intersection(vl2 VersionList) *VersionList {
 	ret := NewVersionList()
 	for _, v1 := range vl {
-		for _, v2 := range vl2 {
-			if v1.Compare(v2) == 0 {
-				*ret = append(*ret, v1)
-				break
-			}
+		if vl2.Contains(v1) {
+			*ret = append(*ret, v1)
 		}
 	}
 	return ret
+}
+
+func (vl VersionList) Contains(v *semver.Version) bool {
+	for _, x := range vl {
+		if x.Compare(v) == 0 {
+			return true
+		}
+	}
+	return false
 }
 
 func (vl VersionList) String() string {
