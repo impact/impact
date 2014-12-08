@@ -11,24 +11,6 @@ import "github.com/blang/semver"
 type LibraryName string
 
 /*
- * This struct is not exported.  It is used to represent a unique library
- * (i.e., name + version)
- */
-type uniqueLibrary struct {
-	name LibraryName
-	ver  *semver.Version
-}
-
-/*
- * This is an edge in our (directed) dependency graph.  It indicates that `library`
- * depends on `dependsOn`.  Each is represented as a unique library (i.e., name + version)
- */
-type dependency struct {
-	library   uniqueLibrary
-	dependsOn uniqueLibrary
-}
-
-/*
  * This type represents a specific configuration of libraries.  This is used to represent
  * the resolution of dependencies.
  */
@@ -80,10 +62,33 @@ func (a Available) Empty() []LibraryName {
 }
 
 /*
+ * This struct is not exported.  It is used to represent a unique library
+ * (i.e., name + version)
+ */
+type uniqueLibrary struct {
+	name LibraryName
+	ver  *semver.Version
+}
+
+func (l1 uniqueLibrary) Equals(lib LibraryName, ver *semver.Version) bool {
+	return l1.name == lib && l1.ver.Compare(ver) == 0
+}
+
+/*
+ * This is an edge in our (directed) dependency graph.  It indicates that `library`
+ * depends on `dependsOn`.  Each is represented as a unique library (i.e., name + version)
+ */
+type dependency struct {
+	library   uniqueLibrary
+	dependsOn uniqueLibrary
+}
+
+/*
  * A library index is simply a list of dependencies (edges)
  */
 type LibraryIndex struct {
-	libraries []dependency
+	dependencies []dependency
+	libraries    []uniqueLibrary
 }
 
 /*
@@ -91,21 +96,53 @@ type LibraryIndex struct {
  */
 func MakeLibraryIndex() LibraryIndex {
 	return LibraryIndex{
-		libraries: []dependency{},
+		libraries:    []uniqueLibrary{},
+		dependencies: []dependency{},
 	}
+}
+
+func (index *LibraryIndex) AddLibrary(lib LibraryName, libver *semver.Version) {
+	for _, l := range index.libraries {
+		if l.Equals(lib, libver) {
+			return
+		}
+	}
+	index.libraries = append(index.libraries, uniqueLibrary{name: lib, ver: libver})
 }
 
 /*
  * Method to add a new dependency to a library index
  */
 func (index *LibraryIndex) AddDependency(lib LibraryName, libver *semver.Version,
-	deplib LibraryName, depver *semver.Version) {
+	deplib LibraryName, depver *semver.Version) error {
+
+	lfound := false
+	dfound := false
+
+	for _, l := range index.libraries {
+		if l.Equals(lib, libver) {
+			lfound = true
+		}
+		if l.Equals(deplib, depver) {
+			dfound = true
+		}
+	}
+
+	if !lfound {
+		return fmt.Errorf("Cannot add dependency for unknown library %s v%s",
+			lib, libver.String())
+	}
+	if !dfound {
+		return fmt.Errorf("Cannot add dependency for unknown library %s v%s",
+			deplib, depver.String())
+	}
 
 	library := uniqueLibrary{name: lib, ver: libver}
 	dependsOn := uniqueLibrary{name: deplib, ver: depver}
 	dep := dependency{library: library, dependsOn: dependsOn}
 
-	index.libraries = append(index.libraries, dep)
+	index.dependencies = append(index.dependencies, dep)
+	return nil
 }
 
 /*
@@ -115,9 +152,9 @@ func (index *LibraryIndex) AddDependency(lib LibraryName, libver *semver.Version
 func (index LibraryIndex) Versions(lib LibraryName) *VersionList {
 	present := map[*semver.Version]bool{}
 
-	for _, dep := range index.libraries {
-		if dep.library.name == lib {
-			present[dep.library.ver] = true
+	for _, l := range index.libraries {
+		if l.name == lib {
+			present[l.ver] = true
 		}
 	}
 
@@ -136,7 +173,7 @@ func (index LibraryIndex) Versions(lib LibraryName) *VersionList {
 func (index LibraryIndex) Dependencies(lib LibraryName, ver *semver.Version) Available {
 	depvers := Available{}
 
-	for _, dep := range index.libraries {
+	for _, dep := range index.dependencies {
 		// Is this a dependency for the current library and version?
 		if dep.library.name == lib && ver.Compare(dep.library.ver) == 0 {
 			// If so, add it to the available set (if one exists)
