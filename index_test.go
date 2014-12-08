@@ -1,7 +1,7 @@
 package main
 
 import "testing"
-import "github.com/xogeny/gimpact/utils"
+import "github.com/xogeny/impact/utils"
 import "encoding/json"
 import "github.com/stretchr/testify/assert"
 import "fmt"
@@ -33,7 +33,7 @@ func Test_Creation(t *testing.T) {
 
 func Test_UnmarshallDependency(t *testing.T) {
 	var ds = `{
-                  "version": "3.2", 
+                  "version": "3.2",
                   "name": "Modelica"
               }`
 	sample := []byte(ds)
@@ -46,19 +46,19 @@ func Test_UnmarshallDependency(t *testing.T) {
 
 func Test_UnmarshallVersion(t *testing.T) {
 	var ds = `{
-                "major": 1, 
-                "tarball_url": "https://github.com/modelica-3rdparty/Physiolibrary/archive/v1.1.0.tar.gz", 
-                "patch": 0, 
-                "sha": "3075b23c214b65a510eb58654464f54507901378", 
-                "version": "1.1.0", 
+                "major": 1,
+                "tarball_url": "https://github.com/modelica-3rdparty/Physiolibrary/archive/v1.1.0.tar.gz",
+                "patch": 0,
+                "sha": "3075b23c214b65a510eb58654464f54507901378",
+                "version": "1.1.0",
                 "dependencies": [
                     {
-                        "version": "3.2", 
+                        "version": "3.2",
                         "name": "Modelica"
                     }
-                ], 
-                "path": "Physiolibrary 1.1.0", 
-                "zipball_url": "https://github.com/modelica-3rdparty/Physiolibrary/archive/v1.1.0.zip", 
+                ],
+                "path": "Physiolibrary 1.1.0",
+                "zipball_url": "https://github.com/modelica-3rdparty/Physiolibrary/archive/v1.1.0.zip",
                 "minor": 1
             }`
 	sample := []byte(ds)
@@ -90,75 +90,75 @@ func Test_UnmarshallLibrary(t *testing.T) {
 func Test_UnmarshallIndex(t *testing.T) {
 	var ds = `{
     "SPICELib": {
-        "homepage": "https://github.com/modelica-3rdparty/SPICELib", 
-        "description": "Free library with some of the modeling and analysis capabilities of the electric circuit simulator PSPICE.", 
+        "homepage": "https://github.com/modelica-3rdparty/SPICELib",
+        "description": "Free library with some of the modeling and analysis capabilities of the electric circuit simulator PSPICE.",
         "versions": {
             "1.1.0": {
-                "major": 1, 
-                "tarball_url": "https://github.com/modelica-3rdparty/SPICELib/archive/v1.1.tar.gz", 
-                "patch": 0, 
-                "sha": "3d5738757b30192182b0b7caf46248c477d83e98", 
-                "version": "1.1.0", 
-                "dependencies": [], 
-                "path": "SPICELib 1.1", 
-                "zipball_url": "https://github.com/modelica-3rdparty/SPICELib/archive/v1.1.zip", 
+                "major": 1,
+                "tarball_url": "https://github.com/modelica-3rdparty/SPICELib/archive/v1.1.tar.gz",
+                "patch": 0,
+                "sha": "3d5738757b30192182b0b7caf46248c477d83e98",
+                "version": "1.1.0",
+                "dependencies": [],
+                "path": "SPICELib 1.1",
+                "zipball_url": "https://github.com/modelica-3rdparty/SPICELib/archive/v1.1.zip",
                 "minor": 1
-            }, 
+            },
             "1.1": {
-                "major": 1, 
-                "tarball_url": "https://github.com/modelica-3rdparty/SPICELib/archive/v1.1.tar.gz", 
-                "patch": 0, 
-                "sha": "3d5738757b30192182b0b7caf46248c477d83e98", 
-                "version": "1.1.0", 
-                "dependencies": [], 
-                "path": "SPICELib 1.1", 
-                "zipball_url": "https://github.com/modelica-3rdparty/SPICELib/archive/v1.1.zip", 
+                "major": 1,
+                "tarball_url": "https://github.com/modelica-3rdparty/SPICELib/archive/v1.1.tar.gz",
+                "patch": 0,
+                "sha": "3d5738757b30192182b0b7caf46248c477d83e98",
+                "version": "1.1.0",
+                "dependencies": [],
+                "path": "SPICELib 1.1",
+                "zipball_url": "https://github.com/modelica-3rdparty/SPICELib/archive/v1.1.zip",
                 "minor": 1
             }
         }
-    }, 
+    },
     "FaultTriggering": {
-        "homepage": "https://github.com/DLR-SR/FaultTriggering", 
-        "description": "Library for fault modelling in Modelica", 
+        "homepage": "https://github.com/DLR-SR/FaultTriggering",
+        "description": "Library for fault modelling in Modelica",
         "versions": {
             "0.6.2": {
-                "major": 0, 
-                "tarball_url": "https://github.com/modelica-3rdparty/FaultTriggering/archive/v0.6.2.tar.gz", 
-                "patch": 2, 
-                "sha": "0a180687231d36540e1695523d3de6bbe10b28c5", 
-                "version": "0.6.2", 
+                "major": 0,
+                "tarball_url": "https://github.com/modelica-3rdparty/FaultTriggering/archive/v0.6.2.tar.gz",
+                "patch": 2,
+                "sha": "0a180687231d36540e1695523d3de6bbe10b28c5",
+                "version": "0.6.2",
                 "dependencies": [
                     {
-                        "version": "3.2.1", 
+                        "version": "3.2.1",
                         "name": "Modelica"
-                    }, 
+                    },
                     {
-                        "version": "1.1.1", 
+                        "version": "1.1.1",
                         "name": "ModelManagement"
                     }
-                ], 
-                "path": "FaultTriggering", 
-                "zipball_url": "https://github.com/modelica-3rdparty/FaultTriggering/archive/v0.6.2.zip", 
+                ],
+                "path": "FaultTriggering",
+                "zipball_url": "https://github.com/modelica-3rdparty/FaultTriggering/archive/v0.6.2.zip",
                 "minor": 6
-            }, 
+            },
             "0.5.0": {
-                "major": 0, 
-                "tarball_url": "https://github.com/modelica-3rdparty/FaultTriggering/archive/v0.5.0.tar.gz", 
-                "patch": 0, 
-                "sha": "ad0a7ca17684753ceb3a6d5d2afd9988dc74912b", 
-                "version": "0.5.0", 
+                "major": 0,
+                "tarball_url": "https://github.com/modelica-3rdparty/FaultTriggering/archive/v0.5.0.tar.gz",
+                "patch": 0,
+                "sha": "ad0a7ca17684753ceb3a6d5d2afd9988dc74912b",
+                "version": "0.5.0",
                 "dependencies": [
                     {
-                        "version": "3.2.1", 
+                        "version": "3.2.1",
                         "name": "Modelica"
-                    }, 
+                    },
                     {
-                        "version": "1.1.1", 
+                        "version": "1.1.1",
                         "name": "ModelManagement"
                     }
-                ], 
-                "path": "FaultTriggering 0.5.0", 
-                "zipball_url": "https://github.com/modelica-3rdparty/FaultTriggering/archive/v0.5.0.zip", 
+                ],
+                "path": "FaultTriggering 0.5.0",
+                "zipball_url": "https://github.com/modelica-3rdparty/FaultTriggering/archive/v0.5.0.zip",
                 "minor": 5
             }
         }

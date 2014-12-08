@@ -8,7 +8,7 @@ import "strings"
 import "net/http"
 import "io/ioutil"
 
-import "github.com/xogeny/gimpact/utils"
+import "github.com/xogeny/impact/utils"
 
 import "github.com/wsxiaoys/terminal/color"
 import "github.com/pierrre/archivefile/zip"
@@ -108,7 +108,7 @@ func Install(ver utils.Version, index utils.Index, target string, verbose bool) 
 	defer resp.Body.Close() // Make sure this gets closed
 
 	/*   Open a temporary file to direct the download into */
-	tzf, err := ioutil.TempFile("", "gimpact")
+	tzf, err := ioutil.TempFile("", "impact")
 	defer func() {
 		tzf.Close()           // Make sure we close this file and...
 		os.Remove(tzf.Name()) // ...delete it.
@@ -120,7 +120,7 @@ func Install(ver utils.Version, index utils.Index, target string, verbose bool) 
 	}
 
 	/* Create a temporary directory to extract into */
-	tdir, err := ioutil.TempDir("", "gimpact")
+	tdir, err := ioutil.TempDir("", "impact")
 	defer func() {
 		os.RemoveAll(string(tdir)) // Make sure this gets removed in case of a panic
 	}()
