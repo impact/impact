@@ -1,10 +1,12 @@
 <hr>
-## Warning:
+### Warning:
 Due to some issues with missing TLS support in some of the used Python libraries this implementation is currently not able to `install` any Modelica packages.
 
-In the meantime we've started a [Go language](https://golang.org/) implementation that does not suffer those restrictions: https://github.com/xogeny/gimpact
+In the meantime we've started a [Go language](https://golang.org/) implementation that does not suffer those restrictions and which is now the primary development version on the [master branch](../../tree/master).
 
-As of now it is planned to continue the *active* development with [gimpact](https://github.com/xogeny/gimpact) as it provides the user with self-contained ex ecutables that do **not**  depend on any installed run-time environment like the Python version does.
+As of now it is planned to continue the *active* development on the [master branch](../../tree/master) with the [Go language](https://golang.org/) implementation  as it provides the user with self-contained ex ecutables that do **not**  depend on any installed run-time environment like the Python version does.
+
+The old and discontinued Python version will be kept on this [python-version branch](../../tree/python-version) for historical reasons.
 
 <hr>
 
