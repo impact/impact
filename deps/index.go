@@ -57,8 +57,8 @@ type LibraryIndex struct {
 /*
  * This function creates a new LibraryIndex object.
  */
-func MakeLibraryIndex() LibraryIndex {
-	return LibraryIndex{
+func NewLibraryIndex() *LibraryIndex {
+	return &LibraryIndex{
 		libraries:    []uniqueLibrary{},
 		dependencies: []dependency{},
 	}
@@ -286,7 +286,7 @@ func (index LibraryIndex) findFirst(
 		config[lib] = ver
 
 		// Prepend any new libraries to the front of the list of libraries
-		// we still need to solve for
+		// we still need to solve for (this makes things depth first)
 		newlibs = append(newlibs, rest...)
 
 		// Recurse to solve remaining variables

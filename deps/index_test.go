@@ -26,7 +26,7 @@ func parse(libs string) (LibraryName, *semver.Version) {
 /*
  * Declare a dependency and add libraries, all in one shot.
  */
-func deps(index *LibraryIndex, libs string, deps ...string) error {
+func deps(index Resolver, libs string, deps ...string) error {
 	lib, libver := parse(libs)
 	index.AddLibrary(lib, libver)
 	for _, ds := range deps {
@@ -49,7 +49,8 @@ func testConfig(t *testing.T, config Configuration, vers ...string) {
 	for _, v := range vers {
 		lib, libver := parse(v)
 		cver, exists := config[lib]
-		assert.True(t, exists)
+		assert.True(t, exists,
+			fmt.Sprintf("Expected solution (%v) to include library %s", config, lib))
 		if exists {
 			assert.Equal(t, 0, cver.Compare(libver),
 				fmt.Sprintf("Version %s doesn't match %s", cver.String(), libver.String()))
@@ -59,8 +60,8 @@ func testConfig(t *testing.T, config Configuration, vers ...string) {
 
 /* Simple Case: Root 1.0.0 depends on A 1.0.0 */
 func TestResolution3(t *testing.T) {
-	index := MakeLibraryIndex()
-	err := deps(&index, "Root:1.0.0", "A:1.0.0")
+	var index Resolver = NewLibraryIndex()
+	err := deps(index, "Root:1.0.0", "A:1.0.0")
 	assert.NoError(t, err)
 	config, err := index.Resolve("Root")
 	assert.NoError(t, err)
@@ -73,12 +74,12 @@ func TestResolution3(t *testing.T) {
  *   A 1.0.0    -> Root 1.0.0
  */
 func TestResolutionOfCircularDependency(t *testing.T) {
-	index := MakeLibraryIndex()
+	var index Resolver = NewLibraryIndex()
 
-	err := deps(&index, "Root:1.0.0", "A:1.0.0")
+	err := deps(index, "Root:1.0.0", "A:1.0.0")
 	assert.NoError(t, err)
 
-	err = deps(&index, "A:1.0.0", "Root:1.0.0")
+	err = deps(index, "A:1.0.0", "Root:1.0.0")
 	assert.NoError(t, err)
 
 	config, err := index.Resolve("Root")
@@ -95,18 +96,18 @@ func TestResolutionOfCircularDependency(t *testing.T) {
  *   A 1.0.1    -> Root 1.0.0
  */
 func TestResolutionOfUnmetCircularDependency(t *testing.T) {
-	index := MakeLibraryIndex()
+	var index Resolver = NewLibraryIndex()
 
-	err := deps(&index, "Root:1.0.0", "A:1.0.0")
+	err := deps(index, "Root:1.0.0", "A:1.0.0")
 	assert.NoError(t, err)
 
-	err = deps(&index, "A:1.0.0", "Root:1.0.1")
+	err = deps(index, "A:1.0.0", "Root:1.0.1")
 	assert.NoError(t, err)
 
-	err = deps(&index, "Root:1.0.1", "A:1.0.1")
+	err = deps(index, "Root:1.0.1", "A:1.0.1")
 	assert.NoError(t, err)
 
-	err = deps(&index, "A:1.0.1", "Root:1.0.0")
+	err = deps(index, "A:1.0.1", "Root:1.0.0")
 	assert.NoError(t, err)
 
 	/* Should yield an error, since no configuration works */
@@ -120,24 +121,24 @@ func TestResolutionOfUnmetCircularDependency(t *testing.T) {
  * E 1.0.0 -> F 1.0.1 | F 1.0.0
  */
 func TestResolutionSimple1(t *testing.T) {
-	index := MakeLibraryIndex()
+	var index Resolver = NewLibraryIndex()
 
-	err := deps(&index, "A:1.0.0", "B:1.0.1")
+	err := deps(index, "A:1.0.0", "B:1.0.1")
 	assert.NoError(t, err)
 
-	err = deps(&index, "A:1.0.0", "B:1.0.0")
+	err = deps(index, "A:1.0.0", "B:1.0.0")
 	assert.NoError(t, err)
 
-	err = deps(&index, "C:1.0.0", "D:1.0.1")
+	err = deps(index, "C:1.0.0", "D:1.0.1")
 	assert.NoError(t, err)
 
-	err = deps(&index, "C:1.0.0", "D:1.0.0")
+	err = deps(index, "C:1.0.0", "D:1.0.0")
 	assert.NoError(t, err)
 
-	err = deps(&index, "E:1.0.0", "F:1.0.1")
+	err = deps(index, "E:1.0.0", "F:1.0.1")
 	assert.NoError(t, err)
 
-	err = deps(&index, "E:1.0.0", "F:1.0.0")
+	err = deps(index, "E:1.0.0", "F:1.0.0")
 	assert.NoError(t, err)
 
 	/* Should yield an error, since no configuration works */
@@ -152,24 +153,24 @@ func TestResolutionSimple1(t *testing.T) {
  * E 1.0.0 -> F 1.0.1 | F 1.0.0
  */
 func TestResolutionSimple2(t *testing.T) {
-	index := MakeLibraryIndex()
+	var index Resolver = NewLibraryIndex()
 
-	err := deps(&index, "A:1.0.0", "B:1.0.1")
+	err := deps(index, "A:1.0.0", "B:1.0.1")
 	assert.NoError(t, err)
 
-	err = deps(&index, "A:1.0.0", "B:1.0.0")
+	err = deps(index, "A:1.0.0", "B:1.0.0")
 	assert.NoError(t, err)
 
-	err = deps(&index, "B:1.0.1", "D:1.0.0")
+	err = deps(index, "B:1.0.1", "D:1.0.0")
 	assert.NoError(t, err)
 
-	err = deps(&index, "C:1.0.0", "D:1.0.1")
+	err = deps(index, "C:1.0.0", "D:1.0.1")
 	assert.NoError(t, err)
 
-	err = deps(&index, "E:1.0.0", "F:1.0.1")
+	err = deps(index, "E:1.0.0", "F:1.0.1")
 	assert.NoError(t, err)
 
-	err = deps(&index, "E:1.0.0", "F:1.0.0")
+	err = deps(index, "E:1.0.0", "F:1.0.0")
 	assert.NoError(t, err)
 
 	/* Should yield an error, since no configuration works */
@@ -195,7 +196,7 @@ func TestResolutionSimple2(t *testing.T) {
  * Z 1.0.0 -> A 1.0.0, B 1.0.0, C 1.0.0, D 1.0.0
  */
 func TestWorstCaseScenario(t *testing.T) {
-	index := MakeLibraryIndex()
+	var index Resolver = NewLibraryIndex()
 
 	solve := []LibraryName{}
 	zdeps := []string{}
@@ -203,19 +204,19 @@ func TestWorstCaseScenario(t *testing.T) {
 	//letters := []string{"A", "B", "C", "D"}
 	for i, l := range letters {
 		if i < len(letters)-1 {
-			err := deps(&index,
+			err := deps(index,
 				fmt.Sprintf("%s:1.0.0", l),
 				fmt.Sprintf("%s:1.0.0", letters[i+1]))
 			assert.NoError(t, err)
-			err = deps(&index,
+			err = deps(index,
 				fmt.Sprintf("%s:1.0.0", l),
 				fmt.Sprintf("%s:1.0.1", letters[i+1]))
 			assert.NoError(t, err)
-			err = deps(&index,
+			err = deps(index,
 				fmt.Sprintf("%s:1.0.1", l),
 				fmt.Sprintf("%s:1.0.0", letters[i+1]))
 			assert.NoError(t, err)
-			err = deps(&index,
+			err = deps(index,
 				fmt.Sprintf("%s:1.0.1", l),
 				fmt.Sprintf("%s:1.0.1", letters[i+1]))
 			assert.NoError(t, err)
@@ -224,7 +225,7 @@ func TestWorstCaseScenario(t *testing.T) {
 		zdeps = append(zdeps, fmt.Sprintf("%s:1.0.0", l))
 	}
 
-	err := deps(&index, "Z:1.0.0", zdeps...)
+	err := deps(index, "Z:1.0.0", zdeps...)
 	assert.NoError(t, err)
 	solve = append(solve, "Z")
 
@@ -239,7 +240,7 @@ func TestWorstCaseScenario(t *testing.T) {
  * This case tests the lower level (pedantic) API.
  */
 func TestResolution1(t *testing.T) {
-	index := MakeLibraryIndex()
+	index := NewLibraryIndex()
 	root1, err := semver.New("1.0.0")
 	assert.NoError(t, err, "Parsing root1 version")
 	a1, err := semver.New("1.0.0")
@@ -278,7 +279,7 @@ func TestResolution1(t *testing.T) {
  * This case also tests the lower level (pedantic) API.
  */
 func TestResolution2(t *testing.T) {
-	index := MakeLibraryIndex()
+	index := NewLibraryIndex()
 	root1, err := semver.New("1.0.0")
 	assert.NoError(t, err, "Parsing root1 version")
 	a1, err := semver.New("1.0.0")
