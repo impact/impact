@@ -179,6 +179,63 @@ func TestResolutionSimple2(t *testing.T) {
 }
 
 /*
+ * A 1.0.0 -> B 1.0.0
+ * A 1.0.0 -> B 1.0.1
+ * A 1.0.1 -> B 1.0.0
+ * A 1.0.1 -> B 1.0.1
+ * B 1.0.0 -> C 1.0.0
+ * B 1.0.0 -> C 1.0.1
+ * B 1.0.1 -> C 1.0.0
+ * B 1.0.1 -> C 1.0.1
+ * C 1.0.0 -> D 1.0.0
+ * C 1.0.0 -> D 1.0.1
+ * C 1.0.1 -> D 1.0.0
+ * C 1.0.1 -> D 1.0.1
+ *
+ * Z 1.0.0 -> A 1.0.0, B 1.0.0, C 1.0.0, D 1.0.0
+ */
+func TestWorstCaseScenario(t *testing.T) {
+	index := MakeLibraryIndex()
+
+	solve := []LibraryName{}
+	zdeps := []string{}
+	letters := []string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"}
+	//letters := []string{"A", "B", "C", "D"}
+	for i, l := range letters {
+		if i < len(letters)-1 {
+			err := deps(&index,
+				fmt.Sprintf("%s:1.0.0", l),
+				fmt.Sprintf("%s:1.0.0", letters[i+1]))
+			assert.NoError(t, err)
+			err = deps(&index,
+				fmt.Sprintf("%s:1.0.0", l),
+				fmt.Sprintf("%s:1.0.1", letters[i+1]))
+			assert.NoError(t, err)
+			err = deps(&index,
+				fmt.Sprintf("%s:1.0.1", l),
+				fmt.Sprintf("%s:1.0.0", letters[i+1]))
+			assert.NoError(t, err)
+			err = deps(&index,
+				fmt.Sprintf("%s:1.0.1", l),
+				fmt.Sprintf("%s:1.0.1", letters[i+1]))
+			assert.NoError(t, err)
+		}
+		solve = append(solve, LibraryName(l))
+		zdeps = append(zdeps, fmt.Sprintf("%s:1.0.0", l))
+	}
+
+	err := deps(&index, "Z:1.0.0", zdeps...)
+	assert.NoError(t, err)
+	solve = append(solve, "Z")
+
+	/* Should yield an error, since no configuration works */
+	log.Printf("Solve for  = %v", solve)
+	config, err := index.Resolve(solve...)
+	log.Printf("config = %v", config)
+	testConfig(t, config, zdeps...)
+}
+
+/*
  * This case tests the lower level (pedantic) API.
  */
 func TestResolution1(t *testing.T) {

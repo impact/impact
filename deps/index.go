@@ -245,7 +245,9 @@ func (index LibraryIndex) findFirst(
 		// Find out all the libraries that this particular library+version depend on
 		depvers := index.Dependencies(lib, ver)
 
-		log.Printf("Dependencies of %s:%s -> %s", lib, ver.String(), depvers)
+		if verbose {
+			log.Printf("Dependencies of %s:%s -> %s", lib, ver.String(), depvers)
+		}
 
 		// Have any of this libraries dependencies already been chosen?
 		for d, vl := range depvers {
@@ -267,7 +269,9 @@ func (index LibraryIndex) findFirst(
 			delete(depvers, l)
 		}
 
-		log.Printf("Dependencies after mapping -> %s", depvers)
+		if verbose {
+			log.Printf("Dependencies after mapping -> %s", depvers)
+		}
 
 		newavail := avail.Clone()
 
@@ -294,12 +298,16 @@ func (index LibraryIndex) findFirst(
 		// the dependent versions
 		newavail = newavail.Refine(depvers)
 
-		log.Printf("Intersection between %s and %s -> %s", avail, depvers, newavail)
+		if verbose {
+			log.Printf("Intersection between %s and %s -> %s", avail, depvers, newavail)
+		}
 
 		// Make sure the current library is removed from this list
 		delete(newavail, lib)
 
-		log.Printf("Intersection - %s -> %s", lib, newavail)
+		if verbose {
+			log.Printf("Intersection - %s -> %s", lib, newavail)
+		}
 
 		// Are any of the available value sets empty?  If so, return an error
 		empty := newavail.Empty()
@@ -328,5 +336,5 @@ func (index LibraryIndex) Resolve(libraries ...LibraryName) (config Configuratio
 	}
 
 	// Now search for a consistent set...
-	return index.findFirst(config, true, ret, libraries...)
+	return index.findFirst(config, false, ret, libraries...)
 }
