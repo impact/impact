@@ -201,7 +201,7 @@ func (index LibraryIndex) Dependencies(lib LibraryName, ver *semver.Version) Ava
 func (index LibraryIndex) findFirst(
 	mapped Configuration, // Variables whose values have already been chosen
 	verbose bool, // Whether to generate verbose output
-	avail Available, // Constraints of possible values for remaining variables
+	avail Available, // Constraints of possible values for remaining libraries
 	rest ...LibraryName, // Libraries whose versions we still need to decide
 ) (Configuration, error) {
 	if verbose {
@@ -228,13 +228,8 @@ func (index LibraryIndex) findFirst(
 		log.Printf("  -> Rest = %v", rest)
 	}
 
-	// Determine all versions known for chosen library.  First, use restricted
-	// set of values if present in 'avail'.
-	vers, constrained := avail[lib]
-	if !constrained {
-		// If not present, any value known to the index is still possible
-		vers = index.Versions(LibraryName(lib))
-	}
+	// Determine remaining possible values for this library...
+	vers := avail[lib]
 
 	// Loop over each possible version of the chosen library
 	for _, ver := range *vers {
@@ -249,6 +244,8 @@ func (index LibraryIndex) findFirst(
 
 		// Find out all the libraries that this particular library+version depend on
 		depvers := index.Dependencies(lib, ver)
+
+		log.Printf("Dependencies of %s:%s -> %s", lib, ver.String(), depvers)
 
 		// Have any of this libraries dependencies already been chosen?
 		for d, vl := range depvers {
@@ -270,6 +267,10 @@ func (index LibraryIndex) findFirst(
 			delete(depvers, l)
 		}
 
+		log.Printf("Dependencies after mapping -> %s", depvers)
+
+		newavail := avail.Clone()
+
 		// Add any new dependencies?  (Check to see if we were already planning on
 		// incuding them, if not add them)
 		for n1, _ := range depvers {
@@ -281,18 +282,27 @@ func (index LibraryIndex) findFirst(
 			}
 			if !found {
 				newlibs = append(newlibs, n1)
+				_, exists := newavail[n1]
+				if exists {
+					panic(fmt.Errorf("Should not happen"))
+				}
+				newavail[n1] = index.Versions(n1)
 			}
 		}
 
 		// Take the intersection of the previously available versions with
 		// the dependent versions
-		intersection := avail.Refine(depvers)
+		newavail = newavail.Refine(depvers)
+
+		log.Printf("Intersection between %s and %s -> %s", avail, depvers, newavail)
 
 		// Make sure the current library is removed from this list
-		delete(intersection, lib)
+		delete(newavail, lib)
+
+		log.Printf("Intersection - %s -> %s", lib, newavail)
 
 		// Are any of the available value sets empty?  If so, return an error
-		empty := intersection.Empty()
+		empty := newavail.Empty()
 		if len(empty) > 0 {
 			return nil, fmt.Errorf("No compatible versions of: %v", empty)
 		}
@@ -302,11 +312,21 @@ func (index LibraryIndex) findFirst(
 
 		// Recurse to solve remaining variables
 		newlibs = append(newlibs, rest...)
-		return index.findFirst(config, verbose, intersection, newlibs...)
+		sol, err := index.findFirst(config, verbose, newavail, newlibs...)
+		if err == nil {
+			return sol, err
+		}
 	}
 	return nil, fmt.Errorf("No compatible versions of %s found", lib)
 }
 
 func (index LibraryIndex) Resolve(libraries ...LibraryName) (config Configuration, err error) {
-	return index.findFirst(config, false, Available{}, libraries...)
+	// Initially, all possible values for the libraries are possible
+	ret := Available{}
+	for _, lib := range libraries {
+		ret[lib] = index.Versions(lib)
+	}
+
+	// Now search for a consistent set...
+	return index.findFirst(config, true, ret, libraries...)
 }

@@ -51,7 +51,8 @@ func testConfig(t *testing.T, config Configuration, vers ...string) {
 		cver, exists := config[lib]
 		assert.True(t, exists)
 		if exists {
-			assert.Equal(t, 0, cver.Compare(libver))
+			assert.Equal(t, 0, cver.Compare(libver),
+				fmt.Sprintf("Version %s doesn't match %s", cver.String(), libver.String()))
 		}
 	}
 }
@@ -111,6 +112,70 @@ func TestResolutionOfUnmetCircularDependency(t *testing.T) {
 	/* Should yield an error, since no configuration works */
 	_, err = index.Resolve("Root")
 	assert.Error(t, err)
+}
+
+/*
+ * A 1.0.0 -> B 1.0.1 | B 1.0.0
+ * C 1.0.0 -> D 1.0.1 | D 1.0.0
+ * E 1.0.0 -> F 1.0.1 | F 1.0.0
+ */
+func TestResolutionSimple1(t *testing.T) {
+	index := MakeLibraryIndex()
+
+	err := deps(&index, "A:1.0.0", "B:1.0.1")
+	assert.NoError(t, err)
+
+	err = deps(&index, "A:1.0.0", "B:1.0.0")
+	assert.NoError(t, err)
+
+	err = deps(&index, "C:1.0.0", "D:1.0.1")
+	assert.NoError(t, err)
+
+	err = deps(&index, "C:1.0.0", "D:1.0.0")
+	assert.NoError(t, err)
+
+	err = deps(&index, "E:1.0.0", "F:1.0.1")
+	assert.NoError(t, err)
+
+	err = deps(&index, "E:1.0.0", "F:1.0.0")
+	assert.NoError(t, err)
+
+	/* Should yield an error, since no configuration works */
+	config, err := index.Resolve("A", "C", "E")
+	testConfig(t, config, "A:1.0.0", "B:1.0.1", "C:1.0.0", "D:1.0.1", "E:1.0.0", "F:1.0.1")
+}
+
+/*
+ * A 1.0.0 -> B 1.0.1 | B 1.0.0
+ * B 1.0.1 -> D 1.0.0
+ * C 1.0.0 -> D 1.0.1 | D 1.0.0
+ * E 1.0.0 -> F 1.0.1 | F 1.0.0
+ */
+func TestResolutionSimple2(t *testing.T) {
+	index := MakeLibraryIndex()
+
+	err := deps(&index, "A:1.0.0", "B:1.0.1")
+	assert.NoError(t, err)
+
+	err = deps(&index, "A:1.0.0", "B:1.0.0")
+	assert.NoError(t, err)
+
+	err = deps(&index, "B:1.0.1", "D:1.0.0")
+	assert.NoError(t, err)
+
+	err = deps(&index, "C:1.0.0", "D:1.0.1")
+	assert.NoError(t, err)
+
+	err = deps(&index, "E:1.0.0", "F:1.0.1")
+	assert.NoError(t, err)
+
+	err = deps(&index, "E:1.0.0", "F:1.0.0")
+	assert.NoError(t, err)
+
+	/* Should yield an error, since no configuration works */
+	config, err := index.Resolve("A", "C", "E")
+	log.Printf("config = %v", config)
+	testConfig(t, config, "A:1.0.0", "B:1.0.0", "C:1.0.0", "D:1.0.1", "E:1.0.0", "F:1.0.1")
 }
 
 /*
