@@ -194,6 +194,11 @@ func (index LibraryIndex) findFirst(
 
 	// Determine remaining possible values for this library...
 	vers := avail[lib]
+	if vers == nil {
+		log.Printf("Error, unable to find library %s (mapped: %v, rest: %v)",
+			lib, mapped, rest)
+		return nil, fmt.Errorf("Internal error handling library %s", lib)
+	}
 
 	// Loop over each possible version of the chosen library
 	for _, ver := range *vers {

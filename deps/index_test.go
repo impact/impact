@@ -141,8 +141,8 @@ func TestResolutionSimple1(t *testing.T) {
 	err = deps(index, "E:1.0.0", "F:1.0.0")
 	assert.NoError(t, err)
 
-	/* Should yield an error, since no configuration works */
 	config, err := index.Resolve("A", "C", "E")
+	assert.NoError(t, err)
 	testConfig(t, config, "A:1.0.0", "B:1.0.1", "C:1.0.0", "D:1.0.1", "E:1.0.0", "F:1.0.1")
 }
 
@@ -173,8 +173,8 @@ func TestResolutionSimple2(t *testing.T) {
 	err = deps(index, "E:1.0.0", "F:1.0.0")
 	assert.NoError(t, err)
 
-	/* Should yield an error, since no configuration works */
 	config, err := index.Resolve("A", "C", "E")
+	assert.NoError(t, err)
 	log.Printf("config = %v", config)
 	testConfig(t, config, "A:1.0.0", "B:1.0.0", "C:1.0.0", "D:1.0.1", "E:1.0.0", "F:1.0.1")
 }
@@ -232,8 +232,23 @@ func TestWorstCaseScenario(t *testing.T) {
 	/* Should yield an error, since no configuration works */
 	log.Printf("Solve for  = %v", solve)
 	config, err := index.Resolve(solve...)
+	assert.NoError(t, err)
 	log.Printf("config = %v", config)
 	testConfig(t, config, zdeps...)
+}
+
+func TestSelfDependence(t *testing.T) {
+	var index Resolver = NewLibraryIndex()
+
+	err := deps(index, "A:1.0.1", "A:1.0.1")
+	assert.NoError(t, err)
+
+	err = deps(index, "A:1.0.0", "A:1.0.0")
+	assert.NoError(t, err)
+
+	config, err := index.Resolve("A")
+	assert.NoError(t, err)
+	testConfig(t, config, "A:1.0.1")
 }
 
 /*
