@@ -25,44 +25,6 @@ func (conf Configuration) Clone() Configuration {
 }
 
 /*
- * This type represents remaining possible values for a given library
- */
-type Available map[LibraryName]*VersionList
-
-func (a Available) Clone() Available {
-	clone := Available{}
-	for k, v := range a {
-		clone[k] = v
-	}
-	return clone
-}
-
-func (a Available) Refine(subset Available) Available {
-	ret := Available{}
-
-	for k, v := range a {
-		v2, exists := subset[k]
-		if !exists {
-			ret[k] = v.Clone()
-		} else {
-			ret[k] = (*v).Intersection(*v2)
-		}
-		ret[k].ReverseSort()
-	}
-	return ret
-}
-
-func (a Available) Empty() []LibraryName {
-	ret := []LibraryName{}
-	for k, v := range a {
-		if v.Len() == 0 {
-			ret = append(ret, k)
-		}
-	}
-	return ret
-}
-
-/*
  * This struct is not exported.  It is used to represent a unique library
  * (i.e., name + version)
  */
@@ -178,10 +140,12 @@ func (index LibraryIndex) Versions(lib LibraryName) *VersionList {
 }
 
 /*
- * This method
+ * This method returns a map where the keys are libraries that the named
+ * library+version depends on and the values are the versions that are
+ * compatible with the named library+version.
  */
-func (index LibraryIndex) Dependencies(lib LibraryName, ver *semver.Version) Available {
-	depvers := Available{}
+func (index LibraryIndex) Dependencies(lib LibraryName, ver *semver.Version) Possible {
+	depvers := Possible{}
 
 	for _, dep := range index.dependencies {
 		// Is this a dependency for the current library and version?
@@ -201,7 +165,7 @@ func (index LibraryIndex) Dependencies(lib LibraryName, ver *semver.Version) Ava
 func (index LibraryIndex) findFirst(
 	mapped Configuration, // Variables whose values have already been chosen
 	verbose bool, // Whether to generate verbose output
-	avail Available, // Constraints of possible values for remaining libraries
+	avail Possible, // Constraints of possible values for remaining libraries
 	rest ...LibraryName, // Libraries whose versions we still need to decide
 ) (Configuration, error) {
 	if verbose {
@@ -249,17 +213,9 @@ func (index LibraryIndex) findFirst(
 			log.Printf("Dependencies of %s:%s -> %s", lib, ver.String(), depvers)
 		}
 
-		// Have any of this libraries dependencies already been chosen?
-		for d, vl := range depvers {
-			choice, chosen := mapped[d]
-			if chosen {
-				// If our choice is not among the set that this library depends on,
-				// we are done.
-				if !vl.Contains(choice) {
-					return nil, fmt.Errorf("No compatible version of %s", d)
-				}
-				// Otherwise, the current choice is compatible
-			}
+		// Are the mapped values consistent with the values allowed by the dependencies
+		if !depvers.Consistent(mapped) {
+			return nil, fmt.Errorf("No compatible versions between %s and %s", mapped, depvers)
 		}
 
 		// Ignore any previous mapped libraries (we just checked to make sure
@@ -330,7 +286,7 @@ func (index LibraryIndex) findFirst(
 
 func (index LibraryIndex) Resolve(libraries ...LibraryName) (config Configuration, err error) {
 	// Initially, all possible values for the libraries are possible
-	ret := Available{}
+	ret := Possible{}
 	for _, lib := range libraries {
 		ret[lib] = index.Versions(lib)
 	}
