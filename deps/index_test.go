@@ -1,10 +1,121 @@
 package deps
 
 import "log"
+import "fmt"
+import "strings"
 import "testing"
 import "github.com/blang/semver"
 import "github.com/stretchr/testify/assert"
 
+/*
+ * Helper function to turn a string (in the form 'LibName:Version' into a
+ * library name and semantic version.
+ */
+func parse(libs string) (LibraryName, *semver.Version) {
+	parts := strings.Split(libs, ":")
+	if len(parts) != 2 {
+		panic(fmt.Errorf("Invalid library spec: %s", libs))
+	}
+	v, err := semver.New(parts[1])
+	if err != nil {
+		panic(err)
+	}
+	return LibraryName(parts[0]), v
+}
+
+/*
+ * Declare a dependency and add libraries, all in one shot.
+ */
+func deps(index *LibraryIndex, libs string, deps ...string) error {
+	lib, libver := parse(libs)
+	index.AddLibrary(lib, libver)
+	for _, ds := range deps {
+		dep, depver := parse(ds)
+		if !index.Contains(dep, depver) {
+			index.AddLibrary(dep, depver)
+		}
+		err := index.AddDependency(lib, libver, dep, depver)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+/*
+ * Test whether the resolution matches expected values.
+ */
+func testConfig(t *testing.T, config Configuration, vers ...string) {
+	for _, v := range vers {
+		lib, libver := parse(v)
+		cver, exists := config[lib]
+		assert.True(t, exists)
+		if exists {
+			assert.Equal(t, 0, cver.Compare(libver))
+		}
+	}
+}
+
+/* Simple Case: Root 1.0.0 depends on A 1.0.0 */
+func TestResolution3(t *testing.T) {
+	index := MakeLibraryIndex()
+	err := deps(&index, "Root:1.0.0", "A:1.0.0")
+	assert.NoError(t, err)
+	config, err := index.Resolve("Root")
+	assert.NoError(t, err)
+
+	testConfig(t, config, "Root:1.0.0")
+}
+
+/* Circular Case:
+ *   Root 1.0.0 -> A 1.0.0 AND
+ *   A 1.0.0    -> Root 1.0.0
+ */
+func TestResolutionOfCircularDependency(t *testing.T) {
+	index := MakeLibraryIndex()
+
+	err := deps(&index, "Root:1.0.0", "A:1.0.0")
+	assert.NoError(t, err)
+
+	err = deps(&index, "A:1.0.0", "Root:1.0.0")
+	assert.NoError(t, err)
+
+	config, err := index.Resolve("Root")
+	assert.NoError(t, err)
+
+	testConfig(t, config, "Root:1.0.0", "A:1.0.0")
+}
+
+/* Unmet Circular
+ *   Root 1.0.0 -> A 1.0.0 AND
+ *   A 1.0.0    -> Root 1.0.1
+ *
+ *   Root 1.0.1 -> A 1.0.1 AND
+ *   A 1.0.1    -> Root 1.0.0
+ */
+func TestResolutionOfUnmetCircularDependency(t *testing.T) {
+	index := MakeLibraryIndex()
+
+	err := deps(&index, "Root:1.0.0", "A:1.0.0")
+	assert.NoError(t, err)
+
+	err = deps(&index, "A:1.0.0", "Root:1.0.1")
+	assert.NoError(t, err)
+
+	err = deps(&index, "Root:1.0.1", "A:1.0.1")
+	assert.NoError(t, err)
+
+	err = deps(&index, "A:1.0.1", "Root:1.0.0")
+	assert.NoError(t, err)
+
+	/* Should yield an error, since no configuration works */
+	_, err = index.Resolve("Root")
+	assert.Error(t, err)
+}
+
+/*
+ * This case tests the lower level (pedantic) API.
+ */
 func TestResolution1(t *testing.T) {
 	index := MakeLibraryIndex()
 	root1, err := semver.New("1.0.0")
@@ -41,6 +152,9 @@ func TestResolution1(t *testing.T) {
 	log.Printf("Configuration: %v", config)
 }
 
+/*
+ * This case also tests the lower level (pedantic) API.
+ */
 func TestResolution2(t *testing.T) {
 	index := MakeLibraryIndex()
 	root1, err := semver.New("1.0.0")

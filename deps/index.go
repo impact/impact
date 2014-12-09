@@ -102,6 +102,15 @@ func MakeLibraryIndex() LibraryIndex {
 	}
 }
 
+func (index LibraryIndex) Contains(lib LibraryName, libver *semver.Version) bool {
+	for _, l := range index.libraries {
+		if l.Equals(lib, libver) {
+			return true
+		}
+	}
+	return false
+}
+
 func (index *LibraryIndex) AddLibrary(lib LibraryName, libver *semver.Version) {
 	for _, l := range index.libraries {
 		if l.Equals(lib, libver) {
@@ -299,5 +308,5 @@ func (index LibraryIndex) findFirst(
 }
 
 func (index LibraryIndex) Resolve(libraries ...LibraryName) (config Configuration, err error) {
-	return index.findFirst(config, true, Available{}, libraries...)
+	return index.findFirst(config, false, Available{}, libraries...)
 }
