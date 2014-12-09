@@ -2,6 +2,7 @@ package cmds
 
 import "os"
 import "io"
+import "log"
 import "path"
 import "errors"
 import "strings"
@@ -9,14 +10,17 @@ import "net/http"
 import "io/ioutil"
 
 import "github.com/xogeny/impact/utils"
+import "github.com/xogeny/impact/deps"
 
 import "github.com/wsxiaoys/terminal/color"
 import "github.com/pierrre/archivefile/zip"
 import "github.com/opesun/copyrecur"
+import "github.com/blang/semver"
 
 /* Define a struct listing all command line options for 'install' */
 type InstallCommand struct {
 	Verbose bool `short:"v" login:"verbose" description:"Turn on verbose output"`
+	DryRun  bool `short:"d" login:"dryrun" description:"Resolve dependencies but don't install"`
 }
 
 func ParseVersion(libver string, index utils.Index) (libname utils.LibraryName,
@@ -59,6 +63,52 @@ func (x *InstallCommand) Execute(args []string) error {
 
 	/* Create an empty set of libraries */
 	todo := utils.Libraries{}
+	var resolver deps.Resolver = deps.NewLibraryIndex()
+
+	for libname, lib := range index {
+		for _, ver := range lib.Versions {
+			// TODO: If lib.Versions already used semver, this wouldn't be necessary
+			// Should probably make a 'type Version ...' globally and utility functions
+			// to parse and compare.  Then the implementation is a behind the scenes
+			// detail we can change globally.
+			v := semver.Version{
+				Major: uint64(ver.Major),
+				Minor: uint64(ver.Minor),
+				Patch: uint64(ver.Patch),
+			}
+			resolver.AddLibrary(deps.LibraryName(libname), &v)
+			for _, dep := range ver.Dependencies {
+				dlib, err := index.Find(dep.Name, dep.Version)
+				if err != nil {
+					//log.Printf("Unable to find version %s of library %s",
+					//  dep.Version, dep.Name)
+					continue
+				}
+				dv := semver.Version{
+					Major: uint64(dlib.Major),
+					Minor: uint64(dlib.Minor),
+					Patch: uint64(dlib.Patch),
+				}
+
+				log.Printf("%s %s -> %s %s", libname, v.String(), dep.Name, dv.String())
+				resolver.AddDependency(
+					deps.LibraryName(libname), &v,
+					deps.LibraryName(dep.Name), &dv)
+			}
+		}
+	}
+
+	// TODO: Add a universal LibraryName alias
+	libnames := []deps.LibraryName{}
+	for _, n := range args {
+		libnames = append(libnames, deps.LibraryName(n))
+	}
+
+	config, err := resolver.Resolve(libnames...)
+	if err != nil {
+		log.Printf("Error resolving libraries: %v", err)
+	}
+	log.Printf("Resolved to %v", config)
 
 	/* Loop over all the libraries to be installed */
 	for _, arg := range args {
@@ -78,6 +128,11 @@ func (x *InstallCommand) Execute(args []string) error {
 		if err != nil {
 			return err
 		}
+	}
+
+	// If this is just a DryRun, don't actually install
+	if x.DryRun {
+		return nil
 	}
 
 	/* Loop over all the libraries we have identified for installation and install them */
