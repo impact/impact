@@ -213,9 +213,19 @@ func (index LibraryIndex) findFirst(
 			log.Printf("Dependencies of %s:%s -> %s", lib, ver.String(), depvers)
 		}
 
-		// Are the mapped values consistent with the values allowed by the dependencies
-		if !depvers.Consistent(mapped) {
-			return nil, fmt.Errorf("No compatible versions between %s and %s", mapped, depvers)
+		// Check to see if any of these dependencies have already been chosen
+		// (Note: I tried to make this process a separate function and CPU
+		//  time doubled because of something to do with semaphores...odd)
+		for d, vl := range depvers {
+			choice, chosen := mapped[d]
+			if chosen {
+				// If our choice is not among the set that this library depends on,
+				// there is no possible solution and we are done here.
+				if !vl.Contains(choice) {
+					return nil, fmt.Errorf("No compatible version of %s", d)
+				}
+				// Otherwise, the current choice is compatible
+			}
 		}
 
 		// Ignore any previous mapped libraries (we just checked to make sure
@@ -241,17 +251,17 @@ func (index LibraryIndex) findFirst(
 				}
 			}
 			if !found {
+				// If we get here, then we have a key in depvers that is not present
+				// in the 'rest' list.  So we have a new variable to solve for...
 				newlibs = append(newlibs, n1)
-				_, exists := newavail[n1]
-				if exists {
-					panic(fmt.Errorf("Should not happen"))
-				}
+				// Our initial set of possible values for a new library is all versions
+				// in the index.
 				newavail[n1] = index.Versions(n1)
 			}
 		}
 
-		// Take the intersection of the previously available versions with
-		// the dependent versions
+		// Refine the set of possible values for variables based on what
+		// is permitted by our dependencies
 		newavail = newavail.Refine(depvers)
 
 		if verbose {
@@ -266,6 +276,7 @@ func (index LibraryIndex) findFirst(
 		}
 
 		// Are any of the available value sets empty?  If so, return an error
+		// since it means that there will be no solution for those variables
 		empty := newavail.Empty()
 		if len(empty) > 0 {
 			return nil, fmt.Errorf("No compatible versions of: %v", empty)
@@ -274,8 +285,11 @@ func (index LibraryIndex) findFirst(
 		// Specify the current library and version choice
 		config[lib] = ver
 
-		// Recurse to solve remaining variables
+		// Prepend any new libraries to the front of the list of libraries
+		// we still need to solve for
 		newlibs = append(newlibs, rest...)
+
+		// Recurse to solve remaining variables
 		sol, err := index.findFirst(config, verbose, newavail, newlibs...)
 		if err == nil {
 			return sol, err

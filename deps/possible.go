@@ -39,29 +39,6 @@ func (a Possible) Refine(subset Possible) Possible {
 }
 
 /*
- * This method returns true if the possible values in 'a' are
- * consistent with the choices for any variables specified
- * in 'mapped'.
- */
-func (a Possible) Consistent(mapped Configuration) bool {
-	// Consider all libraries in 'a'
-	for d, vl := range a {
-		// Find out the value chosen for that library in 'mapped' (if any)
-		choice, chosen := mapped[d]
-		if chosen {
-			// If chosen, check to make sure the chosen value from 'mapped'
-			// is a value allowed by 'a'
-			if !vl.Contains(choice) {
-				// If not, these data structures are not consistent
-				return false
-			}
-		}
-	}
-	// If we get here, no inconsistencies were detected.
-	return true
-}
-
-/*
  * This method provides a list of libraries for which no more
  * possible versions exists.
  */
