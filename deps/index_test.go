@@ -324,7 +324,6 @@ func TestResolution2(t *testing.T) {
 	assert.Equal(t, 2, rootVers.Len())
 
 	config, err := index.Resolve("Root")
-	log.Printf("Config = %v", config)
 	assert.Error(t, err)
 
 	log.Printf("Configuration: %v", config)
