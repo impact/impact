@@ -1,5 +1,7 @@
 # Impact
 
+[![Build Status](https://drone.io/github.com/xogeny/impact/status.png)](https://drone.io/github.com/xogeny/impact/latest)
+
 *Impact* is a Modelica package manager.
 
 ![ImpactLogo](https://rawgithub.com/xogeny/impact/master/resources/images/logo_glossy.svg)
