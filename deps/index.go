@@ -46,12 +46,35 @@ type dependency struct {
 	dependsOn uniqueLibrary
 }
 
+func (d dependency) String() string {
+	return fmt.Sprintf("%s:%s -> %s:%s", d.library.name,
+		d.library.ver.String(), d.dependsOn.name,
+		d.dependsOn.ver.String())
+}
+
+func (d1 dependency) Equals(d2 dependency) bool {
+	return d1.library.name == d2.library.name &&
+		d1.library.ver.Compare(d2.library.ver) == 0 &&
+		d1.dependsOn.name == d2.dependsOn.name &&
+		d1.dependsOn.ver.Compare(d2.dependsOn.ver) == 0
+}
+
 /*
  * A library index is simply a list of dependencies (edges)
  */
 type LibraryIndex struct {
 	dependencies []dependency
 	libraries    []uniqueLibrary
+	verbose      bool
+}
+
+func (index LibraryIndex) Exists(d dependency) bool {
+	for _, c := range index.dependencies {
+		if c.Equals(d) {
+			return true
+		}
+	}
+	return false
 }
 
 /*
@@ -61,7 +84,15 @@ func NewLibraryIndex() *LibraryIndex {
 	return &LibraryIndex{
 		libraries:    []uniqueLibrary{},
 		dependencies: []dependency{},
+		verbose:      false,
 	}
+}
+
+/*
+ * This function sets debugging output
+ */
+func (index *LibraryIndex) Verbose(v bool) {
+	index.verbose = v
 }
 
 func (index LibraryIndex) Contains(lib LibraryName, libver *semver.Version) bool {
@@ -88,7 +119,9 @@ func (index *LibraryIndex) AddLibrary(lib LibraryName, libver *semver.Version) {
 func (index *LibraryIndex) AddDependency(lib LibraryName, libver *semver.Version,
 	deplib LibraryName, depver *semver.Version) error {
 
+	/* Flag indicating whether we have found the `lib` library */
 	lfound := false
+	/* Flag indicating whether we have found the `deplib` library */
 	dfound := false
 
 	for _, l := range index.libraries {
@@ -113,7 +146,12 @@ func (index *LibraryIndex) AddDependency(lib LibraryName, libver *semver.Version
 	dependsOn := uniqueLibrary{name: deplib, ver: depver}
 	dep := dependency{library: library, dependsOn: dependsOn}
 
-	index.dependencies = append(index.dependencies, dep)
+	// Avoid duplicates
+	// TODO: Get rid of this when quality of index data is such that we don't
+	// need it...
+	if !index.Exists(dep) {
+		index.dependencies = append(index.dependencies, dep)
+	}
 	return nil
 }
 
@@ -311,5 +349,5 @@ func (index LibraryIndex) Resolve(libraries ...LibraryName) (config Configuratio
 	}
 
 	// Now search for a consistent set...
-	return index.findFirst(config, false, ret, libraries...)
+	return index.findFirst(config, index.verbose, ret, libraries...)
 }
