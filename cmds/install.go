@@ -2,6 +2,7 @@ package cmds
 
 import "os"
 import "io"
+import "fmt"
 import "log"
 import "path"
 import "errors"
@@ -62,7 +63,6 @@ func (x *InstallCommand) Execute(args []string) error {
 	index := utils.DownloadIndex()
 
 	/* Create an empty set of libraries */
-	todo := utils.Libraries{}
 	var resolver deps.Resolver = deps.NewLibraryIndex()
 
 	for libname, lib := range index {
@@ -90,10 +90,19 @@ func (x *InstallCommand) Execute(args []string) error {
 					Patch: uint64(dlib.Patch),
 				}
 
-				log.Printf("%s %s -> %s %s", libname, v.String(), dep.Name, dv.String())
-				resolver.AddDependency(
-					deps.LibraryName(libname), &v,
-					deps.LibraryName(dep.Name), &dv)
+				//log.Printf("%s %s -> %s %s", libname, v.String(), dep.Name, dv.String())
+
+				deplib := deps.LibraryName(dep.Name)
+				depver := &dv
+
+				if !resolver.Contains(deplib, depver) {
+					resolver.AddLibrary(deplib, depver)
+				}
+
+				err = resolver.AddDependency(deps.LibraryName(libname), &v, deplib, depver)
+				if err != nil {
+					return err
+				}
 			}
 		}
 	}
@@ -108,42 +117,57 @@ func (x *InstallCommand) Execute(args []string) error {
 	if err != nil {
 		log.Printf("Error resolving libraries: %v", err)
 	}
-	log.Printf("Resolved to %v", config)
-
-	/* Loop over all the libraries to be installed */
-	for _, arg := range args {
-		libname, ver, err := ParseVersion(arg, index)
-		if err != nil {
-			return err
+	if x.Verbose {
+		color.Println("Libraries to be installed:")
+		for name, ver := range config {
+			color.Printf("  @{c}%s %v\n", name, ver)
 		}
-
-		/* Get Version objects for this library and all its dependencies */
-		deps, err := index.Dependencies(libname, ver)
-		if err != nil {
-			return err
-		}
-
-		/* Merge them with the master list of libraries we are going to install */
-		err = todo.Merge(deps)
-		if err != nil {
-			return err
-		}
-	}
-
-	// If this is just a DryRun, don't actually install
-	if x.DryRun {
-		return nil
+		color.Printf("\n")
 	}
 
 	/* Loop over all the libraries we have identified for installation and install them */
-	for ln, lv := range todo {
+	for ln, v := range config {
+		lib, exists := index[utils.LibraryName(ln)]
+		if !exists {
+			fmt.Printf("Unable to locate library named %s (this should not happen)", ln)
+			return fmt.Errorf("Unable to locate library named %s (this should not happen)", ln)
+		}
+		var lv utils.Version
+		found := false
+		for _, ver := range lib.Versions {
+			if uint64(ver.Major) == v.Major && uint64(ver.Minor) == v.Minor && uint64(ver.Patch) == v.Patch {
+				found = true
+				lv = ver
+				break
+			}
+		}
+
+		if !found {
+			fmt.Printf("Unable to locate version %s of library %s",
+				v.String(), ln)
+			return fmt.Errorf("Unable to locate version %s of library %s",
+				v.String(), ln)
+		}
 		if x.Verbose {
-			color.Println("@!Installing @{c}" + string(ln) + ", version " + string(lv.Version))
+			color.Println("@!Installing @{c}%s, version %s...", string(ln), string(lv.Version))
 		}
-		ierr := Install(lv, index, ".", x.Verbose)
-		if ierr != nil {
-			color.Println("@{r}Error: " + ierr.Error())
+
+		// If this is just a DryRun, don't actually install
+		if !x.DryRun {
+			ierr := Install(lv, index, ".", x.Verbose)
+			if ierr != nil {
+				color.Println("@{r}Error: " + ierr.Error())
+			}
 		}
+
+		if x.Verbose {
+			color.Println("...@{!g}done")
+		}
+
+	}
+
+	if x.Verbose {
+		color.Println("\n@{!g}All libraries installed.\n")
 	}
 
 	return nil
