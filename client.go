@@ -16,6 +16,11 @@ func main() {
 		"Search for libraries associated with specific terms",
 		&cmds.SearchCommand{})
 
+	parser.AddCommand("list",
+		"List all available libraries",
+		"List all available libraries",
+		&cmds.ListCommand{})
+
 	parser.AddCommand("install",
 		"Install named libraries",
 		"Install named libraries",
