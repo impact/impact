@@ -89,7 +89,7 @@ SomeDir/
   bin/
   pkg/
   src/
-    gihub.com/xogeny/
+    github.com/xogeny/
 ```
 
 Inside the `xogeny` directory, you need to do:
