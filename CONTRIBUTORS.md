@@ -15,3 +15,31 @@ If you want to contribute, here is how the code is organized:
 	  complete index.  The `index` contains additional information
 	  like what repository the source came from, who the author is,
 	  etc.
+
+## Testing
+
+I've switched this project to use GoConvey.  In addition, it depends
+on a small package I've created called `xconvey` which includes some
+very simple shorthand functions.
+
+To run tests from the command line, you can simply do the normal:
+
+```
+$ go test ./...
+```
+
+This will recurse into all the directories and give a reasonably nice
+textual summary.  But I normally run:
+
+```
+$ goconvey
+```
+
+In the root directory.  This provides a web based UI at
+http://localhost:8080.  Futhermore, I recommend turning on
+notifications.  This means that you'll get a simply summary
+notification every time the tests are run.  This is an easy way to
+keep an eye on any regressions without having to have the full web
+interface open all the time.  When a regression is found, it is then a
+simple matter to open the web browser and see a much more detailed
+report.
