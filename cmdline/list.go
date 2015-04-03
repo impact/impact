@@ -1,9 +1,11 @@
-package cmds
+package main
 
-import "fmt"
+import (
+	"fmt"
 
-import "github.com/xogeny/impact/utils"
-import "github.com/wsxiaoys/terminal/color"
+	"github.com/wsxiaoys/terminal/color"
+	"github.com/xogeny/impact/index"
+)
 
 /* Define a struct listing all command line options for 'search' */
 type ListCommand struct {
@@ -18,8 +20,8 @@ func (x *ListCommand) Execute(args []string) error {
 	}
 	url := x.URL
 
-	index := utils.DownloadIndex()
-	for libname, lib := range index {
+	ind := index.DownloadIndex()
+	for libname, lib := range ind {
 		color.Println("@{g}" + string(libname) + ":\n@{c}  - " + string(lib.Description))
 		if url {
 			color.Println("    @{y}" + lib.Homepage)

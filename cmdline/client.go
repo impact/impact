@@ -19,7 +19,7 @@ func main() {
 	parser.AddCommand("list",
 		"List all available libraries",
 		"List all available libraries",
-		&cmds.ListCommand{})
+		&ListCommand{})
 
 	parser.AddCommand("install",
 		"Install named libraries",

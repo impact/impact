@@ -44,10 +44,10 @@ func TestOrdering(t *testing.T) {
 	for i := 0; i < vers.Len()-1; i++ {
 		v1 := vers.Get(i)
 		v2 := vers.Get(i + 1)
-		assert.True(t, (&v1).LT(&v2))
-		assert.True(t, (&v2).GT(&v1))
-		assert.Equal(t, 0, (&v1).Compare(&v1))
-		assert.Equal(t, 0, (&v2).Compare(&v2))
+		assert.True(t, v1.LT(v2))
+		assert.True(t, v2.GT(v1))
+		assert.Equal(t, 0, v1.Compare(v1))
+		assert.Equal(t, 0, v2.Compare(v2))
 	}
 
 	vers.ReverseSort()
@@ -55,9 +55,9 @@ func TestOrdering(t *testing.T) {
 	for i := 0; i < vers.Len()-1; i++ {
 		v2 := vers.Get(i)
 		v1 := vers.Get(i + 1)
-		assert.True(t, (&v1).LT(&v2))
-		assert.True(t, (&v2).GT(&v1))
-		assert.Equal(t, 0, (&v1).Compare(&v1))
-		assert.Equal(t, 0, (&v2).Compare(&v2))
+		assert.True(t, v1.LT(v2))
+		assert.True(t, v2.GT(v1))
+		assert.Equal(t, 0, v1.Compare(v1))
+		assert.Equal(t, 0, v2.Compare(v2))
 	}
 }

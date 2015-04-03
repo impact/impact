@@ -78,7 +78,7 @@ func (x *InstallCommand) Execute(args []string) error {
 				Minor: uint64(ver.Minor),
 				Patch: uint64(ver.Patch),
 			}
-			resolver.AddLibrary(graph.LibraryName(libname), &v)
+			resolver.AddLibrary(graph.LibraryName(libname), v)
 			for _, dep := range ver.Dependencies {
 				dlib, err := ind.Find(dep.Name, dep.Version)
 				if err != nil {
@@ -95,13 +95,13 @@ func (x *InstallCommand) Execute(args []string) error {
 				//log.Printf("%s %s -> %s %s", libname, v.String(), dep.Name, dv.String())
 
 				deplib := graph.LibraryName(dep.Name)
-				depver := &dv
+				depver := dv
 
 				if !resolver.Contains(deplib, depver) {
 					resolver.AddLibrary(deplib, depver)
 				}
 
-				err = resolver.AddDependency(graph.LibraryName(libname), &v, deplib, depver)
+				err = resolver.AddDependency(graph.LibraryName(libname), v, deplib, depver)
 				if err != nil {
 					return err
 				}

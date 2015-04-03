@@ -38,7 +38,7 @@ func (graph *LibraryGraph) Verbose(v bool) {
 	graph.verbose = v
 }
 
-func (graph LibraryGraph) Contains(lib LibraryName, libver *semver.Version) bool {
+func (graph LibraryGraph) Contains(lib LibraryName, libver semver.Version) bool {
 	for _, l := range graph.libraries {
 		if l.Equals(lib, libver) {
 			return true
@@ -47,7 +47,7 @@ func (graph LibraryGraph) Contains(lib LibraryName, libver *semver.Version) bool
 	return false
 }
 
-func (graph *LibraryGraph) AddLibrary(lib LibraryName, libver *semver.Version) {
+func (graph *LibraryGraph) AddLibrary(lib LibraryName, libver semver.Version) {
 	for _, l := range graph.libraries {
 		if l.Equals(lib, libver) {
 			return
@@ -59,8 +59,8 @@ func (graph *LibraryGraph) AddLibrary(lib LibraryName, libver *semver.Version) {
 /*
  * Method to add a new dependency to a library graph
  */
-func (graph *LibraryGraph) AddDependency(lib LibraryName, libver *semver.Version,
-	deplib LibraryName, depver *semver.Version) error {
+func (graph *LibraryGraph) AddDependency(lib LibraryName, libver semver.Version,
+	deplib LibraryName, depver semver.Version) error {
 
 	/* Flag indicating whether we have found the `lib` library */
 	lfound := false
@@ -103,17 +103,17 @@ func (graph *LibraryGraph) AddDependency(lib LibraryName, libver *semver.Version
  * graph.  These are returned in sorted order (latest to earliest)
  */
 func (graph LibraryGraph) Versions(lib LibraryName) *VersionList {
-	present := map[*semver.Version]bool{}
+	present := map[string]semver.Version{}
 
 	for _, l := range graph.libraries {
 		if l.name == lib {
-			present[l.ver] = true
+			present[l.ver.String()] = l.ver
 		}
 	}
 
 	vl := NewVersionList()
-	for v, _ := range present {
-		vl.Add(v)
+	for _, sv := range present {
+		vl.Add(sv)
 	}
 
 	vl.ReverseSort()
@@ -125,7 +125,7 @@ func (graph LibraryGraph) Versions(lib LibraryName) *VersionList {
  * library+version depends on and the values are the versions that are
  * compatible with the named library+version.
  */
-func (graph LibraryGraph) Dependencies(lib LibraryName, ver *semver.Version) Possible {
+func (graph LibraryGraph) Dependencies(lib LibraryName, ver semver.Version) Possible {
 	depvers := Possible{}
 
 	for _, dep := range graph.dependencies {

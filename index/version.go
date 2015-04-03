@@ -1,5 +1,9 @@
 package index
 
+import (
+// "github.com/blang/semver"
+)
+
 type Version struct {
 	Version      VersionString `json:"version"`
 	Major        int           `json:"major"`

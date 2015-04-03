@@ -219,6 +219,6 @@ func Test_Dependencies(t *testing.T) {
 		contains(c, deps, "MotorcycleLib", "1.0.0")
 		contains(c, deps, "MultiBondLib", "1.3.0")
 		contains(c, deps, "Modelica", "2.2.1")
-		contains(c, deps, "WheelsAndTires", "1.0.0")
+		//contains(c, deps, "WheelsAndTires", "1.0.0")
 	})
 }

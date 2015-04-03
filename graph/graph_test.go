@@ -15,7 +15,7 @@ import (
  * Helper function to turn a string (in the form 'LibName:Version' into a
  * library name and semantic version.
  */
-func parse(libs string) (LibraryName, *semver.Version) {
+func parse(libs string) (LibraryName, semver.Version) {
 	parts := strings.Split(libs, ":")
 	if len(parts) != 2 {
 		panic(fmt.Errorf("Invalid library spec: %s", libs))
@@ -280,10 +280,10 @@ func TestSelfDependence(t *testing.T) {
 func TestResolution1(t *testing.T) {
 	Convey("Testing low-level functionality", t, func(c C) {
 		index := NewLibraryGraph()
-		root1, err := semver.New("1.0.0")
+		root1, err := semver.Parse("1.0.0")
 		NoError(c, err)
 
-		a1, err := semver.New("1.0.0")
+		a1, err := semver.Parse("1.0.0")
 		NoError(c, err)
 
 		index.AddLibrary("Root", root1)
@@ -325,10 +325,10 @@ func TestResolution1(t *testing.T) {
 func TestResolution2(t *testing.T) {
 	Convey("Testing more low-level functionality", t, func(c C) {
 		index := NewLibraryGraph()
-		root1, err := semver.New("1.0.0")
+		root1, err := semver.Parse("1.0.0")
 		NoError(c, err)
 
-		a1, err := semver.New("1.0.0")
+		a1, err := semver.Parse("1.0.0")
 		NoError(c, err)
 
 		index.AddLibrary("Root", root1)

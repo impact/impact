@@ -12,10 +12,10 @@ import (
  */
 type uniqueLibrary struct {
 	name LibraryName
-	ver  *semver.Version
+	ver  semver.Version
 }
 
-func (l1 uniqueLibrary) Equals(lib LibraryName, ver *semver.Version) bool {
+func (l1 uniqueLibrary) Equals(lib LibraryName, ver semver.Version) bool {
 	return l1.name == lib && l1.ver.Compare(ver) == 0
 }
 

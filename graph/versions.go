@@ -6,9 +6,9 @@ import (
 	"sort"
 )
 
-type VersionList []*semver.Version
+type VersionList []semver.Version
 
-func NewVersionList(init ...*semver.Version) *VersionList {
+func NewVersionList(init ...semver.Version) *VersionList {
 	ret := VersionList{}
 	ret = append(ret, init...)
 	return &ret
@@ -18,13 +18,13 @@ func (vl *VersionList) Clone() *VersionList {
 	return NewVersionList((*vl)...)
 }
 
-func (vl *VersionList) Add(v *semver.Version) *VersionList {
+func (vl *VersionList) Add(v semver.Version) *VersionList {
 	*vl = append(*vl, v)
 	return vl
 }
 
 func (vl VersionList) Get(i int) semver.Version {
-	return *vl[i]
+	return vl[i]
 }
 
 func (vl VersionList) Len() int {
@@ -59,7 +59,7 @@ func (vl VersionList) Intersection(vl2 VersionList) *VersionList {
 	return ret
 }
 
-func (vl VersionList) Contains(v *semver.Version) bool {
+func (vl VersionList) Contains(v semver.Version) bool {
 	for _, x := range vl {
 		if x.Compare(v) == 0 {
 			return true
@@ -72,9 +72,9 @@ func (vl VersionList) String() string {
 	ret := "["
 	for i, v := range vl {
 		if i == 0 {
-			ret = fmt.Sprintf("%s%s", ret, (*v).String())
+			ret = fmt.Sprintf("%s%s", ret, v.String())
 		} else {
-			ret = fmt.Sprintf("%s, %s", ret, (*v).String())
+			ret = fmt.Sprintf("%s, %s", ret, v.String())
 		}
 	}
 	ret = ret + "]"
