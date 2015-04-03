@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/xogeny/impact/utils"
+	"github.com/xogeny/impact/index"
 
 	"github.com/wsxiaoys/terminal/color"
 )
@@ -21,10 +21,10 @@ func (x *InfoCommand) Execute(args []string) error {
 		fmt.Print("Ignoring (extra) unrecognized arguments: ")
 		fmt.Println(args)
 	}
-	index := utils.DownloadIndex()
+	ind := index.DownloadIndex()
 
-	libname := utils.LibraryName(x.Positional.LibraryName)
-	lib, ok := index[libname]
+	libname := index.LibraryName(x.Positional.LibraryName)
+	lib, ok := ind[libname]
 	if !ok {
 		return errors.New("Unable to locate library named '" + string(libname) + "'")
 	}

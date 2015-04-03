@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/xogeny/impact/graph"
-	"github.com/xogeny/impact/utils"
+	"github.com/xogeny/impact/index"
 
 	"github.com/blang/semver"
 	"github.com/opesun/copyrecur"
@@ -26,15 +26,15 @@ type InstallCommand struct {
 	DryRun  bool `short:"d" login:"dryrun" description:"Resolve dependencies but don't install"`
 }
 
-func ParseVersion(libver string, index utils.Index) (libname utils.LibraryName,
-	ver utils.VersionString, err error) {
+func ParseVersion(libver string, ind index.Index) (libname index.LibraryName,
+	ver index.VersionString, err error) {
 	parts := strings.Split(libver, "#")
 
-	libname = utils.LibraryName(parts[0])
+	libname = index.LibraryName(parts[0])
 
-	lib, ok := index[libname]
+	lib, ok := ind[libname]
 	if !ok {
-		err = utils.MissingLibraryError{Name: libname}
+		err = index.MissingLibraryError{Name: libname}
 		return
 	}
 
@@ -46,7 +46,7 @@ func ParseVersion(libver string, index utils.Index) (libname utils.LibraryName,
 		}
 		ver = version.Version
 	} else if len(parts) == 2 {
-		ver = utils.VersionString(parts[1])
+		ver = index.VersionString(parts[1])
 	} else if len(parts) > 2 {
 		err = errors.New("Invalid version specification: " + libver +
 			" (must be libraryName#version)")
@@ -62,12 +62,12 @@ func (x *InstallCommand) Execute(args []string) error {
 	}
 
 	/* Build the index */
-	index := utils.DownloadIndex()
+	ind := index.DownloadIndex()
 
 	/* Create an empty set of libraries */
 	var resolver graph.Resolver = graph.NewLibraryGraph()
 
-	for libname, lib := range index {
+	for libname, lib := range ind {
 		for _, ver := range lib.Versions {
 			// TODO: If lib.Versions already used semver, this wouldn't be necessary
 			// Should probably make a 'type Version ...' globally and utility functions
@@ -80,7 +80,7 @@ func (x *InstallCommand) Execute(args []string) error {
 			}
 			resolver.AddLibrary(graph.LibraryName(libname), &v)
 			for _, dep := range ver.Dependencies {
-				dlib, err := index.Find(dep.Name, dep.Version)
+				dlib, err := ind.Find(dep.Name, dep.Version)
 				if err != nil {
 					//log.Printf("Unable to find version %s of library %s",
 					//  dep.Version, dep.Name)
@@ -129,12 +129,12 @@ func (x *InstallCommand) Execute(args []string) error {
 
 	/* Loop over all the libraries we have identified for installation and install them */
 	for ln, v := range config {
-		lib, exists := index[utils.LibraryName(ln)]
+		lib, exists := ind[index.LibraryName(ln)]
 		if !exists {
 			fmt.Printf("Unable to locate library named %s (this should not happen)", ln)
 			return fmt.Errorf("Unable to locate library named %s (this should not happen)", ln)
 		}
-		var lv utils.Version
+		var lv index.Version
 		found := false
 		for _, ver := range lib.Versions {
 			if uint64(ver.Major) == v.Major && uint64(ver.Minor) == v.Minor && uint64(ver.Patch) == v.Patch {
@@ -156,7 +156,7 @@ func (x *InstallCommand) Execute(args []string) error {
 
 		// If this is just a DryRun, don't actually install
 		if !x.DryRun {
-			ierr := Install(lv, index, ".", x.Verbose)
+			ierr := Install(lv, ind, ".", x.Verbose)
 			if ierr != nil {
 				color.Println("@{r}Error: " + ierr.Error())
 			}
@@ -175,7 +175,7 @@ func (x *InstallCommand) Execute(args []string) error {
 	return nil
 }
 
-func Install(ver utils.Version, index utils.Index, target string, verbose bool) error {
+func Install(ver index.Version, ind index.Index, target string, verbose bool) error {
 	/* Download the Zipball to a temporary file */
 	if verbose {
 		color.Println("  @{y}Downloading source from: @{!y}" + string(ver.Zipball))

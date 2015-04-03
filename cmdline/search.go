@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/wsxiaoys/terminal/color"
-	"github.com/xogeny/impact/utils"
+	"github.com/xogeny/impact/index"
 )
 
 /* Define a struct listing all command line options for 'search' */
@@ -24,8 +24,8 @@ func (x *SearchCommand) Execute(args []string) error {
 	term := x.Positional.Term
 	url := x.URL
 
-	index := utils.DownloadIndex()
-	for libname, lib := range index {
+	ind := index.DownloadIndex()
+	for libname, lib := range ind {
 		if lib.Matches(term) {
 			color.Println("@{g}" + string(libname) + ":\n@{c}  - " + string(lib.Description))
 			if url {
