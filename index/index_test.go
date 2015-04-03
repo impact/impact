@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/blang/semver"
+
 	. "github.com/smartystreets/goconvey/convey"
 	. "github.com/xogeny/xconvey"
 )
@@ -12,11 +14,12 @@ import (
 func Test_Creation(t *testing.T) {
 	Convey("Testing index creation", t, func(c C) {
 		dep := Dependency{Name: "Foo", Version: "1.0.0"}
-		version := Version{
-			Version:      "0.1.0",
-			Major:        0,
-			Minor:        1,
-			Patch:        0,
+
+		v, err := semver.Parse("0.1.0")
+		NoError(c, err)
+
+		version := VersionDetails{
+			Version:      v,
 			Tarball:      "http://modelica.org/",
 			Zipball:      "http://modelica.org/",
 			Path:         "./ThisLibrary",
@@ -26,7 +29,7 @@ func Test_Creation(t *testing.T) {
 		lib := Library{
 			Homepage:    "http://mylib.modelica.org",
 			Description: "A dummy library",
-			Versions:    map[VersionString]Version{"0.1.0": version},
+			Versions:    map[VersionString]VersionDetails{"0.1.0": version},
 		}
 
 		index := map[string]Library{"Dummy": lib}
@@ -70,14 +73,16 @@ func Test_UnmarshallVersion(t *testing.T) {
                 "minor": 1
             }`
 		sample := []byte(ds)
-		dep := Version{}
+		dep := VersionDetails{}
 		err := json.Unmarshal(sample, &dep)
 		NoError(c, err)
-		Equals(c, dep.Major, 1)
-		Equals(c, dep.Minor, 1)
-		Equals(c, dep.Patch, 0)
+		Equals(c, dep.Version.Major, 1)
+		Equals(c, dep.Version.Minor, 1)
+		Equals(c, dep.Version.Patch, 0)
+		Resembles(c, dep.Version.Pre, []semver.PRVersion(nil))
+		Resembles(c, dep.Version.Build, []string(nil))
 		Equals(c, dep.Sha, "3075b23c214b65a510eb58654464f54507901378")
-		Equals(c, dep.Version, "1.1.0")
+		Equals(c, dep.Version.String(), "1.1.0")
 		Equals(c, dep.Path, "Physiolibrary 1.1.0")
 	})
 }
@@ -198,11 +203,11 @@ func contains(c C, libs Libraries, name LibraryName, ver VersionString) {
 	v, ok := libs[name]
 	IsTrue(c, ok)
 
-	if v.Version != ver {
+	if v.Version.String() != string(ver) {
 		c.Printf("Expected version %s of library %s but found %s\n",
-			ver, name, v.Version)
+			ver, name, v.Version.String())
 	}
-	Equals(c, v.Version, ver)
+	Equals(c, v.Version.String(), ver)
 }
 
 func Test_Dependencies(t *testing.T) {

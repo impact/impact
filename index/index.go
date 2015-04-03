@@ -56,7 +56,7 @@ func (index *Index) BuildIndex(read io.Reader) error {
 	return err
 }
 
-func (index *Index) Find(name LibraryName, version VersionString) (v Version, err error) {
+func (index *Index) Find(name LibraryName, version VersionString) (v VersionDetails, err error) {
 	me, ok := (*index)[name]
 	if !ok {
 		err = MissingLibraryError{Name: name}
@@ -87,7 +87,7 @@ func (index *Index) Dependencies(name LibraryName,
 		for dn, dv := range deps {
 			ev, exists := libs[dn]
 			if exists {
-				if dv.Equals(ev) {
+				if dv.Version.Equals(ev.Version) {
 					err = VersionConflictError{Name: dn, Existing: ev, Additional: dv}
 					return
 				}

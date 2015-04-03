@@ -14,7 +14,6 @@ import (
 	"github.com/xogeny/impact/graph"
 	"github.com/xogeny/impact/index"
 
-	"github.com/blang/semver"
 	"github.com/opesun/copyrecur"
 	"github.com/pierrre/archivefile/zip"
 	"github.com/wsxiaoys/terminal/color"
@@ -26,6 +25,7 @@ type InstallCommand struct {
 	DryRun  bool `short:"d" login:"dryrun" description:"Resolve dependencies but don't install"`
 }
 
+// TODO: This probably needs to be refactored
 func ParseVersion(libver string, ind index.Index) (libname index.LibraryName,
 	ver index.VersionString, err error) {
 	parts := strings.Split(libver, "#")
@@ -44,7 +44,7 @@ func ParseVersion(libver string, ind index.Index) (libname index.LibraryName,
 			err = lerr
 			return
 		}
-		ver = version.Version
+		ver = index.VersionString(version.Version.String())
 	} else if len(parts) == 2 {
 		ver = index.VersionString(parts[1])
 	} else if len(parts) > 2 {
@@ -69,15 +69,7 @@ func (x *InstallCommand) Execute(args []string) error {
 
 	for libname, lib := range ind {
 		for _, ver := range lib.Versions {
-			// TODO: If lib.Versions already used semver, this wouldn't be necessary
-			// Should probably make a 'type Version ...' globally and utility functions
-			// to parse and compare.  Then the implementation is a behind the scenes
-			// detail we can change globally.
-			v := semver.Version{
-				Major: uint64(ver.Major),
-				Minor: uint64(ver.Minor),
-				Patch: uint64(ver.Patch),
-			}
+			v := ver.Version
 			resolver.AddLibrary(graph.LibraryName(libname), v)
 			for _, dep := range ver.Dependencies {
 				dlib, err := ind.Find(dep.Name, dep.Version)
@@ -86,16 +78,11 @@ func (x *InstallCommand) Execute(args []string) error {
 					//  dep.Version, dep.Name)
 					continue
 				}
-				dv := semver.Version{
-					Major: uint64(dlib.Major),
-					Minor: uint64(dlib.Minor),
-					Patch: uint64(dlib.Patch),
-				}
 
 				//log.Printf("%s %s -> %s %s", libname, v.String(), dep.Name, dv.String())
 
 				deplib := graph.LibraryName(dep.Name)
-				depver := dv
+				depver := dlib.Version
 
 				if !resolver.Contains(deplib, depver) {
 					resolver.AddLibrary(deplib, depver)
@@ -134,10 +121,12 @@ func (x *InstallCommand) Execute(args []string) error {
 			fmt.Printf("Unable to locate library named %s (this should not happen)", ln)
 			return fmt.Errorf("Unable to locate library named %s (this should not happen)", ln)
 		}
-		var lv index.Version
+
+		var lv index.VersionDetails
+
 		found := false
 		for _, ver := range lib.Versions {
-			if uint64(ver.Major) == v.Major && uint64(ver.Minor) == v.Minor && uint64(ver.Patch) == v.Patch {
+			if ver.Version.Equals(v) {
 				found = true
 				lv = ver
 				break
@@ -151,7 +140,7 @@ func (x *InstallCommand) Execute(args []string) error {
 				v.String(), ln)
 		}
 		if x.Verbose {
-			color.Println("@!Installing @{c}%s, version %s...", string(ln), string(lv.Version))
+			color.Println("@!Installing @{c}%s, version %s...", string(ln), string(lv.Version.String()))
 		}
 
 		// If this is just a DryRun, don't actually install
@@ -175,7 +164,7 @@ func (x *InstallCommand) Execute(args []string) error {
 	return nil
 }
 
-func Install(ver index.Version, ind index.Index, target string, verbose bool) error {
+func Install(ver index.VersionDetails, ind index.Index, target string, verbose bool) error {
 	/* Download the Zipball to a temporary file */
 	if verbose {
 		color.Println("  @{y}Downloading source from: @{!y}" + string(ver.Zipball))

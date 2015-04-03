@@ -1,5 +1,9 @@
 package index
 
+import (
+	"fmt"
+)
+
 type MissingLibraryError struct {
 	Name LibraryName
 }
@@ -19,13 +23,13 @@ func (e MissingVersionError) Error() string {
 
 type VersionConflictError struct {
 	Name       LibraryName
-	Existing   Version
-	Additional Version
+	Existing   VersionDetails
+	Additional VersionDetails
 }
 
 func (e VersionConflictError) Error() string {
-	return "Existing version '" + string(e.Existing.Version) + "' of '" + string(e.Name) +
-		"' conflicted with additional version '" + string(e.Additional.Version) + "'"
+	return fmt.Sprintf("Existing version '%s'' of '%s' conflicted with additional version '%s'",
+		e.Existing.Version.String(), e.Name, e.Additional.Version.String())
 }
 
 type EmptyLibraryError struct {
