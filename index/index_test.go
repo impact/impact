@@ -2,7 +2,6 @@ package index
 
 import (
 	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/blang/semver"
@@ -198,16 +197,13 @@ func Test_ReadFile(t *testing.T) {
 	})
 }
 
-func contains(c C, libs Libraries, name LibraryName, ver VersionString) {
-	c.Printf("Should contain library %s\n", name)
-	v, ok := libs[name]
-	IsTrue(c, ok)
-
-	if v.Version.String() != string(ver) {
-		c.Printf("Expected version %s of library %s but found %s\n",
-			ver, name, v.Version.String())
+func contains(libs []Dependency, name LibraryName, ver VersionString) bool {
+	for _, lib := range libs {
+		if lib.Name == name && lib.Version == ver {
+			return true
+		}
 	}
-	Equals(c, v.Version.String(), ver)
+	return false
 }
 
 func Test_Dependencies(t *testing.T) {
@@ -216,14 +212,13 @@ func Test_Dependencies(t *testing.T) {
 		err := index.BuildIndexFromFile("sample.json")
 		deps, err := index.Dependencies("MotorcycleLib", "1.0")
 		NoError(c, err)
-		for k, v := range deps {
-			fmt.Println(k)
-			fmt.Println(v.Version)
-		}
-		fmt.Println(deps)
-		contains(c, deps, "MotorcycleLib", "1.0.0")
-		contains(c, deps, "MultiBondLib", "1.3.0")
-		contains(c, deps, "Modelica", "2.2.1")
-		//contains(c, deps, "WheelsAndTires", "1.0.0")
+
+		IsTrue(c, contains(deps, "MultiBondLib", "1.3"))
+		IsTrue(c, contains(deps, "Modelica_LinearSystems", "0.91"))
+		IsTrue(c, contains(deps, "Vectors", "0.8"))
+		IsTrue(c, contains(deps, "WheelsAndTires", "1.0"))
+		IsTrue(c, contains(deps, "Modelica", "2.2.1"))
+		IsTrue(c, contains(deps, "LinearSystems", "0.9"))
+		IsTrue(c, contains(deps, "BondLib", "2.3"))
 	})
 }

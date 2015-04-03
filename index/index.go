@@ -70,31 +70,17 @@ func (index *Index) Find(name LibraryName, version VersionString) (v VersionDeta
 	return
 }
 
+// This function reports **only** a given libraries direct
+// dependencies.  To resolve complete dependencies (including
+// constraints due to other libraries, including dependencies,
+// use the functionality in the graph package.
 func (index *Index) Dependencies(name LibraryName,
-	version VersionString) (libs Libraries, err error) {
+	version VersionString) ([]Dependency, error) {
+
 	myver, err := index.Find(name, version)
 	if err != nil {
-		return
+		return []Dependency{}, err
 	}
 
-	libs = Libraries{name: myver}
-
-	for _, dep := range myver.Dependencies {
-		deps, lerr := index.Dependencies(dep.Name, dep.Version)
-		if lerr != nil {
-			return
-		}
-		for dn, dv := range deps {
-			ev, exists := libs[dn]
-			if exists {
-				if dv.Version.Equals(ev.Version) {
-					err = VersionConflictError{Name: dn, Existing: ev, Additional: dv}
-					return
-				}
-			} else {
-				libs[dn] = dv
-			}
-		}
-	}
-	return
+	return myver.Dependencies, nil
 }
