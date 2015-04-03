@@ -14,56 +14,7 @@ import (
 type LibraryName string
 
 /*
- * This type represents a specific configuration of libraries.  This is used to represent
- * the resolution of dependencies.
- */
-type Configuration map[LibraryName]*semver.Version
-
-func (conf Configuration) Clone() Configuration {
-	clone := Configuration{}
-	for k, v := range conf {
-		clone[k] = v
-	}
-	return clone
-}
-
-/*
- * This struct is not exported.  It is used to represent a unique library
- * (i.e., name + version)
- */
-type uniqueLibrary struct {
-	name LibraryName
-	ver  *semver.Version
-}
-
-func (l1 uniqueLibrary) Equals(lib LibraryName, ver *semver.Version) bool {
-	return l1.name == lib && l1.ver.Compare(ver) == 0
-}
-
-/*
- * This is an edge in our (directed) dependency graph.  It indicates that `library`
- * depends on `dependsOn`.  Each is represented as a unique library (i.e., name + version)
- */
-type dependency struct {
-	library   uniqueLibrary
-	dependsOn uniqueLibrary
-}
-
-func (d dependency) String() string {
-	return fmt.Sprintf("%s:%s -> %s:%s", d.library.name,
-		d.library.ver.String(), d.dependsOn.name,
-		d.dependsOn.ver.String())
-}
-
-func (d1 dependency) Equals(d2 dependency) bool {
-	return d1.library.name == d2.library.name &&
-		d1.library.ver.Compare(d2.library.ver) == 0 &&
-		d1.dependsOn.name == d2.dependsOn.name &&
-		d1.dependsOn.ver.Compare(d2.dependsOn.ver) == 0
-}
-
-/*
- * A library index is simply a list of dependencies (edges)
+ * A library graph is simply a list of dependencies (edges)
  */
 type LibraryGraph struct {
 	dependencies []dependency
@@ -71,8 +22,8 @@ type LibraryGraph struct {
 	verbose      bool
 }
 
-func (index LibraryGraph) Exists(d dependency) bool {
-	for _, c := range index.dependencies {
+func (graph LibraryGraph) Exists(d dependency) bool {
+	for _, c := range graph.dependencies {
 		if c.Equals(d) {
 			return true
 		}
@@ -81,25 +32,14 @@ func (index LibraryGraph) Exists(d dependency) bool {
 }
 
 /*
- * This function creates a new LibraryGraph object.
- */
-func NewLibraryGraph() *LibraryGraph {
-	return &LibraryGraph{
-		libraries:    []uniqueLibrary{},
-		dependencies: []dependency{},
-		verbose:      false,
-	}
-}
-
-/*
  * This function sets debugging output
  */
-func (index *LibraryGraph) Verbose(v bool) {
-	index.verbose = v
+func (graph *LibraryGraph) Verbose(v bool) {
+	graph.verbose = v
 }
 
-func (index LibraryGraph) Contains(lib LibraryName, libver *semver.Version) bool {
-	for _, l := range index.libraries {
+func (graph LibraryGraph) Contains(lib LibraryName, libver *semver.Version) bool {
+	for _, l := range graph.libraries {
 		if l.Equals(lib, libver) {
 			return true
 		}
@@ -107,19 +47,19 @@ func (index LibraryGraph) Contains(lib LibraryName, libver *semver.Version) bool
 	return false
 }
 
-func (index *LibraryGraph) AddLibrary(lib LibraryName, libver *semver.Version) {
-	for _, l := range index.libraries {
+func (graph *LibraryGraph) AddLibrary(lib LibraryName, libver *semver.Version) {
+	for _, l := range graph.libraries {
 		if l.Equals(lib, libver) {
 			return
 		}
 	}
-	index.libraries = append(index.libraries, uniqueLibrary{name: lib, ver: libver})
+	graph.libraries = append(graph.libraries, uniqueLibrary{name: lib, ver: libver})
 }
 
 /*
- * Method to add a new dependency to a library index
+ * Method to add a new dependency to a library graph
  */
-func (index *LibraryGraph) AddDependency(lib LibraryName, libver *semver.Version,
+func (graph *LibraryGraph) AddDependency(lib LibraryName, libver *semver.Version,
 	deplib LibraryName, depver *semver.Version) error {
 
 	/* Flag indicating whether we have found the `lib` library */
@@ -127,7 +67,7 @@ func (index *LibraryGraph) AddDependency(lib LibraryName, libver *semver.Version
 	/* Flag indicating whether we have found the `deplib` library */
 	dfound := false
 
-	for _, l := range index.libraries {
+	for _, l := range graph.libraries {
 		if l.Equals(lib, libver) {
 			lfound = true
 		}
@@ -150,22 +90,22 @@ func (index *LibraryGraph) AddDependency(lib LibraryName, libver *semver.Version
 	dep := dependency{library: library, dependsOn: dependsOn}
 
 	// Avoid duplicates
-	// TODO: Get rid of this when quality of index data is such that we don't
+	// TODO: Get rid of this when quality of graph data is such that we don't
 	// need it...
-	if !index.Exists(dep) {
-		index.dependencies = append(index.dependencies, dep)
+	if !graph.Exists(dep) {
+		graph.dependencies = append(graph.dependencies, dep)
 	}
 	return nil
 }
 
 /*
  * Builds a list of all versions of a given library known to the
- * index.  These are returned in sorted order (latest to earliest)
+ * graph.  These are returned in sorted order (latest to earliest)
  */
-func (index LibraryGraph) Versions(lib LibraryName) *VersionList {
+func (graph LibraryGraph) Versions(lib LibraryName) *VersionList {
 	present := map[*semver.Version]bool{}
 
-	for _, l := range index.libraries {
+	for _, l := range graph.libraries {
 		if l.name == lib {
 			present[l.ver] = true
 		}
@@ -185,10 +125,10 @@ func (index LibraryGraph) Versions(lib LibraryName) *VersionList {
  * library+version depends on and the values are the versions that are
  * compatible with the named library+version.
  */
-func (index LibraryGraph) Dependencies(lib LibraryName, ver *semver.Version) Possible {
+func (graph LibraryGraph) Dependencies(lib LibraryName, ver *semver.Version) Possible {
 	depvers := Possible{}
 
-	for _, dep := range index.dependencies {
+	for _, dep := range graph.dependencies {
 		// Is this a dependency for the current library and version?
 		if dep.library.name == lib && ver.Compare(dep.library.ver) == 0 {
 			// If so, add it to the available set (if one exists)
@@ -203,7 +143,7 @@ func (index LibraryGraph) Dependencies(lib LibraryName, ver *semver.Version) Pos
 	return depvers
 }
 
-func (index LibraryGraph) findFirst(
+func (graph LibraryGraph) findFirst(
 	mapped Configuration, // Variables whose values have already been chosen
 	verbose bool, // Whether to generate verbose output
 	avail Possible, // Constraints of possible values for remaining libraries
@@ -253,7 +193,7 @@ func (index LibraryGraph) findFirst(
 		newlibs := []LibraryName{}
 
 		// Find out all the libraries that this particular library+version depend on
-		depvers := index.Dependencies(lib, ver)
+		depvers := graph.Dependencies(lib, ver)
 
 		if verbose {
 			log.Printf("Dependencies of %s:%s -> %s", lib, ver.String(), depvers)
@@ -311,8 +251,8 @@ func (index LibraryGraph) findFirst(
 				// in the 'rest' list.  So we have a new variable to solve for...
 				newlibs = append(newlibs, n1)
 				// Our initial set of possible values for a new library is all versions
-				// in the index.
-				newavail[n1] = index.Versions(n1)
+				// in the graph.
+				newavail[n1] = graph.Versions(n1)
 			}
 		}
 
@@ -349,7 +289,7 @@ func (index LibraryGraph) findFirst(
 		newlibs = append(newlibs, rest...)
 
 		// Recurse to solve remaining variables
-		sol, err := index.findFirst(config, verbose, newavail, newlibs...)
+		sol, err := graph.findFirst(config, verbose, newavail, newlibs...)
 		if err == nil {
 			return sol, err
 		}
@@ -357,13 +297,24 @@ func (index LibraryGraph) findFirst(
 	return nil, fmt.Errorf("No compatible versions of %s found", lib)
 }
 
-func (index LibraryGraph) Resolve(libraries ...LibraryName) (config Configuration, err error) {
+func (graph LibraryGraph) Resolve(libraries ...LibraryName) (config Configuration, err error) {
 	// Initially, all possible values for the libraries are possible
 	ret := Possible{}
 	for _, lib := range libraries {
-		ret[lib] = index.Versions(lib)
+		ret[lib] = graph.Versions(lib)
 	}
 
 	// Now search for a consistent set...
-	return index.findFirst(config, index.verbose, ret, libraries...)
+	return graph.findFirst(config, graph.verbose, ret, libraries...)
+}
+
+/*
+ * This function creates a new LibraryGraph object.
+ */
+func NewLibraryGraph() *LibraryGraph {
+	return &LibraryGraph{
+		libraries:    []uniqueLibrary{},
+		dependencies: []dependency{},
+		verbose:      false,
+	}
 }
