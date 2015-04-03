@@ -1,4 +1,4 @@
-package deps
+package graph
 
 import "testing"
 import "github.com/blang/semver"

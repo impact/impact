@@ -1,4 +1,4 @@
-package deps
+package graph
 
 /*
  * This type represents remaining possible values for a given library

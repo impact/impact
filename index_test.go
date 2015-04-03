@@ -1,10 +1,14 @@
 package main
 
-import "testing"
-import "github.com/xogeny/impact/utils"
-import "encoding/json"
-import "github.com/stretchr/testify/assert"
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	"github.com/xogeny/impact/utils"
+)
 
 func Test_Creation(t *testing.T) {
 	dep := utils.Dependency{Name: "Foo", Version: "1.0.0"}

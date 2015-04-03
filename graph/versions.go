@@ -1,8 +1,10 @@
-package deps
+package graph
 
-import "fmt"
-import "sort"
-import "github.com/blang/semver"
+import (
+	"fmt"
+	"github.com/blang/semver"
+	"sort"
+)
 
 type VersionList []*semver.Version
 

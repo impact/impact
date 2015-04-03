@@ -1,8 +1,11 @@
-package deps
+package graph
 
-import "fmt"
-import "log"
-import "github.com/blang/semver"
+import (
+	"fmt"
+	"log"
+
+	"github.com/blang/semver"
+)
 
 /*
  * Create a special type to specifically represent library names.  This just
@@ -62,13 +65,13 @@ func (d1 dependency) Equals(d2 dependency) bool {
 /*
  * A library index is simply a list of dependencies (edges)
  */
-type LibraryIndex struct {
+type LibraryGraph struct {
 	dependencies []dependency
 	libraries    []uniqueLibrary
 	verbose      bool
 }
 
-func (index LibraryIndex) Exists(d dependency) bool {
+func (index LibraryGraph) Exists(d dependency) bool {
 	for _, c := range index.dependencies {
 		if c.Equals(d) {
 			return true
@@ -78,10 +81,10 @@ func (index LibraryIndex) Exists(d dependency) bool {
 }
 
 /*
- * This function creates a new LibraryIndex object.
+ * This function creates a new LibraryGraph object.
  */
-func NewLibraryIndex() *LibraryIndex {
-	return &LibraryIndex{
+func NewLibraryGraph() *LibraryGraph {
+	return &LibraryGraph{
 		libraries:    []uniqueLibrary{},
 		dependencies: []dependency{},
 		verbose:      false,
@@ -91,11 +94,11 @@ func NewLibraryIndex() *LibraryIndex {
 /*
  * This function sets debugging output
  */
-func (index *LibraryIndex) Verbose(v bool) {
+func (index *LibraryGraph) Verbose(v bool) {
 	index.verbose = v
 }
 
-func (index LibraryIndex) Contains(lib LibraryName, libver *semver.Version) bool {
+func (index LibraryGraph) Contains(lib LibraryName, libver *semver.Version) bool {
 	for _, l := range index.libraries {
 		if l.Equals(lib, libver) {
 			return true
@@ -104,7 +107,7 @@ func (index LibraryIndex) Contains(lib LibraryName, libver *semver.Version) bool
 	return false
 }
 
-func (index *LibraryIndex) AddLibrary(lib LibraryName, libver *semver.Version) {
+func (index *LibraryGraph) AddLibrary(lib LibraryName, libver *semver.Version) {
 	for _, l := range index.libraries {
 		if l.Equals(lib, libver) {
 			return
@@ -116,7 +119,7 @@ func (index *LibraryIndex) AddLibrary(lib LibraryName, libver *semver.Version) {
 /*
  * Method to add a new dependency to a library index
  */
-func (index *LibraryIndex) AddDependency(lib LibraryName, libver *semver.Version,
+func (index *LibraryGraph) AddDependency(lib LibraryName, libver *semver.Version,
 	deplib LibraryName, depver *semver.Version) error {
 
 	/* Flag indicating whether we have found the `lib` library */
@@ -159,7 +162,7 @@ func (index *LibraryIndex) AddDependency(lib LibraryName, libver *semver.Version
  * Builds a list of all versions of a given library known to the
  * index.  These are returned in sorted order (latest to earliest)
  */
-func (index LibraryIndex) Versions(lib LibraryName) *VersionList {
+func (index LibraryGraph) Versions(lib LibraryName) *VersionList {
 	present := map[*semver.Version]bool{}
 
 	for _, l := range index.libraries {
@@ -182,7 +185,7 @@ func (index LibraryIndex) Versions(lib LibraryName) *VersionList {
  * library+version depends on and the values are the versions that are
  * compatible with the named library+version.
  */
-func (index LibraryIndex) Dependencies(lib LibraryName, ver *semver.Version) Possible {
+func (index LibraryGraph) Dependencies(lib LibraryName, ver *semver.Version) Possible {
 	depvers := Possible{}
 
 	for _, dep := range index.dependencies {
@@ -200,7 +203,7 @@ func (index LibraryIndex) Dependencies(lib LibraryName, ver *semver.Version) Pos
 	return depvers
 }
 
-func (index LibraryIndex) findFirst(
+func (index LibraryGraph) findFirst(
 	mapped Configuration, // Variables whose values have already been chosen
 	verbose bool, // Whether to generate verbose output
 	avail Possible, // Constraints of possible values for remaining libraries
@@ -208,9 +211,9 @@ func (index LibraryIndex) findFirst(
 ) (Configuration, error) {
 	if verbose {
 		log.Printf("Call to findFirst...")
-		log.Printf("  Mapped: %v", mapped)
+		log.Printf("  Resolved: %v", mapped)
 		log.Printf("  Avail: %v", avail)
-		log.Printf("  Rest: %v", rest)
+		log.Printf("  Yet to be Resolved: %v", rest)
 	}
 
 	// Nothing left to process...we are done!
@@ -226,8 +229,8 @@ func (index LibraryIndex) findFirst(
 	rest = rest[1:]
 
 	if verbose {
-		log.Printf("  -> Lib = %v", lib)
-		log.Printf("  -> Rest = %v", rest)
+		log.Printf("  -> Library to Resolve: %v", lib)
+		log.Printf("  -> Remaining: %v", rest)
 	}
 
 	// Determine remaining possible values for this library...
@@ -286,7 +289,17 @@ func (index LibraryIndex) findFirst(
 
 		// Add any new dependencies?  (Check to see if we were already planning on
 		// incuding them, if not add them)
-		for n1, _ := range depvers {
+		for n1, v1 := range depvers {
+			if n1 == lib {
+				if v1.Contains(ver) {
+					// We can skip n1 because it is a *consistent* circular dependency
+					// that will automatically be met
+					continue
+				} else {
+					return nil,
+						fmt.Errorf("Inconsistent circular dependency for library %v", lib)
+				}
+			}
 			found := false
 			for _, n2 := range rest {
 				if n1 == n2 {
@@ -328,6 +341,9 @@ func (index LibraryIndex) findFirst(
 		// Specify the current library and version choice
 		config[lib] = ver
 
+		// TODO: Check newlibs to see if the current library is in there
+		// and make sure that the choice above didn't conflict
+
 		// Prepend any new libraries to the front of the list of libraries
 		// we still need to solve for (this makes things depth first)
 		newlibs = append(newlibs, rest...)
@@ -341,7 +357,7 @@ func (index LibraryIndex) findFirst(
 	return nil, fmt.Errorf("No compatible versions of %s found", lib)
 }
 
-func (index LibraryIndex) Resolve(libraries ...LibraryName) (config Configuration, err error) {
+func (index LibraryGraph) Resolve(libraries ...LibraryName) (config Configuration, err error) {
 	// Initially, all possible values for the libraries are possible
 	ret := Possible{}
 	for _, lib := range libraries {

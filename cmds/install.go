@@ -1,22 +1,24 @@
 package cmds
 
-import "os"
-import "io"
-import "fmt"
-import "log"
-import "path"
-import "errors"
-import "strings"
-import "net/http"
-import "io/ioutil"
+import (
+	"errors"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
+	"path"
+	"strings"
 
-import "github.com/xogeny/impact/utils"
-import "github.com/xogeny/impact/deps"
+	"github.com/xogeny/impact/graph"
+	"github.com/xogeny/impact/utils"
 
-import "github.com/wsxiaoys/terminal/color"
-import "github.com/pierrre/archivefile/zip"
-import "github.com/opesun/copyrecur"
-import "github.com/blang/semver"
+	"github.com/blang/semver"
+	"github.com/opesun/copyrecur"
+	"github.com/pierrre/archivefile/zip"
+	"github.com/wsxiaoys/terminal/color"
+)
 
 /* Define a struct listing all command line options for 'install' */
 type InstallCommand struct {
@@ -63,7 +65,7 @@ func (x *InstallCommand) Execute(args []string) error {
 	index := utils.DownloadIndex()
 
 	/* Create an empty set of libraries */
-	var resolver deps.Resolver = deps.NewLibraryIndex()
+	var resolver graph.Resolver = graph.NewLibraryGraph()
 
 	for libname, lib := range index {
 		for _, ver := range lib.Versions {
@@ -76,7 +78,7 @@ func (x *InstallCommand) Execute(args []string) error {
 				Minor: uint64(ver.Minor),
 				Patch: uint64(ver.Patch),
 			}
-			resolver.AddLibrary(deps.LibraryName(libname), &v)
+			resolver.AddLibrary(graph.LibraryName(libname), &v)
 			for _, dep := range ver.Dependencies {
 				dlib, err := index.Find(dep.Name, dep.Version)
 				if err != nil {
@@ -92,14 +94,14 @@ func (x *InstallCommand) Execute(args []string) error {
 
 				//log.Printf("%s %s -> %s %s", libname, v.String(), dep.Name, dv.String())
 
-				deplib := deps.LibraryName(dep.Name)
+				deplib := graph.LibraryName(dep.Name)
 				depver := &dv
 
 				if !resolver.Contains(deplib, depver) {
 					resolver.AddLibrary(deplib, depver)
 				}
 
-				err = resolver.AddDependency(deps.LibraryName(libname), &v, deplib, depver)
+				err = resolver.AddDependency(graph.LibraryName(libname), &v, deplib, depver)
 				if err != nil {
 					return err
 				}
@@ -108,9 +110,9 @@ func (x *InstallCommand) Execute(args []string) error {
 	}
 
 	// TODO: Add a universal LibraryName alias
-	libnames := []deps.LibraryName{}
+	libnames := []graph.LibraryName{}
 	for _, n := range args {
-		libnames = append(libnames, deps.LibraryName(n))
+		libnames = append(libnames, graph.LibraryName(n))
 	}
 
 	config, err := resolver.Resolve(libnames...)
