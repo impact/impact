@@ -1,10 +1,10 @@
 package main
 
-import "os"
+import (
+	"os"
 
-import "github.com/xogeny/impact/cmds"
-
-import "github.com/jessevdk/go-flags"
+	"github.com/jessevdk/go-flags"
+)
 
 func main() {
 	var options struct{} // No common flags
@@ -14,17 +14,17 @@ func main() {
 	parser.AddCommand("search",
 		"Search for libraries associated with specific terms",
 		"Search for libraries associated with specific terms",
-		&cmds.SearchCommand{})
+		&SearchCommand{})
 
 	parser.AddCommand("install",
 		"Install named libraries",
 		"Install named libraries",
-		&cmds.InstallCommand{})
+		&InstallCommand{})
 
 	parser.AddCommand("info",
 		"Print information about a specific library",
 		"Print information about a specific library",
-		&cmds.InfoCommand{})
+		&InfoCommand{})
 
 	if _, err := parser.Parse(); err != nil {
 		os.Exit(1)

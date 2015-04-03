@@ -1,15 +1,16 @@
-package cmds
+package main
 
-import "fmt"
-import "errors"
+import (
+	"errors"
+	"fmt"
 
-import "github.com/xogeny/impact/utils"
+	"github.com/xogeny/impact/utils"
 
-import "github.com/wsxiaoys/terminal/color"
-
+	"github.com/wsxiaoys/terminal/color"
+)
 
 type InfoCommand struct {
-	Verbose    bool `short:"v" login:"verbose" description:"Turn on verbose output"`
+	Verbose    bool `short:"v" long:"verbose" description:"Turn on verbose output"`
 	Positional struct {
 		LibraryName string `description:"Library name"`
 	} `positional-args:"true" required:"true"`
