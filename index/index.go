@@ -1,37 +1,39 @@
 package index
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
-	"io/ioutil"
-	"net/http"
-	"os"
 )
 
-type Index map[LibraryName]Library
+type Index []*Library
 
-func DownloadIndex() Index {
-	var master = "https://impact.modelica.org/impact_data.json"
-
-	resp, err := http.Get(master)
-	if err != nil {
-		fmt.Println("Unable to locate index file at " + master)
-		os.Exit(1)
-	}
-	defer resp.Body.Close()
-
-	index := Index{}
-
-	err = index.BuildIndex(resp.Body)
-	if err != nil {
-		fmt.Println("Error reading index: " + err.Error())
-		os.Exit(2)
-	}
-
-	return index
+func (i Index) AddLibrary(lib *Library) {
+	i = append(i, lib)
 }
 
+func DownloadIndex() (Index, error) {
+	/*
+		    var master = "https://impact.modelica.org/impact_data.json"
+
+			resp, err := http.Get(master)
+			if err != nil {
+				fmt.Println("Unable to locate index file at " + master)
+				os.Exit(1)
+			}
+			defer resp.Body.Close()
+
+			index := Index{}
+
+			err = index.BuildIndex(resp.Body)
+			if err != nil {
+				fmt.Println("Error reading index: " + err.Error())
+				os.Exit(2)
+			}
+	*/
+
+	return Index{}, fmt.Errorf("Not implemented: Index.DownloadIndex")
+}
+
+/*
 func (index *Index) BuildIndexFromFile(filename string) error {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -84,3 +86,4 @@ func (index *Index) Dependencies(name LibraryName,
 
 	return myver.Dependencies, nil
 }
+*/

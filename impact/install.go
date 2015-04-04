@@ -5,13 +5,12 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"path"
 	"strings"
 
-	"github.com/xogeny/impact/graph"
+	//"github.com/xogeny/impact/graph"
 	"github.com/xogeny/impact/index"
 
 	"github.com/opesun/copyrecur"
@@ -25,6 +24,7 @@ type InstallCommand struct {
 	DryRun  bool `short:"d" login:"dryrun" description:"Resolve dependencies but don't install"`
 }
 
+/*
 // TODO: This probably needs to be refactored
 func ParseVersion(libver string, ind index.Index) (libname index.LibraryName,
 	ver index.VersionString, err error) {
@@ -54,113 +54,118 @@ func ParseVersion(libver string, ind index.Index) (libname index.LibraryName,
 	}
 	return
 }
+*/
 
 func (x *InstallCommand) Execute(args []string) error {
-	/* Check to make sure we have something to install */
+	//Check to make sure we have something to install
 	if len(args) == 0 {
 		return errors.New("No libraries requested for installation")
 	}
 
-	/* Build the index */
-	ind := index.DownloadIndex()
-
-	/* Create an empty set of libraries */
-	var resolver graph.Resolver = graph.NewLibraryGraph()
-
-	for libname, lib := range ind {
-		for _, ver := range lib.Versions {
-			v := ver.Version
-			resolver.AddLibrary(graph.LibraryName(libname), v)
-			for _, dep := range ver.Dependencies {
-				dlib, err := ind.Find(dep.Name, dep.Version)
-				if err != nil {
-					//log.Printf("Unable to find version %s of library %s",
-					//  dep.Version, dep.Name)
-					continue
-				}
-
-				//log.Printf("%s %s -> %s %s", libname, v.String(), dep.Name, dv.String())
-
-				deplib := graph.LibraryName(dep.Name)
-				depver := dlib.Version
-
-				if !resolver.Contains(deplib, depver) {
-					resolver.AddLibrary(deplib, depver)
-				}
-
-				err = resolver.AddDependency(graph.LibraryName(libname), v, deplib, depver)
-				if err != nil {
-					return err
-				}
-			}
-		}
-	}
-
-	// TODO: Add a universal LibraryName alias
-	libnames := []graph.LibraryName{}
-	for _, n := range args {
-		libnames = append(libnames, graph.LibraryName(n))
-	}
-
-	config, err := resolver.Resolve(libnames...)
+	// Build the index
+	_, err := index.DownloadIndex()
 	if err != nil {
-		log.Printf("Error resolving libraries: %v", err)
-	}
-	if x.Verbose {
-		color.Println("Libraries to be installed:")
-		for name, ver := range config {
-			color.Printf("  @{c}%s %v\n", name, ver)
-		}
-		color.Printf("\n")
+		return fmt.Errorf("Error downloading index: %v", err)
 	}
 
-	/* Loop over all the libraries we have identified for installation and install them */
-	for ln, v := range config {
-		lib, exists := ind[index.LibraryName(ln)]
-		if !exists {
-			fmt.Printf("Unable to locate library named %s (this should not happen)", ln)
-			return fmt.Errorf("Unable to locate library named %s (this should not happen)", ln)
-		}
+	/*
+			// Create an empty set of libraries
+			var resolver graph.Resolver = graph.NewLibraryGraph()
 
-		var lv index.VersionDetails
+			for libname, lib := range ind {
+				for _, ver := range lib.Versions {
+					v := ver.Version
+					resolver.AddLibrary(graph.LibraryName(libname), v)
+					for _, dep := range ver.Dependencies {
+						dlib, err := ind.Find(dep.Name, dep.Version)
+						if err != nil {
+							//log.Printf("Unable to find version %s of library %s",
+							//  dep.Version, dep.Name)
+							continue
+						}
 
-		found := false
-		for _, ver := range lib.Versions {
-			if ver.Version.Equals(v) {
-				found = true
-				lv = ver
-				break
+						//log.Printf("%s %s -> %s %s", libname, v.String(), dep.Name, dv.String())
+
+						deplib := graph.LibraryName(dep.Name)
+						depver := dlib.Version
+
+						if !resolver.Contains(deplib, depver) {
+							resolver.AddLibrary(deplib, depver)
+						}
+
+						err = resolver.AddDependency(graph.LibraryName(libname), v, deplib, depver)
+						if err != nil {
+							return err
+						}
+					}
+				}
 			}
-		}
 
-		if !found {
-			fmt.Printf("Unable to locate version %s of library %s",
-				v.String(), ln)
-			return fmt.Errorf("Unable to locate version %s of library %s",
-				v.String(), ln)
-		}
-		if x.Verbose {
-			color.Println("@!Installing @{c}%s, version %s...", string(ln), string(lv.Version.String()))
-		}
-
-		// If this is just a DryRun, don't actually install
-		if !x.DryRun {
-			ierr := Install(lv, ind, ".", x.Verbose)
-			if ierr != nil {
-				color.Println("@{r}Error: " + ierr.Error())
+			// TODO: Add a universal LibraryName alias
+			libnames := []graph.LibraryName{}
+			for _, n := range args {
+				libnames = append(libnames, graph.LibraryName(n))
 			}
+
+			config, err := resolver.Resolve(libnames...)
+			if err != nil {
+				log.Printf("Error resolving libraries: %v", err)
+			}
+			if x.Verbose {
+				color.Println("Libraries to be installed:")
+				for name, ver := range config {
+					color.Printf("  @{c}%s %v\n", name, ver)
+				}
+				color.Printf("\n")
+			}
+
+			// Loop over all the libraries we have identified for installation and install them
+		for ln, v := range config {
+			lib, exists := ind[index.LibraryName(ln)]
+			if !exists {
+				fmt.Printf("Unable to locate library named %s (this should not happen)", ln)
+				return fmt.Errorf("Unable to locate library named %s (this should not happen)", ln)
+			}
+
+			var lv index.VersionDetails
+
+			found := false
+			for _, ver := range lib.Versions {
+				if ver.Version.Equals(v) {
+					found = true
+					lv = ver
+					break
+				}
+			}
+
+			if !found {
+				fmt.Printf("Unable to locate version %s of library %s",
+					v.String(), ln)
+				return fmt.Errorf("Unable to locate version %s of library %s",
+					v.String(), ln)
+			}
+			if x.Verbose {
+				color.Println("@!Installing @{c}%s, version %s...", string(ln), string(lv.Version.String()))
+			}
+
+			// If this is just a DryRun, don't actually install
+			if !x.DryRun {
+				ierr := Install(lv, ind, ".", x.Verbose)
+				if ierr != nil {
+					color.Println("@{r}Error: " + ierr.Error())
+				}
+			}
+
+			if x.Verbose {
+				color.Println("...@{!g}done")
+			}
+
 		}
 
 		if x.Verbose {
-			color.Println("...@{!g}done")
+			color.Println("\n@{!g}All libraries installed.\n")
 		}
-
-	}
-
-	if x.Verbose {
-		color.Println("\n@{!g}All libraries installed.\n")
-	}
-
+	*/
 	return nil
 }
 

@@ -20,7 +20,12 @@ func (x *ListCommand) Execute(args []string) error {
 	}
 	url := x.URL
 
-	ind := index.DownloadIndex()
+	ind, err := index.DownloadIndex()
+
+	if err != nil {
+		return fmt.Errorf("Error downloading index: %v", err)
+	}
+
 	for libname, lib := range ind {
 		color.Println("@{g}" + string(libname) + ":\n@{c}  - " + string(lib.Description))
 		if url {

@@ -11,6 +11,13 @@ type Library struct {
 	Versions    map[VersionString]VersionDetails `json:"versions"`
 }
 
+func NewLibrary(name string) *Library {
+	return &Library{
+		Name: LibraryName(name),
+	}
+}
+
+/*
 func (lib Library) Latest() (ver VersionDetails, err error) {
 	var first = true
 	if len(lib.Versions) == 0 {
@@ -28,6 +35,7 @@ func (lib Library) Latest() (ver VersionDetails, err error) {
 	}
 	return
 }
+*/
 
 func (lib Library) Matches(term string) bool {
 	var match = false
@@ -42,6 +50,7 @@ func (lib Library) Matches(term string) bool {
 
 type Libraries map[LibraryName]VersionDetails
 
+/*
 func (libs *Libraries) Merge(olibs Libraries) error {
 	for ln, lv := range olibs {
 		ev, exists := (*libs)[ln]
@@ -55,3 +64,4 @@ func (libs *Libraries) Merge(olibs Libraries) error {
 	}
 	return nil
 }
+*/

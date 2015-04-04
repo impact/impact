@@ -1,5 +1,6 @@
 package index
 
+/*
 import (
 	"encoding/json"
 	"testing"
@@ -222,3 +223,4 @@ func Test_Dependencies(t *testing.T) {
 		IsTrue(c, contains(deps, "BondLib", "2.3"))
 	})
 }
+*/

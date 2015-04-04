@@ -24,7 +24,12 @@ func (x *SearchCommand) Execute(args []string) error {
 	term := x.Positional.Term
 	url := x.URL
 
-	ind := index.DownloadIndex()
+	ind, err := index.DownloadIndex()
+
+	if err != nil {
+		return fmt.Errorf("Error downloading index: %v", err)
+	}
+
 	for libname, lib := range ind {
 		if lib.Matches(term) {
 			color.Println("@{g}" + string(libname) + ":\n@{c}  - " + string(lib.Description))
