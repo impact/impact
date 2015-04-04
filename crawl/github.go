@@ -6,7 +6,10 @@ import (
 	"os"
 
 	"code.google.com/p/goauth2/oauth"
+	"github.com/blang/semver"
 	"github.com/google/go-github/github"
+
+	"github.com/xogeny/impact/dirinfo"
 )
 
 type GitHubCrawler struct {
@@ -14,7 +17,7 @@ type GitHubCrawler struct {
 	user  string
 }
 
-func (c GitHubCrawler) Crawl(r Recorder) error {
+func (c GitHubCrawler) Crawl(r Recorder, logger *log.Logger) error {
 	// Start with whatever token we were given when this crawler was created
 	token := c.token
 
@@ -40,21 +43,63 @@ func (c GitHubCrawler) Crawl(r Recorder) error {
 	// organization
 	repos, _, err := client.Repositories.List(c.user, nil)
 	if err != nil {
+		logger.Printf("Error listing repositories for %s: %v", c.user, err)
 		return fmt.Errorf("Error listing repositories for %s: %v", c.user, err)
 	}
 
 	for _, repo := range repos {
-		log.Printf("repo = %v", *repo.Name)
+		logger.Printf("Processing: %s (%s)", *repo.Name, *repo.HTMLURL)
+
+		// Check if this repository contains one or more Modelica libraries
+		// TODO: Read a special impact.json file...
+		di := extractInfo(client, repo, logger)
+		if len(di.Libraries) == 0 {
+			logger.Printf("No Modelica libraries found in repository %s", *repo.Name)
+			continue
+		}
+
 		tags, _, err := client.Repositories.ListTags(c.user, *repo.Name, nil)
 		if err != nil {
-			return fmt.Errorf("Error getting tags for repository %s/%s: %v",
+			logger.Printf("Error getting tags for repository %s/%s: %v",
 				c.user, *repo.Name, err)
+			continue
 		}
-		for _, tag := range tags {
-			log.Printf("  tag = %v", *tag.Name)
+		for _, lib := range di.Libraries {
+			libr := r.AddLibrary(lib.Name)
+			libr.SetStars(0)
+			for _, tag := range tags {
+				name := *tag.Name
+				if name[0] == 'v' {
+					name = name[1:]
+				}
+				v, verr := semver.Parse(name)
+				if verr != nil {
+					logger.Printf("  %s: Ignoring", name)
+				} else {
+					logger.Printf("  %s: Recording", name)
+					vr := libr.AddVersion(v)
+					vr.SetHash(*tag.Commit.SHA)
+				}
+			}
 		}
 	}
 	return nil
+}
+
+func extractInfo(client *github.Client, repo github.Repository,
+	logger *log.Logger) dirinfo.DirectoryInfo {
+	// TODO: This needs to be much better...
+	return dirinfo.DirectoryInfo{
+		Author: "Michael Tiller",
+		Libraries: []dirinfo.LocalLibrary{
+			dirinfo.LocalLibrary{
+				Name:      *repo.Name,
+				Path:      *repo.Name + ".mo",
+				IsFile:    true,
+				IssuesURL: *repo.IssuesURL,
+			},
+		},
+	}
 }
 
 func MakeGitHubCrawler(user string, token string) GitHubCrawler {
@@ -63,3 +108,5 @@ func MakeGitHubCrawler(user string, token string) GitHubCrawler {
 		user:  user,
 	}
 }
+
+var _ Crawler = (*GitHubCrawler)(nil)
