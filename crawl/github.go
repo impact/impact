@@ -1,6 +1,7 @@
 package crawl
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -13,7 +14,7 @@ type GitHubCrawler struct {
 	user  string
 }
 
-func (c GitHubCrawler) Crawl() error {
+func (c GitHubCrawler) Crawl(r Recorder) error {
 	// Start with whatever token we were given when this crawler was created
 	token := c.token
 
@@ -39,11 +40,19 @@ func (c GitHubCrawler) Crawl() error {
 	// organization
 	repos, _, err := client.Repositories.List(c.user, nil)
 	if err != nil {
-		return err
+		return fmt.Errorf("Error listing repositories for %s: %v", c.user, err)
 	}
 
 	for _, repo := range repos {
-		log.Printf("repo = %v", repo)
+		log.Printf("repo = %v", *repo.Name)
+		tags, _, err := client.Repositories.ListTags(c.user, *repo.Name, nil)
+		if err != nil {
+			return fmt.Errorf("Error getting tags for repository %s/%s: %v",
+				c.user, *repo.Name, err)
+		}
+		for _, tag := range tags {
+			log.Printf("  tag = %v", *tag.Name)
+		}
 	}
 	return nil
 }

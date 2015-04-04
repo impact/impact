@@ -9,8 +9,8 @@ import (
 
 func TestGitHub(t *testing.T) {
 	Convey("Testing GitHub crawler", t, func(c C) {
-		cr := MakeGitHubCrawler("mtiller", "")
-		err := cr.Crawl()
+		cr := MakeGitHubCrawler("modelica-3rdparty", "")
+		err := cr.Crawl(nil)
 		NoError(c, err)
 	})
 }

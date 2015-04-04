@@ -1,5 +1,5 @@
 package crawl
 
 type Crawler interface {
-	Crawl() error
+	Crawl(r Recorder) error
 }
