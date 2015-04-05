@@ -2,13 +2,36 @@ package index
 
 import (
 	"fmt"
+
+	"encoding/json"
+	"github.com/xogeny/impact/recorder"
 )
 
-type Index []*Library
-
-func (i Index) AddLibrary(lib *Library) {
-	i = append(i, lib)
+type Index struct {
+	Libraries []*Library
 }
+
+func (i *Index) AddLibrary(name string) recorder.LibraryRecorder {
+	lib := NewLibrary(name)
+	i.Libraries = append(i.Libraries, lib)
+	return lib
+}
+
+func (i Index) JSON() (string, error) {
+	b, err := json.MarshalIndent(i, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(b), nil
+}
+
+func NewIndex() *Index {
+	return &Index{
+		Libraries: []*Library{},
+	}
+}
+
+var _ recorder.Recorder = (*Index)(nil)
 
 func DownloadIndex() (Index, error) {
 	/*

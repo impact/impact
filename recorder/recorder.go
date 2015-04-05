@@ -1,4 +1,4 @@
-package crawl
+package recorder
 
 import (
 	"github.com/blang/semver"

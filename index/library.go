@@ -2,20 +2,37 @@ package index
 
 import (
 	"strings"
+
+	"github.com/blang/semver"
+
+	"github.com/xogeny/impact/recorder"
 )
 
 type Library struct {
-	Name        LibraryName
-	Homepage    string                           `json:"homepage"`
-	Description string                           `json:"description"`
-	Versions    map[VersionString]VersionDetails `json:"versions"`
+	Name        string                     `json:"name"`
+	Homepage    string                     `json:"homepage"`
+	Description string                     `json:"description"`
+	Stars       int                        `json:"stars"`
+	Versions    map[string]*VersionDetails `json:"versions"`
+}
+
+func (lib *Library) SetStars(int) {}
+
+func (lib *Library) AddVersion(v semver.Version) recorder.VersionRecorder {
+	details := NewVersionDetails(v)
+	lib.Versions[v.String()] = details
+	return details
 }
 
 func NewLibrary(name string) *Library {
 	return &Library{
-		Name: LibraryName(name),
+		Name:     name,
+		Stars:    -1,
+		Versions: map[string]*VersionDetails{},
 	}
 }
+
+var _ recorder.LibraryRecorder = (*Library)(nil)
 
 /*
 func (lib Library) Latest() (ver VersionDetails, err error) {
@@ -48,7 +65,7 @@ func (lib Library) Matches(term string) bool {
 	return match
 }
 
-type Libraries map[LibraryName]VersionDetails
+type Libraries map[string]VersionDetails
 
 /*
 func (libs *Libraries) Merge(olibs Libraries) error {

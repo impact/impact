@@ -9,19 +9,21 @@ import (
 
 	. "github.com/smartystreets/goconvey/convey"
 	. "github.com/xogeny/xconvey"
+
+	"github.com/xogeny/impact/recorder"
 )
 
 type NullRecorder struct {
 }
 
-func (nr NullRecorder) AddLibrary(name string) LibraryRecorder {
+func (nr NullRecorder) AddLibrary(name string) recorder.LibraryRecorder {
 	return nr
 }
 
 func (nr NullRecorder) SetStars(int) {
 }
 
-func (nr NullRecorder) AddVersion(v semver.Version) VersionRecorder {
+func (nr NullRecorder) AddVersion(v semver.Version) recorder.VersionRecorder {
 	return nr
 }
 
@@ -39,6 +41,6 @@ func TestGitHub(t *testing.T) {
 	})
 }
 
-var _ Recorder = (*NullRecorder)(nil)
-var _ LibraryRecorder = (*NullRecorder)(nil)
-var _ VersionRecorder = (*NullRecorder)(nil)
+var _ recorder.Recorder = (*NullRecorder)(nil)
+var _ recorder.LibraryRecorder = (*NullRecorder)(nil)
+var _ recorder.VersionRecorder = (*NullRecorder)(nil)

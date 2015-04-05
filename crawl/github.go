@@ -10,6 +10,7 @@ import (
 	"github.com/google/go-github/github"
 
 	"github.com/xogeny/impact/dirinfo"
+	"github.com/xogeny/impact/recorder"
 )
 
 type GitHubCrawler struct {
@@ -17,7 +18,7 @@ type GitHubCrawler struct {
 	user  string
 }
 
-func (c GitHubCrawler) Crawl(r Recorder, logger *log.Logger) error {
+func (c GitHubCrawler) Crawl(r recorder.Recorder, logger *log.Logger) error {
 	// Start with whatever token we were given when this crawler was created
 	token := c.token
 

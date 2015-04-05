@@ -2,7 +2,7 @@ package index
 
 import (
 	"github.com/blang/semver"
-	"github.com/xogeny/impact/crawl"
+	"github.com/xogeny/impact/recorder"
 )
 
 type versionRecorder struct {
@@ -17,4 +17,4 @@ func makeVersionRecorder() versionRecorder {
 	return versionRecorder{}
 }
 
-var _ crawl.VersionRecorder = (*versionRecorder)(nil)
+var _ recorder.VersionRecorder = (*versionRecorder)(nil)

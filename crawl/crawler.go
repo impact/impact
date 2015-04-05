@@ -1,9 +1,10 @@
 package crawl
 
 import (
+	"github.com/xogeny/impact/recorder"
 	"log"
 )
 
 type Crawler interface {
-	Crawl(r Recorder, logger *log.Logger) error
+	Crawl(r recorder.Recorder, logger *log.Logger) error
 }

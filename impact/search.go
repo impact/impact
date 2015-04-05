@@ -30,7 +30,7 @@ func (x *SearchCommand) Execute(args []string) error {
 		return fmt.Errorf("Error downloading index: %v", err)
 	}
 
-	for libname, lib := range ind {
+	for libname, lib := range ind.Libraries {
 		if lib.Matches(term) {
 			color.Println("@{g}" + string(libname) + ":\n@{c}  - " + string(lib.Description))
 			if url {

@@ -5,7 +5,7 @@ import (
 )
 
 type MissingLibraryError struct {
-	Name LibraryName
+	Name string
 }
 
 func (e MissingLibraryError) Error() string {
@@ -13,8 +13,8 @@ func (e MissingLibraryError) Error() string {
 }
 
 type MissingVersionError struct {
-	Name    LibraryName
-	Version VersionString
+	Name    string
+	Version string
 }
 
 func (e MissingVersionError) Error() string {
@@ -22,7 +22,7 @@ func (e MissingVersionError) Error() string {
 }
 
 type VersionConflictError struct {
-	Name       LibraryName
+	Name       string
 	Existing   VersionDetails
 	Additional VersionDetails
 }
@@ -33,7 +33,7 @@ func (e VersionConflictError) Error() string {
 }
 
 type EmptyLibraryError struct {
-	Name LibraryName
+	Name string
 }
 
 func (e EmptyLibraryError) Error() string {

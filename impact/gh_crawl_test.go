@@ -17,8 +17,13 @@ func TestGitHub(t *testing.T) {
 	Convey("Testing GitHub crawler", t, func(c C) {
 		logger := log.New(os.Stdout, "impact: ", 0)
 		cr := crawl.MakeGitHubCrawler("modelica-3rdparty", "")
-		ir := index.IndexRecorder{}
-		err := cr.Crawl(ir, logger)
+		ind := index.NewIndex()
+		err := cr.Crawl(ind, logger)
 		NoError(c, err)
+
+		str, err := ind.JSON()
+		NoError(c, err)
+
+		log.Printf("%s", str)
 	})
 }
