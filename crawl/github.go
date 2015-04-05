@@ -90,7 +90,7 @@ func extractInfo(client *github.Client, repo github.Repository,
 	logger *log.Logger) dirinfo.DirectoryInfo {
 	// TODO: This needs to be much better...
 	return dirinfo.DirectoryInfo{
-		Author: "Michael Tiller",
+		Owner: "Michael Tiller",
 		Libraries: []dirinfo.LocalLibrary{
 			dirinfo.LocalLibrary{
 				Name:      *repo.Name,
