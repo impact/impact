@@ -66,8 +66,17 @@ func (c GitHubCrawler) Crawl(r recorder.Recorder, logger *log.Logger) error {
 			continue
 		}
 		for _, lib := range di.Libraries {
-			libr := r.AddLibrary(lib.Name)
-			libr.SetStars(0)
+			libr := r.AddLibrary("github:"+(*repo.Owner.Login), lib.Name)
+			if repo.Description != nil {
+				libr.SetDescription(*repo.Description)
+			}
+			if repo.HTMLURL != nil {
+				libr.SetHomepage(*repo.HTMLURL)
+			}
+			libr.SetStars(*repo.StargazersCount)
+			if repo.Owner.Email != nil {
+				libr.SetEmail(*repo.Owner.Email)
+			}
 			for _, tag := range tags {
 				name := *tag.Name
 				if name[0] == 'v' {

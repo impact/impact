@@ -5,11 +5,14 @@ import (
 )
 
 type Recorder interface {
-	AddLibrary(name string) LibraryRecorder
+	AddLibrary(owner string, name string) LibraryRecorder
 }
 
 type LibraryRecorder interface {
+	SetDescription(desc string)
+	SetHomepage(url string)
 	SetStars(int)
+	SetEmail(string)
 	AddVersion(v semver.Version) VersionRecorder
 }
 

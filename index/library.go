@@ -9,6 +9,8 @@ import (
 )
 
 type Library struct {
+	Owner       string                     `json:"owner"`
+	Email       string                     `json:"email"`
 	Name        string                     `json:"name"`
 	Homepage    string                     `json:"homepage"`
 	Description string                     `json:"description"`
@@ -16,7 +18,21 @@ type Library struct {
 	Versions    map[string]*VersionDetails `json:"versions"`
 }
 
-func (lib *Library) SetStars(int) {}
+func (lib *Library) SetEmail(email string) {
+	lib.Email = email
+}
+
+func (lib *Library) SetStars(stars int) {
+	lib.Stars = stars
+}
+
+func (lib *Library) SetDescription(desc string) {
+	lib.Description = desc
+}
+
+func (lib *Library) SetHomepage(url string) {
+	lib.Homepage = url
+}
 
 func (lib *Library) AddVersion(v semver.Version) recorder.VersionRecorder {
 	details := NewVersionDetails(v)
@@ -24,8 +40,9 @@ func (lib *Library) AddVersion(v semver.Version) recorder.VersionRecorder {
 	return details
 }
 
-func NewLibrary(name string) *Library {
+func NewLibrary(owner string, name string) *Library {
 	return &Library{
+		Owner:    owner,
 		Name:     name,
 		Stars:    -1,
 		Versions: map[string]*VersionDetails{},

@@ -11,8 +11,8 @@ type Index struct {
 	Libraries []*Library
 }
 
-func (i *Index) AddLibrary(name string) recorder.LibraryRecorder {
-	lib := NewLibrary(name)
+func (i *Index) AddLibrary(owner string, name string) recorder.LibraryRecorder {
+	lib := NewLibrary(owner, name)
 	i.Libraries = append(i.Libraries, lib)
 	return lib
 }
