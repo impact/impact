@@ -9,7 +9,6 @@ import (
 	"github.com/blang/semver"
 	"github.com/google/go-github/github"
 
-	"github.com/xogeny/impact/dirinfo"
 	"github.com/xogeny/impact/recorder"
 )
 
@@ -48,68 +47,63 @@ func (c GitHubCrawler) Crawl(r recorder.Recorder, logger *log.Logger) error {
 		return fmt.Errorf("Error listing repositories for %s: %v", c.user, err)
 	}
 
+	// Loop over all repos associated with the given owner
 	for _, repo := range repos {
 		logger.Printf("Processing: %s (%s)", *repo.Name, *repo.HTMLURL)
 
-		// Check if this repository contains one or more Modelica libraries
-		// TODO: Read a special impact.json file...
-		di := extractInfo(client, repo, logger)
-		if len(di.Libraries) == 0 {
-			logger.Printf("No Modelica libraries found in repository %s", *repo.Name)
-			continue
-		}
-
+		// Get all the tags associated with this repository
 		tags, _, err := client.Repositories.ListTags(c.user, *repo.Name, nil)
 		if err != nil {
 			logger.Printf("Error getting tags for repository %s/%s: %v",
 				c.user, *repo.Name, err)
 			continue
 		}
-		for _, lib := range di.Libraries {
-			libr := r.AddLibrary("github:"+(*repo.Owner.Login), lib.Name)
-			if repo.Description != nil {
-				libr.SetDescription(*repo.Description)
+
+		// Loop over the tags
+		for _, tag := range tags {
+			// Check if this has a semantic version
+			name := *tag.Name
+			if name[0] == 'v' {
+				name = name[1:]
 			}
-			if repo.HTMLURL != nil {
-				libr.SetHomepage(*repo.HTMLURL)
+			v, verr := semver.Parse(name)
+			if verr != nil {
+				// If not, ignore it
+				logger.Printf("  %s: Ignoring", name)
+				continue
 			}
-			libr.SetStars(*repo.StargazersCount)
-			if repo.Owner.Email != nil {
-				libr.SetEmail(*repo.Owner.Email)
+
+			logger.Printf("  %s: Recording", name)
+
+			// Formulate directory info (impact.json) for this version of this repository
+			di := ExtractInfo(client, c.user, repo, tag, logger)
+			if len(di.Libraries) == 0 {
+				logger.Printf("    No Modelica libraries found in repository %s", *repo.Name)
+				continue
 			}
-			for _, tag := range tags {
-				name := *tag.Name
-				if name[0] == 'v' {
-					name = name[1:]
+
+			// Loop over all libraries present in this repository
+			for _, lib := range di.Libraries {
+				logger.Printf("    Processing library %s @ %s", lib.Name, lib.Path)
+				libr := r.GetLibrary(di.Owner, lib.Name)
+
+				if repo.Description != nil {
+					libr.SetDescription(*repo.Description)
 				}
-				v, verr := semver.Parse(name)
-				if verr != nil {
-					logger.Printf("  %s: Ignoring", name)
-				} else {
-					logger.Printf("  %s: Recording", name)
-					vr := libr.AddVersion(v)
-					vr.SetHash(*tag.Commit.SHA)
+				if repo.HTMLURL != nil {
+					libr.SetHomepage(*repo.HTMLURL)
 				}
+				libr.SetStars(*repo.StargazersCount)
+				if repo.Owner.Email != nil {
+					libr.SetEmail(*repo.Owner.Email)
+				}
+
+				vr := libr.AddVersion(v)
+				vr.SetHash(*tag.Commit.SHA)
 			}
 		}
 	}
 	return nil
-}
-
-func extractInfo(client *github.Client, repo github.Repository,
-	logger *log.Logger) dirinfo.DirectoryInfo {
-	// TODO: This needs to be much better...
-	return dirinfo.DirectoryInfo{
-		Owner: "Michael Tiller",
-		Libraries: []dirinfo.LocalLibrary{
-			dirinfo.LocalLibrary{
-				Name:      *repo.Name,
-				Path:      *repo.Name + ".mo",
-				IsFile:    true,
-				IssuesURL: *repo.IssuesURL,
-			},
-		},
-	}
 }
 
 func MakeGitHubCrawler(user string, token string) GitHubCrawler {

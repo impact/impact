@@ -16,11 +16,12 @@ import (
 type NullRecorder struct {
 }
 
-func (nr NullRecorder) AddLibrary(owner string, name string) recorder.LibraryRecorder {
+func (nr NullRecorder) GetLibrary(owner string, name string) recorder.LibraryRecorder {
 	return nr
 }
 
 func (nr NullRecorder) SetStars(int)          {}
+func (nr NullRecorder) SetEmail(string)       {}
 func (nr NullRecorder) SetDescription(string) {}
 func (nr NullRecorder) SetHomepage(string)    {}
 

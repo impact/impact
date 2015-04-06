@@ -5,7 +5,9 @@ import (
 )
 
 type Recorder interface {
-	AddLibrary(owner string, name string) LibraryRecorder
+	// Create library if it doesn't already exist.  Otherwise, return
+	// recorder for existing library
+	GetLibrary(owner string, name string) LibraryRecorder
 }
 
 type LibraryRecorder interface {

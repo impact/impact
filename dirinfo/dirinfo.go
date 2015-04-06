@@ -39,3 +39,15 @@ type DirectoryInfo struct {
 	Owner     string         // Owner of this content
 	Libraries []LocalLibrary // Libraries defined here
 }
+
+func MakeDirectoryInfo() DirectoryInfo {
+	return DirectoryInfo{
+		Libraries: []LocalLibrary{},
+	}
+}
+
+func MakeLocalLibrary() LocalLibrary {
+	return LocalLibrary{
+		Dependencies: []Dependency{},
+	}
+}
