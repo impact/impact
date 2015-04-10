@@ -8,6 +8,7 @@ import (
 )
 
 type Index struct {
+	Version   string
 	Libraries []*Library
 }
 
@@ -32,6 +33,7 @@ func (i Index) JSON() (string, error) {
 
 func NewIndex() *Index {
 	return &Index{
+		Version:   "1.0.0",
 		Libraries: []*Library{},
 	}
 }

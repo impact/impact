@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+
+	"github.com/blang/semver"
 )
 
 // This function parses a string that represents Modelica code and
@@ -11,9 +13,9 @@ import (
 // numbers).  Sadly, one of Go's main weakness is its ability
 // to built compiler compilers which makes creating a real Modelica
 // parser problematic. :-(
-func ParseUses(code string) (map[string]string, error) {
+func ParseUses(code string) (map[string]semver.Version, error) {
 	// Empty result to return on error
-	blank := map[string]string{}
+	blank := map[string]semver.Version{}
 
 	// Compile regexp to identify version strings
 	ve, err := regexp.Compile(`version\s*=\s*"(.*)"`)
@@ -31,7 +33,7 @@ func ParseUses(code string) (map[string]string, error) {
 	// Find first occurrence of uses(
 	ustart := strings.Index(compressed, "uses(")
 	if ustart == -1 {
-		return blank, fmt.Errorf("Unable to find uses annotation")
+		return blank, nil
 	}
 
 	// Take all text that appears after "uses("
@@ -41,7 +43,7 @@ func ParseUses(code string) (map[string]string, error) {
 	libs := strings.Split(rem, ")")
 
 	// Initialize return value
-	ret := map[string]string{}
+	ret := map[string]semver.Version{}
 
 	// Loop over all the split up chunks of text
 	for _, lib := range libs {
@@ -66,11 +68,15 @@ func ParseUses(code string) (map[string]string, error) {
 		}
 		// Similarly, if there are multiple versions, something is also wrong
 		if len(vers) > 1 {
-			return blank, fmt.Errorf("Multiple version found for library %s???", libname)
+			return blank, fmt.Errorf("Multiple uses found for library %s???", libname)
 		}
 
 		// Record the (single) version we found
-		ret[libname] = string(vers[0][1])
+		nv, err := NormalizeVersion(vers[0][1])
+		if err != nil {
+			return blank, fmt.Errorf("Unable to normalize version for %s: %v", libname, err)
+		}
+		ret[libname] = nv
 	}
 
 	return ret, nil

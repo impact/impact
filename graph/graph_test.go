@@ -6,6 +6,8 @@ import (
 
 	"testing"
 
+	"github.com/xogeny/impact/parsing"
+
 	"github.com/blang/semver"
 	. "github.com/smartystreets/goconvey/convey"
 	. "github.com/xogeny/xconvey"
@@ -280,10 +282,10 @@ func TestSelfDependence(t *testing.T) {
 func TestResolution1(t *testing.T) {
 	Convey("Testing low-level functionality", t, func(c C) {
 		index := NewLibraryGraph()
-		root1, err := semver.Parse("1.0.0")
+		root1, err := parsing.NormalizeVersion("1.0.0")
 		NoError(c, err)
 
-		a1, err := semver.Parse("1.0.0")
+		a1, err := parsing.NormalizeVersion("1.0.0")
 		NoError(c, err)
 
 		index.AddLibrary("Root", root1)
@@ -325,10 +327,10 @@ func TestResolution1(t *testing.T) {
 func TestResolution2(t *testing.T) {
 	Convey("Testing more low-level functionality", t, func(c C) {
 		index := NewLibraryGraph()
-		root1, err := semver.Parse("1.0.0")
+		root1, err := parsing.NormalizeVersion("1.0.0")
 		NoError(c, err)
 
-		a1, err := semver.Parse("1.0.0")
+		a1, err := parsing.NormalizeVersion("1.0.0")
 		NoError(c, err)
 
 		index.AddLibrary("Root", root1)

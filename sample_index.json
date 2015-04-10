@@ -1,0 +1,455 @@
+{
+  "Version": "1.0.0",
+  "Libraries": [
+    {
+      "owner": "modelica-3rdparty",
+      "email": "",
+      "name": "ADGenKinetics",
+      "homepage": "https://github.com/modelica-3rdparty/ADGenKinetics",
+      "description": "Modeling biochemical reaction networks with generalized kinetic formats with capabilities for computing parameter sensitivities using algorithmic differentiation techniques.",
+      "stars": 1,
+      "versions": {
+        "1.0.0+r23": {
+          "version": "1.0.0+r23",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.0"
+            }
+          ],
+          "sha": "cdfd50846c1a4ad8d8887bb4dd2a36e675c033a0"
+        }
+      }
+    },
+    {
+      "owner": "modelica-3rdparty",
+      "email": "",
+      "name": "AixLib",
+      "homepage": "https://github.com/modelica-3rdparty/AixLib",
+      "description": "A Modelica model library for building performance simulations",
+      "stars": 0,
+      "versions": {
+        "0.1.0": {
+          "version": "0.1.0",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.1"
+            }
+          ],
+          "sha": "0e7274afcbb2ac5d02afe81c10b76297b0aedf36"
+        }
+      }
+    },
+    {
+      "owner": "modelica-3rdparty",
+      "email": "",
+      "name": "BondGraph",
+      "homepage": "https://github.com/modelica-3rdparty/BondGraph",
+      "description": "Free library for graphical Bond Graph modelling that contains common standard linear elements, sensors, and specific non-linear elements, especially for hydraulic networks.",
+      "stars": 0,
+      "versions": {
+        "1.0.0": {
+          "version": "1.0.0",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.0"
+            }
+          ],
+          "sha": "e742f7fe9f15d76aacb5efb2e725aec3dd70638e"
+        },
+        "1.1.0": {
+          "version": "1.1.0",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.0"
+            }
+          ],
+          "sha": "20c23e60d12989bd4668ccac47659d82d39d29cc"
+        }
+      }
+    },
+    {
+      "owner": "modelica-3rdparty",
+      "email": "",
+      "name": "BrineProp",
+      "homepage": "https://github.com/modelica-3rdparty/BrineProp",
+      "description": "Modelica Media models for p-h-T-rho-eta properties of aqueous solutions of multiple salts and gases",
+      "stars": 0,
+      "versions": {
+        "0.2.0": {
+          "version": "0.2.0",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.0"
+            }
+          ],
+          "sha": "d59963f289c8c17cddc9e54146909593327898e9"
+        },
+        "0.3.0": {
+          "version": "0.3.0",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.0"
+            },
+            {
+              "owner": "",
+              "name": "DataFiles",
+              "version": "1.0.0"
+            }
+          ],
+          "sha": "3fbf97045bc36edf2fdb0400453022374ad06b52"
+        },
+        "0.3.1": {
+          "version": "0.3.1",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "DataFiles",
+              "version": "1.0.0"
+            },
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.1"
+            }
+          ],
+          "sha": "e1ba0af915c0c920a5e50acf56ce71a308872c03"
+        },
+        "0.3.2": {
+          "version": "0.3.2",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "DataFiles",
+              "version": "1.0.0"
+            },
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.1"
+            }
+          ],
+          "sha": "13cf6b599a20a40715b3a248785d2553d1045342"
+        },
+        "0.4.0": {
+          "version": "0.4.0",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.1"
+            },
+            {
+              "owner": "",
+              "name": "DataFiles",
+              "version": "1.0.0"
+            }
+          ],
+          "sha": "93aa7a61ed954192db58b1814609df92c8f7b719"
+        },
+        "0.4.1": {
+          "version": "0.4.1",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "DataFiles",
+              "version": "1.0.0"
+            },
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.1"
+            }
+          ],
+          "sha": "32d105deff9269b47e5c69627f2eee43bacd9fbd"
+        },
+        "0.4.2": {
+          "version": "0.4.2",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "DataFiles",
+              "version": "1.0.0"
+            },
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.1"
+            }
+          ],
+          "sha": "57307d85dfbcb72b3e9370a219e92d93047a2a5d"
+        },
+        "0.4.3": {
+          "version": "0.4.3",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "DataFiles",
+              "version": "1.0.0"
+            },
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.1"
+            }
+          ],
+          "sha": "a5dd98399c5c74e1f1f289f6c2084fb81b8b1f77"
+        }
+      }
+    },
+    {
+      "owner": "modelica-3rdparty",
+      "email": "",
+      "name": "ComplexLib",
+      "homepage": "https://github.com/modelica-3rdparty/ComplexLib",
+      "description": "Free library for steady-state analysis of AC circuits within phasor domain.",
+      "stars": 0,
+      "versions": {
+        "1.0.0": {
+          "version": "1.0.0",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.0.0"
+            }
+          ],
+          "sha": "0b78942ee4fa95ae71347a0d552dd869fdf4c708"
+        }
+      }
+    },
+    {
+      "owner": "modelica-3rdparty",
+      "email": "",
+      "name": "FaultTriggering",
+      "homepage": "https://github.com/modelica-3rdparty/FaultTriggering",
+      "description": "Library for fault modelling in Modelica",
+      "stars": 0,
+      "versions": {
+        "0.6.2": {
+          "version": "0.6.2",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.1"
+            },
+            {
+              "owner": "",
+              "name": "ModelManagement",
+              "version": "1.1.1"
+            }
+          ],
+          "sha": "0a180687231d36540e1695523d3de6bbe10b28c5"
+        }
+      }
+    },
+    {
+      "owner": "modelica-3rdparty",
+      "email": "",
+      "name": "FuzzyControl",
+      "homepage": "https://github.com/modelica-3rdparty/FuzzyControl",
+      "description": "Free library for fuzzy control (unlicensed)",
+      "stars": 0,
+      "versions": {
+        "1.0.0": {
+          "version": "1.0.0",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [],
+          "sha": "19ff67ff129a440482cc85f216f287b05ea6ec0d"
+        }
+      }
+    },
+    {
+      "owner": "modelica-3rdparty",
+      "email": "",
+      "name": "HelmholtzMedia",
+      "homepage": "https://github.com/modelica-3rdparty/HelmholtzMedia",
+      "description": "Fluid properties for Modelica, for pure fluids that can be described by a Helmholtz energy equation of state",
+      "stars": 1,
+      "versions": {
+        "0.9.2": {
+          "version": "0.9.2",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.0"
+            }
+          ],
+          "sha": "86859a714097259ce607cd4f4f7cb590bec229c6"
+        },
+        "0.9.3": {
+          "version": "0.9.3",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.0"
+            }
+          ],
+          "sha": "4258bc5a8d321f03ffe6007c7cf12aed2571c0f1"
+        },
+        "0.9.4": {
+          "version": "0.9.4",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.0"
+            }
+          ],
+          "sha": "59e46826c6a488e6f9b2d2f67342d7295dccfc8d"
+        },
+        "0.9.5": {
+          "version": "0.9.5",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.0"
+            }
+          ],
+          "sha": "6abd9b8559f967640bbd495ca307c1e91c8099c0"
+        },
+        "0.9.6": {
+          "version": "0.9.6",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.0"
+            }
+          ],
+          "sha": "ea8b6836dbe62499510f1434526512e56c80784d"
+        },
+        "0.9.7": {
+          "version": "0.9.7",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.1"
+            }
+          ],
+          "sha": "b512e63764114df1ae9fb9d577d7450f88240a6d"
+        }
+      }
+    },
+    {
+      "owner": "modelica-3rdparty",
+      "email": "",
+      "name": "LinearMPC",
+      "homepage": "https://github.com/modelica-3rdparty/LinearMPC",
+      "description": "Library for model-based predictive controllers with linear process models.",
+      "stars": 1,
+      "versions": {
+        "1.0.0": {
+          "version": "1.0.0",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.0"
+            }
+          ],
+          "sha": "1e91a5dcaa662cd30c5b09a9d0267289703f933b"
+        }
+      }
+    },
+    {
+      "owner": "modelica-3rdparty",
+      "email": "",
+      "name": "ModelicaDEVS",
+      "homepage": "https://github.com/modelica-3rdparty/ModelicaDEVS",
+      "description": "A free library for discrete-event modeling using the DEVS formalism. (unlicensed)",
+      "stars": 0,
+      "versions": {
+        "1.0.0": {
+          "version": "1.0.0",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [],
+          "sha": "a987aa9552fbbe71b2ee2e8c28958f9d213087ae"
+        }
+      }
+    }
+  ]
+}

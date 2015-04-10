@@ -1,7 +1,6 @@
 package parsing
 
 import (
-	"log"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
@@ -13,14 +12,12 @@ func TestUsesParsing(t *testing.T) {
 		uses, err := ParseUses(t1)
 		NoError(c, err)
 
-		log.Printf("uses = %v", uses)
-
 		mv, exists := uses["Modelica"]
 		IsTrue(c, exists)
-		Equals(c, mv, "3.2.1")
+		Equals(c, mv.String(), "3.2.1")
 
 		msv, exists := uses["Modelica_StateGraph2"]
-		Equals(c, msv, "2.0.2")
+		Equals(c, msv.String(), "2.0.2")
 	})
 }
 
