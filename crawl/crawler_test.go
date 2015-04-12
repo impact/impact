@@ -37,8 +37,9 @@ func (nr NullRecorder) AddDependency(library string, version semver.Version) {}
 func TestGitHub(t *testing.T) {
 	Convey("Testing GitHub crawler", t, func(c C) {
 		logger := log.New(os.Stdout, "impact: ", 0)
-		cr := MakeGitHubCrawler("modelica-3rdparty", "")
-		err := cr.Crawl(NullRecorder{}, false, logger)
+		cr, err := MakeGitHubCrawler("modelica-3rdparty", "", "")
+		NoError(c, err)
+		err = cr.Crawl(NullRecorder{}, false, logger)
 		NoError(c, err)
 	})
 }

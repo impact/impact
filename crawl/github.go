@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 
 	"code.google.com/p/goauth2/oauth"
 	"github.com/google/go-github/github"
@@ -13,8 +14,10 @@ import (
 )
 
 type GitHubCrawler struct {
-	token string
-	user  string
+	token   string
+	pattern string
+	re      *regexp.Regexp
+	user    string
 }
 
 var exclusionList []string
@@ -87,9 +90,11 @@ func (c GitHubCrawler) Crawl(r recorder.Recorder, verbose bool, logger *log.Logg
 		client = github.NewClient(tok.Client())
 	}
 
+	lopts := github.RepositoryListOptions{}
+
 	// Get a list of all repositories associated with the specified
 	// organization
-	repos, _, err := client.Repositories.List(c.user, nil)
+	repos, _, err := client.Repositories.List(c.user, &lopts)
 	if err != nil {
 		logger.Printf("Error listing repositories for %s: %v", c.user, err)
 		return fmt.Errorf("Error listing repositories for %s: %v", c.user, err)
@@ -97,15 +102,25 @@ func (c GitHubCrawler) Crawl(r recorder.Recorder, verbose bool, logger *log.Logg
 
 	// Loop over all repos associated with the given owner
 	for _, repo := range repos {
+		rname := *repo.Name
+
+		if !c.re.MatchString(rname) {
+			if verbose {
+				logger.Printf("Skipping: %s (%s), doesn't match pattern '%s'",
+					rname, *repo.HTMLURL, c.pattern)
+			}
+			continue
+		}
+
 		if verbose {
-			logger.Printf("Processing: %s (%s)", *repo.Name, *repo.HTMLURL)
+			logger.Printf("Processing: %s (%s)", rname, *repo.HTMLURL)
 		}
 
 		// Get all the tags associated with this repository
-		tags, _, err := client.Repositories.ListTags(c.user, *repo.Name, nil)
+		tags, _, err := client.Repositories.ListTags(c.user, rname, nil)
 		if err != nil {
 			logger.Printf("Error getting tags for repository %s/%s: %v",
-				c.user, *repo.Name, err)
+				c.user, rname, err)
 			continue
 		}
 
@@ -118,7 +133,7 @@ func (c GitHubCrawler) Crawl(r recorder.Recorder, verbose bool, logger *log.Logg
 			}
 
 			// Check for version we know are not supported
-			if exclude(c.user, *repo.Name, name) {
+			if exclude(c.user, rname, name) {
 				continue
 			}
 
@@ -140,7 +155,7 @@ func (c GitHubCrawler) Crawl(r recorder.Recorder, verbose bool, logger *log.Logg
 
 			if len(di.Libraries) == 0 {
 				logger.Printf("    No Modelica libraries found in repository %s:%s",
-					*repo.Name, name)
+					rname, name)
 				continue
 			}
 
@@ -174,11 +189,22 @@ func (c GitHubCrawler) Crawl(r recorder.Recorder, verbose bool, logger *log.Logg
 	return nil
 }
 
-func MakeGitHubCrawler(user string, token string) GitHubCrawler {
-	return GitHubCrawler{
-		token: token,
-		user:  user,
+func MakeGitHubCrawler(user string, pattern string, token string) (GitHubCrawler, error) {
+	if pattern == "" {
+		pattern = ".+"
 	}
+
+	re, err := regexp.Compile(pattern)
+	if err != nil {
+		return GitHubCrawler{}, err
+	}
+
+	return GitHubCrawler{
+		token:   token,
+		pattern: pattern,
+		re:      re,
+		user:    user,
+	}, nil
 }
 
 var _ Crawler = (*GitHubCrawler)(nil)
