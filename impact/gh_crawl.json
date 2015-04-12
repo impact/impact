@@ -260,13 +260,13 @@
           "dependencies": [
             {
               "owner": "",
-              "name": "DataFiles",
-              "version": "1.0.0"
+              "name": "Modelica",
+              "version": "3.2.1"
             },
             {
               "owner": "",
-              "name": "Modelica",
-              "version": "3.2.1"
+              "name": "DataFiles",
+              "version": "1.0.0"
             }
           ],
           "sha": "32d105deff9269b47e5c69627f2eee43bacd9fbd"
@@ -279,13 +279,13 @@
           "dependencies": [
             {
               "owner": "",
-              "name": "DataFiles",
-              "version": "1.0.0"
+              "name": "Modelica",
+              "version": "3.2.1"
             },
             {
               "owner": "",
-              "name": "Modelica",
-              "version": "3.2.1"
+              "name": "DataFiles",
+              "version": "1.0.0"
             }
           ],
           "sha": "57307d85dfbcb72b3e9370a219e92d93047a2a5d"
@@ -308,6 +308,91 @@
             }
           ],
           "sha": "a5dd98399c5c74e1f1f289f6c2084fb81b8b1f77"
+        }
+      }
+    },
+    {
+      "owner": "modelica-3rdparty",
+      "email": "",
+      "name": "Buildings",
+      "homepage": "https://github.com/modelica-3rdparty/Buildings",
+      "description": "Modelica Buildings library",
+      "stars": 0,
+      "versions": {
+        "1.5.0+build.1": {
+          "version": "1.5.0+build.1",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.0"
+            }
+          ],
+          "sha": "6b865480883b813cd87159b56d83c8ee220f30c9"
+        },
+        "1.5.0+build.2": {
+          "version": "1.5.0+build.2",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.0"
+            }
+          ],
+          "sha": "e3ede45ffb40b1c703c9e517ddd0e42ff3691689"
+        },
+        "1.5.0+build.3": {
+          "version": "1.5.0+build.3",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.0"
+            }
+          ],
+          "sha": "5734e67c306f0cfc46e7e1794da265e16bb22dfa"
+        },
+        "1.6.0+build.1": {
+          "version": "1.6.0+build.1",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.1"
+            }
+          ],
+          "sha": "bca6399e7f5504ae13529183f7707f3634622f21"
+        },
+        "2.0.0-rc.1": {
+          "version": "2.0.0-rc.1",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.1"
+            },
+            {
+              "owner": "",
+              "name": "Modelica_StateGraph2",
+              "version": "2.0.2"
+            }
+          ],
+          "sha": "135345b7870757f9406797343ec6e1af58833592"
         }
       }
     },
@@ -388,13 +473,13 @@
           "dependencies": [
             {
               "owner": "",
-              "name": "Modelica",
-              "version": "3.2.1"
+              "name": "ModelManagement",
+              "version": "1.1.1"
             },
             {
               "owner": "",
-              "name": "ModelManagement",
-              "version": "1.1.1"
+              "name": "Modelica",
+              "version": "3.2.1"
             }
           ],
           "sha": "0a180687231d36540e1695523d3de6bbe10b28c5"
@@ -714,24 +799,6 @@
     {
       "owner": "modelica-3rdparty",
       "email": "",
-      "name": "MotorcycleLib",
-      "homepage": "https://github.com/modelica-3rdparty/MotorcycleLib",
-      "description": "Free Modelica library for the purpose of simulation, analysis and control of bicycles and motorcycles (single-track vehicles, uses BondLib)",
-      "stars": 0,
-      "versions": {
-        "1.0.0": {
-          "version": "1.0.0",
-          "tarball_url": "",
-          "zipball_url": "",
-          "path": "",
-          "dependencies": [],
-          "sha": "da7c95a712a612924255deb17e338fb3ecd53963"
-        }
-      }
-    },
-    {
-      "owner": "modelica-3rdparty",
-      "email": "",
       "name": "MultiBondLib",
       "homepage": "https://github.com/modelica-3rdparty/MultiBondLib",
       "description": "Free library to model physical systems with multi-bond graphs.",
@@ -755,24 +822,6 @@
             }
           ],
           "sha": "e96784322f683ebccf703a65e8857d3d219b8fe8"
-        }
-      }
-    },
-    {
-      "owner": "modelica-3rdparty",
-      "email": "",
-      "name": "NCLib",
-      "homepage": "https://github.com/modelica-3rdparty/NCLib",
-      "description": "Free library for combined simulation of networks and controllers in the domain of automation systems.",
-      "stars": 0,
-      "versions": {
-        "0.82.0": {
-          "version": "0.82.0",
-          "tarball_url": "",
-          "zipball_url": "",
-          "path": "",
-          "dependencies": [],
-          "sha": "ed3d72f176ac6b7031ce73be9d80101141e74a69"
         }
       }
     },
@@ -816,16 +865,6 @@
           "dependencies": [
             {
               "owner": "",
-              "name": "Modelica_StateGraph2",
-              "version": "2.0.2"
-            },
-            {
-              "owner": "",
-              "name": "Design",
-              "version": "1.0.3"
-            },
-            {
-              "owner": "",
               "name": "Modelica_LinearSystems2",
               "version": "2.3.1"
             },
@@ -833,6 +872,16 @@
               "owner": "",
               "name": "Modelica",
               "version": "3.2.1"
+            },
+            {
+              "owner": "",
+              "name": "Modelica_StateGraph2",
+              "version": "2.0.2"
+            },
+            {
+              "owner": "",
+              "name": "Design",
+              "version": "1.0.3"
             }
           ],
           "sha": "e5f4c012d98f82b605477020d2dc792ad70d2114"
@@ -929,6 +978,25 @@
             }
           ],
           "sha": "b490aa38f6c4a5b83907b645453317ec974a4ab1"
+        },
+        "3.2.1+build.2": {
+          "version": "3.2.1+build.2",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Complex",
+              "version": "3.2.1"
+            },
+            {
+              "owner": "",
+              "name": "ModelicaServices",
+              "version": "3.2.1"
+            }
+          ],
+          "sha": "be98e92324a992ac6a2f26e3ab5266c399e2bb57"
         }
       }
     },
@@ -972,6 +1040,63 @@
             }
           ],
           "sha": "be63e7b4b803a5e69eeda58b45096b3f8e1c2245"
+        },
+        "1.2.0+build.1": {
+          "version": "1.2.0+build.1",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica_Synchronous",
+              "version": "0.92.0"
+            },
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.1"
+            }
+          ],
+          "sha": "43886bbead73d448a636e04156c218b69b886926"
+        },
+        "1.3.0+build.1": {
+          "version": "1.3.0+build.1",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica_Synchronous",
+              "version": "0.92.0"
+            },
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.1"
+            }
+          ],
+          "sha": "954c7eb652368033dd9661e2c243bf13440b1cb1"
+        },
+        "1.3.0+build.2": {
+          "version": "1.3.0+build.2",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica_Synchronous",
+              "version": "0.92.0"
+            },
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.1"
+            }
+          ],
+          "sha": "1e7470a3ded11770fbc80cba0142e1419e79d821"
         }
       }
     },
@@ -1100,6 +1225,20 @@
             }
           ],
           "sha": "03be709c4f5245607d94ac0ba0217c41eb16e6b6"
+        },
+        "0.92.0+build.2": {
+          "version": "0.92.0+build.2",
+          "tarball_url": "",
+          "zipball_url": "",
+          "path": "",
+          "dependencies": [
+            {
+              "owner": "",
+              "name": "Modelica",
+              "version": "3.2.1"
+            }
+          ],
+          "sha": "5cf7458a5ca3f11b117fc394a730810208edecd4"
         }
       }
     },

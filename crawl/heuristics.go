@@ -105,28 +105,46 @@ func ExtractInfo(client *github.Client, user string, repo github.Repository,
 	if len(di.Libraries) == 0 {
 		path := ""
 		isfile := true
+		found := false
+		stname := parsing.SimpleVersion(tname)
 
 		filenames := []string{repostr + ".mo", repostr + " " + tname + ".mo"}
 		dirnames := []string{repostr, repostr + " " + tname}
 
+		if stname != tname {
+			filenames = append(filenames, repostr+" "+stname+".mo")
+			dirnames = append(dirnames, repostr+" "+stname)
+		}
+
 		for _, fpath := range filenames {
 			//log.Printf("Looking for file %s in %s:%s", fpath, repostr, tname)
 			fexists, _ := lookupPath(fpath)
-			if path == "" && fexists {
+			if !found && fexists {
 				path = fpath
+				found = true
 			}
 		}
 
 		for _, dpath := range dirnames {
 			//log.Printf("Looking for directory %s in %s:%s", dpath, repostr, tname)
 			_, dexists := lookupPath(dpath)
-			if path == "" && dexists {
+			if !found && dexists {
 				path = dpath
 				isfile = false
+				found = true
 			}
 		}
 
-		if path != "" {
+		if !found {
+			// Check if repository IS a package
+			if fexists, _ := lookupPath("package.mo"); fexists {
+				path = ""
+				isfile = false
+				found = true
+			}
+		}
+
+		if found {
 			di.Libraries = []*dirinfo.LocalLibrary{
 				&dirinfo.LocalLibrary{
 					Name:         repostr,
@@ -135,7 +153,6 @@ func ExtractInfo(client *github.Client, user string, repo github.Repository,
 					Dependencies: []dirinfo.Dependency{},
 				},
 			}
-
 		}
 	}
 
