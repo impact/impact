@@ -8,8 +8,8 @@ import (
 )
 
 type Index struct {
-	Version   string
-	Libraries []*Library
+	Version   string     `json:"version"`
+	Libraries []*Library `json:"libraries"`
 }
 
 func (i *Index) GetLibrary(owner string, name string) recorder.LibraryRecorder {
