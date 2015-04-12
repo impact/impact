@@ -20,7 +20,7 @@ func TestGitHub(t *testing.T) {
 
 		cr, err := crawl.MakeGitHubCrawler("modelica-3rdparty", "", "")
 		NoError(c, err)
-		err = cr.Crawl(ind, true, logger)
+		err = cr.Crawl(ind, false, logger)
 		NoError(c, err)
 
 		cr, err = crawl.MakeGitHubCrawler("modelica", "", "")
