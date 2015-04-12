@@ -59,7 +59,7 @@ func Exists(client *github.Client, owner string, reponame string,
 }
 
 func ExtractInfo(client *github.Client, user string, repo github.Repository,
-	tag github.RepositoryTag, tname string, logger *log.Logger) dirinfo.DirectoryInfo {
+	sha string, versionString string, logger *log.Logger) dirinfo.DirectoryInfo {
 
 	// TODO: What if this is a mirror?  Follow "Source" repository?
 
@@ -69,20 +69,26 @@ func ExtractInfo(client *github.Client, user string, repo github.Repository,
 	if repo.Owner.Login != nil {
 		owner = *repo.Owner.Login
 	}
-	ref := *tag.Commit.SHA
-	opts := &github.RepositoryContentGetOptions{
-		Ref: ref,
-	}
 
-	// Parse any impact.json file the is present
-	dcon, _, _, err := client.Repositories.GetContents(owner, repostr, "impact.json", opts)
+	opts := &github.RepositoryContentGetOptions{
+		Ref: sha,
+	}
 
 	// Create a "blank" directory info as default
 	di := dirinfo.MakeDirectoryInfo()
 
+	// Parse any impact.json file the is present
+	dcon, _, _, err := client.Repositories.GetContents(owner, repostr, "impact.json", opts)
+
 	// If impact.json exists, parse it and use that as our baseline
 	if dcon != nil && err == nil {
-		di = dirinfo.Parse(*dcon.Content)
+		pdi, perr := dirinfo.Parse(*dcon.Content)
+		if perr == nil {
+			log.Printf("Parsed impact.json file in %s: %v", repostr, pdi)
+			di = pdi
+		} else {
+			log.Printf("Unable to parse impact.json in %s: %v", repostr, perr)
+		}
 	}
 
 	// NOW, use heuristics to infer missing information
@@ -106,18 +112,18 @@ func ExtractInfo(client *github.Client, user string, repo github.Repository,
 		path := ""
 		isfile := true
 		found := false
-		stname := parsing.SimpleVersion(tname)
+		sver := parsing.SimpleVersion(versionString)
 
-		filenames := []string{repostr + ".mo", repostr + " " + tname + ".mo"}
-		dirnames := []string{repostr, repostr + " " + tname}
+		filenames := []string{repostr + ".mo", repostr + " " + versionString + ".mo"}
+		dirnames := []string{repostr, repostr + " " + versionString}
 
-		if stname != tname {
-			filenames = append(filenames, repostr+" "+stname+".mo")
-			dirnames = append(dirnames, repostr+" "+stname)
+		if sver != versionString {
+			filenames = append(filenames, repostr+" "+sver+".mo")
+			dirnames = append(dirnames, repostr+" "+sver)
 		}
 
 		for _, fpath := range filenames {
-			//log.Printf("Looking for file %s in %s:%s", fpath, repostr, tname)
+			//log.Printf("Looking for file %s in %s:%s", fpath, repostr, versionString)
 			fexists, _ := lookupPath(fpath)
 			if !found && fexists {
 				path = fpath
@@ -126,7 +132,7 @@ func ExtractInfo(client *github.Client, user string, repo github.Repository,
 		}
 
 		for _, dpath := range dirnames {
-			//log.Printf("Looking for directory %s in %s:%s", dpath, repostr, tname)
+			//log.Printf("Looking for directory %s in %s:%s", dpath, repostr, versionString)
 			_, dexists := lookupPath(dpath)
 			if !found && dexists {
 				path = dpath
