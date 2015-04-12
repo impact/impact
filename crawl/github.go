@@ -69,8 +69,8 @@ func exclude(user string, reponame string, tagname string) bool {
 }
 
 func (c GitHubCrawler) processVersion(client *github.Client, r recorder.Recorder,
-	repo github.Repository, versionString string, sha string, verbose bool,
-	logger *log.Logger) {
+	repo github.Repository, versionString string, sha string, tarurl string,
+	zipurl string, verbose bool, logger *log.Logger) {
 
 	rname := *repo.Name
 
@@ -101,21 +101,28 @@ func (c GitHubCrawler) processVersion(client *github.Client, r recorder.Recorder
 		if verbose {
 			logger.Printf("    Processing library %s @ %s", lib.Name, lib.Path)
 		}
-		libr := r.GetLibrary(di.Owner, lib.Name)
+
+		if repo.HTMLURL == nil {
+			logger.Printf("Error: Cannot index because HTMLURL is not specified")
+			continue
+		}
+
+		libr := r.GetLibrary(lib.Name, *repo.HTMLURL, di.Owner)
 
 		if repo.Description != nil {
 			libr.SetDescription(*repo.Description)
 		}
-		if repo.HTMLURL != nil {
-			libr.SetHomepage(*repo.HTMLURL)
-		}
+
+		libr.SetHomepage(*repo.HTMLURL)
 		libr.SetStars(*repo.StargazersCount)
-		if repo.Owner.Email != nil {
-			libr.SetEmail(*repo.Owner.Email)
-		}
+		libr.SetEmail(di.Email)
 
 		vr := libr.AddVersion(v)
+
+		vr.SetPath(lib.Path, lib.IsFile)
 		vr.SetHash(sha)
+		vr.SetTarballURL(tarurl)
+		vr.SetZipballURL(zipurl)
 
 		for _, dep := range lib.Dependencies {
 			vr.AddDependency(dep.Name, dep.Version)
@@ -156,7 +163,12 @@ func (c GitHubCrawler) Crawl(r recorder.Recorder, verbose bool, logger *log.Logg
 	}
 
 	// Loop over all repos associated with the given owner
-	for _, repo := range repos {
+	for _, orepo := range repos {
+		repo := orepo
+		if orepo.Source != nil {
+			repo = *orepo.Source
+		}
+
 		rname := *repo.Name
 
 		if !c.re.MatchString(rname) {
@@ -189,12 +201,23 @@ func (c GitHubCrawler) Crawl(r recorder.Recorder, verbose bool, logger *log.Logg
 				versionString = versionString[1:]
 			}
 
+			tarurl := ""
+			if tag.TarballURL != nil {
+				tarurl = *tag.TarballURL
+			}
+
+			zipurl := ""
+			if tag.ZipballURL != nil {
+				zipurl = *tag.ZipballURL
+			}
+
 			// Check for version we know are not supported
 			if exclude(c.user, rname, versionString) {
 				continue
 			}
 
-			c.processVersion(client, r, repo, versionString, sha, verbose, logger)
+			c.processVersion(client, r, repo, versionString, sha, tarurl, zipurl,
+				verbose, logger)
 		}
 
 		// TODO: Add HEAD of master to list?  But how?  What kind of semantic

@@ -12,13 +12,13 @@ type Index struct {
 	Libraries []*Library `json:"libraries"`
 }
 
-func (i *Index) GetLibrary(owner string, name string) recorder.LibraryRecorder {
+func (i *Index) GetLibrary(name string, uri string, owner_uri string) recorder.LibraryRecorder {
 	for _, lib := range i.Libraries {
-		if lib.Owner == owner && lib.Name == name {
+		if lib.OwnerURI == owner_uri && lib.Name == name {
 			return lib
 		}
 	}
-	lib := NewLibrary(owner, name)
+	lib := NewLibrary(name, uri, owner_uri)
 	i.Libraries = append(i.Libraries, lib)
 	return lib
 }

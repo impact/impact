@@ -7,12 +7,17 @@ import (
 )
 
 type VersionDetails struct {
-	Version      semver.Version `json:"version"`
-	Tarball      string         `json:"tarball_url"`
-	Zipball      string         `json:"zipball_url"`
-	Path         string         `json:"path"`
-	Dependencies []Dependency   `json:"dependencies"`
-	Sha          string         `json:"sha"`
+	Version semver.Version `json:"version"`
+	Tarball string         `json:"tarball_url"`
+	Zipball string         `json:"zipball_url"`
+
+	// This indicates where (within an archive) the library can be found:
+	Path string `json:"path"`
+	// This indicates whether the specified path is to a file or directory:
+	IsFile bool `json:"isfile"`
+
+	Dependencies []Dependency `json:"dependencies"`
+	Sha          string       `json:"sha"`
 }
 
 func NewVersionDetails(v semver.Version) *VersionDetails {
@@ -32,6 +37,11 @@ func (v *VersionDetails) SetTarballURL(url string) {
 
 func (v *VersionDetails) SetZipballURL(url string) {
 	v.Zipball = url
+}
+
+func (v *VersionDetails) SetPath(path string, file bool) {
+	v.Path = path
+	v.IsFile = file
 }
 
 func (v *VersionDetails) AddDependency(library string, version semver.Version) {

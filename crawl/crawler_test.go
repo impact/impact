@@ -16,7 +16,8 @@ import (
 type NullRecorder struct {
 }
 
-func (nr NullRecorder) GetLibrary(owner string, name string) recorder.LibraryRecorder {
+func (nr NullRecorder) GetLibrary(name string, owner string,
+	uri string) recorder.LibraryRecorder {
 	return nr
 }
 
@@ -30,6 +31,7 @@ func (nr NullRecorder) AddVersion(v semver.Version) recorder.VersionRecorder {
 }
 
 func (nr NullRecorder) SetHash(hash string)                                  {}
+func (nr NullRecorder) SetPath(path string, file bool)                       {}
 func (nr NullRecorder) SetTarballURL(url string)                             {}
 func (nr NullRecorder) SetZipballURL(url string)                             {}
 func (nr NullRecorder) AddDependency(library string, version semver.Version) {}

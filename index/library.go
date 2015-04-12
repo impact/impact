@@ -9,13 +9,24 @@ import (
 )
 
 type Library struct {
-	Owner       string                     `json:"owner"`
-	Email       string                     `json:"email"`
-	Name        string                     `json:"name"`
-	Homepage    string                     `json:"homepage"`
-	Description string                     `json:"description"`
-	Stars       int                        `json:"stars"`
-	Versions    map[string]*VersionDetails `json:"versions"`
+	// Library name
+	Name string `json:"name"`
+	// Canonical URI for this library (used for disambiguation)
+	URI string `json:"uri"`
+
+	// Versions of this library that are available
+	Versions map[string]*VersionDetails `json:"versions"`
+
+	// Owner of library
+	OwnerURI string `json:"owner_uri"`
+	// Email for library contact
+	Email string `json:"email"`
+	// Web site
+	Homepage string `json:"homepage"`
+	// Textual description
+	Description string `json:"description"`
+	// Stars (if applicable, otherwise -1)
+	Stars int `json:"stars"`
 }
 
 func (lib *Library) SetEmail(email string) {
@@ -40,10 +51,11 @@ func (lib *Library) AddVersion(v semver.Version) recorder.VersionRecorder {
 	return details
 }
 
-func NewLibrary(owner string, name string) *Library {
+func NewLibrary(name string, uri string, owner_uri string) *Library {
 	return &Library{
-		Owner:    owner,
 		Name:     name,
+		URI:      uri,
+		OwnerURI: owner_uri,
 		Stars:    -1,
 		Versions: map[string]*VersionDetails{},
 	}

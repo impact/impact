@@ -12,12 +12,12 @@ import (
 	"github.com/xogeny/impact/parsing"
 )
 
-func getUses(client *github.Client, owner string, reponame string,
+func getUses(client *github.Client, user string, reponame string,
 	path string, opts *github.RepositoryContentGetOptions) (map[string]semver.Version, error) {
 	blank := map[string]semver.Version{}
 
 	// Read contents of top-level package
-	lcon, _, _, err := client.Repositories.GetContents(owner, reponame, path, opts)
+	lcon, _, _, err := client.Repositories.GetContents(user, reponame, path, opts)
 	if err != nil {
 		return blank,
 			fmt.Errorf("Error while reading contents of %s in github repository %s: %v",
@@ -43,9 +43,9 @@ func getUses(client *github.Client, owner string, reponame string,
 	return uses, nil
 }
 
-func Exists(client *github.Client, owner string, reponame string,
+func Exists(client *github.Client, user string, reponame string,
 	path string, opts *github.RepositoryContentGetOptions) (file bool, dir bool) {
-	f, d, _, err := client.Repositories.GetContents(owner, reponame, path, opts)
+	f, d, _, err := client.Repositories.GetContents(user, reponame, path, opts)
 	if err != nil {
 		return false, false
 	}
@@ -65,9 +65,14 @@ func ExtractInfo(client *github.Client, user string, repo github.Repository,
 
 	repostr := *repo.Name
 
-	owner := user
-	if repo.Owner.Login != nil {
-		owner = *repo.Owner.Login
+	owner_uri := user
+	if repo.Owner.HTMLURL != nil {
+		owner_uri = *repo.Owner.HTMLURL
+	}
+
+	email := ""
+	if repo.Owner.Email != nil {
+		email = *repo.Owner.Email
 	}
 
 	opts := &github.RepositoryContentGetOptions{
@@ -78,7 +83,7 @@ func ExtractInfo(client *github.Client, user string, repo github.Repository,
 	di := dirinfo.MakeDirectoryInfo()
 
 	// Parse any impact.json file the is present
-	dcon, _, _, err := client.Repositories.GetContents(owner, repostr, "impact.json", opts)
+	dcon, _, _, err := client.Repositories.GetContents(user, repostr, "impact.json", opts)
 
 	// If impact.json exists, parse it and use that as our baseline
 	if dcon != nil && err == nil {
@@ -97,11 +102,15 @@ func ExtractInfo(client *github.Client, user string, repo github.Repository,
 	// are being scanned or the owner of this particular repository (see logic above
 	// regarding 'owner')
 	if di.Owner == "" {
-		di.Owner = owner
+		di.Owner = owner_uri
+	}
+
+	if di.Email == "" {
+		di.Email = email
 	}
 
 	lookupPath := func(path string) (bool, bool) {
-		return Exists(client, owner, repostr, path, opts)
+		return Exists(client, user, repostr, path, opts)
 	}
 
 	// Are any libraries mentioned?  If not, we need to figure out what the structure
@@ -123,30 +132,38 @@ func ExtractInfo(client *github.Client, user string, repo github.Repository,
 		}
 
 		for _, fpath := range filenames {
-			//log.Printf("Looking for file %s in %s:%s", fpath, repostr, versionString)
 			fexists, _ := lookupPath(fpath)
+			//log.Printf("Looking for file %s in %s:%s: %v", fpath, repostr,
+			//versionString, fexists)
 			if !found && fexists {
 				path = fpath
 				found = true
+				//log.Printf("  Found")
 			}
 		}
 
 		for _, dpath := range dirnames {
-			//log.Printf("Looking for directory %s in %s:%s", dpath, repostr, versionString)
 			_, dexists := lookupPath(dpath)
+			//log.Printf("Looking for directory %s in %s:%s: %v", dpath, repostr,
+			//versionString, dexists)
 			if !found && dexists {
 				path = dpath
 				isfile = false
 				found = true
+				//log.Printf("  Found")
 			}
 		}
 
 		if !found {
 			// Check if repository IS a package
-			if fexists, _ := lookupPath("package.mo"); fexists {
+			fexists, _ := lookupPath("package.mo")
+			//log.Printf("Check if directory %s:%s is a package: %v", repostr, versionString,
+			//fexists)
+			if fexists {
 				path = ""
 				isfile = false
 				found = true
+				//log.Printf("  Found")
 			}
 		}
 
@@ -170,7 +187,7 @@ func ExtractInfo(client *github.Client, user string, repo github.Repository,
 		}
 
 		// Read contents of top-level package
-		lcon, _, _, err := client.Repositories.GetContents(owner, repostr, path, opts)
+		lcon, _, _, err := client.Repositories.GetContents(user, repostr, path, opts)
 		if err != nil {
 			log.Printf("Error while reading contents of %s in github repository %s: %v",
 				path, repostr, err)
