@@ -49,18 +49,6 @@ func (di DirectoryInfo) JSON() string {
 	return string(bytes)
 }
 
-func ParseDirectoryInfo(s string) (DirectoryInfo, error) {
-	ret := DirectoryInfo{}
-	blank := DirectoryInfo{}
-
-	err := json.Unmarshal([]byte(s), &ret)
-	if err != nil {
-		return blank, err
-	}
-
-	return ret, nil
-}
-
 func MakeDirectoryInfo() DirectoryInfo {
 	return DirectoryInfo{
 		Libraries: []*LocalLibrary{},

@@ -20,7 +20,7 @@ var sample1 = `
 
 func TestDirInfoParsing(t *testing.T) {
 	Convey("Test dirinfo parsing", t, func(c C) {
-		di, err := ParseDirectoryInfo(sample1)
+		di, err := Parse(sample1)
 		NoError(c, err)
 		Equals(c, di.Owner, "sjoelund")
 		Equals(c, len(di.Libraries), 1)
