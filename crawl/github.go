@@ -68,6 +68,61 @@ func exclude(user string, reponame string, tagname string) bool {
 	return false
 }
 
+func (c GitHubCrawler) processVersion(client *github.Client, r recorder.Recorder,
+	repo github.Repository, versionString string, sha string, verbose bool,
+	logger *log.Logger) {
+
+	rname := *repo.Name
+
+	v, verr := parsing.NormalizeVersion(versionString)
+	if verr != nil {
+		// If not, ignore it
+		if verbose {
+			logger.Printf("  %s: Ignoring", versionString)
+		}
+		return
+	}
+
+	if verbose {
+		logger.Printf("  %s: Recording", versionString)
+	}
+
+	// Formulate directory info (impact.json) for this version of this repository
+	di := ExtractInfo(client, c.user, repo, sha, versionString, logger)
+
+	if len(di.Libraries) == 0 {
+		logger.Printf("    No Modelica libraries found in repository %s:%s",
+			rname, versionString)
+		return
+	}
+
+	// Loop over all libraries present in this repository
+	for _, lib := range di.Libraries {
+		if verbose {
+			logger.Printf("    Processing library %s @ %s", lib.Name, lib.Path)
+		}
+		libr := r.GetLibrary(di.Owner, lib.Name)
+
+		if repo.Description != nil {
+			libr.SetDescription(*repo.Description)
+		}
+		if repo.HTMLURL != nil {
+			libr.SetHomepage(*repo.HTMLURL)
+		}
+		libr.SetStars(*repo.StargazersCount)
+		if repo.Owner.Email != nil {
+			libr.SetEmail(*repo.Owner.Email)
+		}
+
+		vr := libr.AddVersion(v)
+		vr.SetHash(sha)
+
+		for _, dep := range lib.Dependencies {
+			vr.AddDependency(dep.Name, dep.Version)
+		}
+	}
+}
+
 func (c GitHubCrawler) Crawl(r recorder.Recorder, verbose bool, logger *log.Logger) error {
 	// Start with whatever token we were given when this crawler was created
 	token := c.token
@@ -127,64 +182,23 @@ func (c GitHubCrawler) Crawl(r recorder.Recorder, verbose bool, logger *log.Logg
 		// Loop over the tags
 		for _, tag := range tags {
 			// Check if this has a semantic version
-			name := *tag.Name
-			if name[0] == 'v' {
-				name = name[1:]
+			versionString := *tag.Name
+			sha := *tag.Commit.SHA
+
+			if versionString[0] == 'v' {
+				versionString = versionString[1:]
 			}
 
 			// Check for version we know are not supported
-			if exclude(c.user, rname, name) {
+			if exclude(c.user, rname, versionString) {
 				continue
 			}
 
-			v, verr := parsing.NormalizeVersion(name)
-			if verr != nil {
-				// If not, ignore it
-				if verbose {
-					logger.Printf("  %s: Ignoring", name)
-				}
-				continue
-			}
-
-			if verbose {
-				logger.Printf("  %s: Recording", name)
-			}
-
-			// Formulate directory info (impact.json) for this version of this repository
-			di := ExtractInfo(client, c.user, repo, tag, name, logger)
-
-			if len(di.Libraries) == 0 {
-				logger.Printf("    No Modelica libraries found in repository %s:%s",
-					rname, name)
-				continue
-			}
-
-			// Loop over all libraries present in this repository
-			for _, lib := range di.Libraries {
-				if verbose {
-					logger.Printf("    Processing library %s @ %s", lib.Name, lib.Path)
-				}
-				libr := r.GetLibrary(di.Owner, lib.Name)
-
-				if repo.Description != nil {
-					libr.SetDescription(*repo.Description)
-				}
-				if repo.HTMLURL != nil {
-					libr.SetHomepage(*repo.HTMLURL)
-				}
-				libr.SetStars(*repo.StargazersCount)
-				if repo.Owner.Email != nil {
-					libr.SetEmail(*repo.Owner.Email)
-				}
-
-				vr := libr.AddVersion(v)
-				vr.SetHash(*tag.Commit.SHA)
-
-				for _, dep := range lib.Dependencies {
-					vr.AddDependency(dep.Name, dep.Version)
-				}
-			}
+			c.processVersion(client, r, repo, versionString, sha, verbose, logger)
 		}
+
+		// TODO: Add HEAD of master to list?  But how?  What kind of semantic
+		// version number should I associate with it?
 	}
 	return nil
 }
