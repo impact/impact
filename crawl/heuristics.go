@@ -58,10 +58,8 @@ func Exists(client *github.Client, user string, reponame string,
 	return false, false
 }
 
-func ExtractInfo(client *github.Client, user string, repo github.Repository,
+func ExtractInfo(client *github.Client, user string, altname string, repo github.Repository,
 	sha string, versionString string, logger *log.Logger) dirinfo.DirectoryInfo {
-
-	// TODO: What if this is a mirror?  Follow "Source" repository?
 
 	repostr := *repo.Name
 
@@ -123,12 +121,24 @@ func ExtractInfo(client *github.Client, user string, repo github.Repository,
 		found := false
 		sver := parsing.SimpleVersion(versionString)
 
-		filenames := []string{repostr + ".mo", repostr + " " + versionString + ".mo"}
-		dirnames := []string{repostr, repostr + " " + versionString}
+		filenames := []string{
+			repostr + ".mo",
+			repostr + " " + versionString + ".mo",
+			altname + ".mo",
+			altname + " " + versionString + ".mo",
+		}
+		dirnames := []string{
+			repostr,
+			repostr + " " + versionString,
+			altname,
+			altname + " " + versionString,
+		}
 
 		if sver != versionString {
 			filenames = append(filenames, repostr+" "+sver+".mo")
+			filenames = append(filenames, altname+" "+sver+".mo")
 			dirnames = append(dirnames, repostr+" "+sver)
+			dirnames = append(dirnames, altname+" "+sver)
 		}
 
 		for _, fpath := range filenames {
@@ -176,6 +186,8 @@ func ExtractInfo(client *github.Client, user string, repo github.Repository,
 					Dependencies: []dirinfo.Dependency{},
 				},
 			}
+		} else {
+			log.Printf("Nothing found in %s for %v or %v", repostr, filenames, dirnames)
 		}
 	}
 

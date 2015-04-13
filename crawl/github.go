@@ -69,7 +69,7 @@ func exclude(user string, reponame string, tagname string) bool {
 }
 
 func (c GitHubCrawler) processVersion(client *github.Client, r recorder.Recorder,
-	repo github.Repository, versionString string, sha string, tarurl string,
+	altname string, repo github.Repository, versionString string, sha string, tarurl string,
 	zipurl string, verbose bool, logger *log.Logger) {
 
 	rname := *repo.Name
@@ -88,7 +88,7 @@ func (c GitHubCrawler) processVersion(client *github.Client, r recorder.Recorder
 	}
 
 	// Formulate directory info (impact.json) for this version of this repository
-	di := ExtractInfo(client, c.user, repo, sha, versionString, logger)
+	di := ExtractInfo(client, c.user, altname, repo, sha, versionString, logger)
 
 	if len(di.Libraries) == 0 {
 		logger.Printf("    No Modelica libraries found in repository %s:%s",
@@ -163,25 +163,49 @@ func (c GitHubCrawler) Crawl(r recorder.Recorder, verbose bool, logger *log.Logg
 	}
 
 	// Loop over all repos associated with the given owner
-	for _, orepo := range repos {
-		repo := orepo
-		if orepo.Source != nil {
-			repo = *orepo.Source
+	for _, minrepo := range repos {
+		rname := *minrepo.Name
+		single, _, err := client.Repositories.Get(c.user, rname)
+		if err != nil {
+			logger.Printf("Unable to fetch complete details for repo %s/%s: %v",
+				c.user, rname, err)
+			continue
 		}
-
-		rname := *repo.Name
 
 		if !c.re.MatchString(rname) {
 			if verbose {
 				logger.Printf("Skipping: %s (%s), doesn't match pattern '%s'",
-					rname, *repo.HTMLURL, c.pattern)
+					rname, *minrepo.HTMLURL, c.pattern)
 			}
 			continue
 		}
 
 		if verbose {
-			logger.Printf("Processing: %s (%s)", rname, *repo.HTMLURL)
+			logger.Printf("Processing: %s (%s, fork=%v)",
+				rname, *minrepo.HTMLURL, *minrepo.Fork)
 		}
+
+		repo := *single
+
+		/*
+			if single.Source != nil {
+				repo = *single.Source
+				log.Printf("Source for %s exists", *repo.Name)
+			} else {
+				log.Printf("No source for %s", *repo.Name)
+			}
+		*/
+
+		// TODO: Record both Source and fork?!?
+
+		/*
+			if orepo.Parent != nil {
+				repo = *orepo.Parent
+				log.Printf("Parent for %s exists", *repo.Name)
+			} else {
+				log.Printf("No parent for %s", *repo.Name)
+			}
+		*/
 
 		// Get all the tags associated with this repository
 		tags, _, err := client.Repositories.ListTags(c.user, rname, nil)
@@ -216,7 +240,7 @@ func (c GitHubCrawler) Crawl(r recorder.Recorder, verbose bool, logger *log.Logg
 				continue
 			}
 
-			c.processVersion(client, r, repo, versionString, sha, tarurl, zipurl,
+			c.processVersion(client, r, rname, repo, versionString, sha, tarurl, zipurl,
 				verbose, logger)
 		}
 

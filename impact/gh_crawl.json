@@ -184,12 +184,12 @@
           "isfile": false,
           "dependencies": [
             {
-              "name": "DataFiles",
-              "version": "1.0.0"
-            },
-            {
               "name": "Modelica",
               "version": "3.2.0"
+            },
+            {
+              "name": "DataFiles",
+              "version": "1.0.0"
             }
           ],
           "sha": "3fbf97045bc36edf2fdb0400453022374ad06b52"
@@ -220,12 +220,12 @@
           "isfile": false,
           "dependencies": [
             {
-              "name": "Modelica",
-              "version": "3.2.1"
-            },
-            {
               "name": "DataFiles",
               "version": "1.0.0"
+            },
+            {
+              "name": "Modelica",
+              "version": "3.2.1"
             }
           ],
           "sha": "13cf6b599a20a40715b3a248785d2553d1045342"
@@ -292,12 +292,12 @@
           "isfile": false,
           "dependencies": [
             {
-              "name": "Modelica",
-              "version": "3.2.1"
-            },
-            {
               "name": "DataFiles",
               "version": "1.0.0"
+            },
+            {
+              "name": "Modelica",
+              "version": "3.2.1"
             }
           ],
           "sha": "a5dd98399c5c74e1f1f289f6c2084fb81b8b1f77"
@@ -451,12 +451,12 @@
           "isfile": false,
           "dependencies": [
             {
-              "name": "ModelManagement",
-              "version": "1.1.1"
-            },
-            {
               "name": "Modelica",
               "version": "3.2.1"
+            },
+            {
+              "name": "ModelManagement",
+              "version": "1.1.1"
             }
           ],
           "sha": "ad0a7ca17684753ceb3a6d5d2afd9988dc74912b"
@@ -854,6 +854,10 @@
           "isfile": false,
           "dependencies": [
             {
+              "name": "Modelica",
+              "version": "3.2.1"
+            },
+            {
               "name": "Modelica_StateGraph2",
               "version": "2.0.2"
             },
@@ -864,10 +868,6 @@
             {
               "name": "Modelica_LinearSystems2",
               "version": "2.3.1"
-            },
-            {
-              "name": "Modelica",
-              "version": "3.2.1"
             }
           ],
           "sha": "e5f4c012d98f82b605477020d2dc792ad70d2114"
@@ -981,12 +981,12 @@
           "isfile": false,
           "dependencies": [
             {
-              "name": "ModelicaServices",
-              "version": "1.1.0"
-            },
-            {
               "name": "Complex",
               "version": "1.0.0"
+            },
+            {
+              "name": "ModelicaServices",
+              "version": "1.1.0"
             }
           ],
           "sha": "b490aa38f6c4a5b83907b645453317ec974a4ab1"
@@ -1078,12 +1078,12 @@
           "isfile": false,
           "dependencies": [
             {
-              "name": "Modelica_Synchronous",
-              "version": "0.92.0"
-            },
-            {
               "name": "Modelica",
               "version": "3.2.1"
+            },
+            {
+              "name": "Modelica_Synchronous",
+              "version": "0.92.0"
             }
           ],
           "sha": "954c7eb652368033dd9661e2c243bf13440b1cb1"
@@ -1096,12 +1096,12 @@
           "isfile": false,
           "dependencies": [
             {
-              "name": "Modelica",
-              "version": "3.2.1"
-            },
-            {
               "name": "Modelica_Synchronous",
               "version": "0.92.0"
+            },
+            {
+              "name": "Modelica",
+              "version": "3.2.1"
             }
           ],
           "sha": "1e7470a3ded11770fbc80cba0142e1419e79d821"
