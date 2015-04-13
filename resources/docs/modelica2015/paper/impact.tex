@@ -1,0 +1,110 @@
+%sample file for Modelica 2015 Conference paper
+
+\documentclass[11pt,a4paper,twocolumn]{article}
+\usepackage{graphicx}
+% uncomment according to your operating system:
+% ------------------------------------------------
+%\usepackage[latin1]{inputenc}    %% european characters can be used (Windows, old Linux)
+\usepackage[utf8]{inputenc}     %% european characters can be used (Linux)
+%\usepackage[applemac]{inputenc} %% european characters can be used (Mac OS)
+% ------------------------------------------------
+\usepackage[T1]{fontenc}     %% get hyphenation and accented letters right
+\usepackage{mathptmx}        %% use fitting times fonts also in formulas
+\usepackage{amsmath,amssymb} %% Nice maths
+\usepackage[round]{natbib}   %% author-year style referencing
+\usepackage{doi}             %% Create cor­rect hy­per­links for DOI num­bers
+\usepackage{booktabs}        %% Nice tables
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage[labelfont=bf, labelsep=period, font=small]{caption}  %% Get bold Figure/Table caption
+               %% Set separator in figures to '.', set fontsize to small
+\usepackage{authblk}         %% Prepare author and affiliation blocks
+\usepackage{courier}         %% For proper courier fonts in texttt
+\usepackage{listings}        %% For code sections
+%\usepackage[bw]{dtsyntax}    %% For Modelica code
+
+% do not change these lines:
+\pagestyle{empty}                %% no page numbers!
+\usepackage{geometry}            %% please don't change geometry settings!
+\geometry{left=20mm, right=20mm, top=25mm, bottom=25mm, noheadfoot}
+
+\hypersetup{
+  pdftitle = {Where impact got going},
+  pdfauthor = {Michael Tiller and Dietmar Winkler},
+  pdfsubject = {11th International Modelica Conference 2015},
+  pdfkeywords = {Modelica, package manager, GitHub, dependency management, golang},
+  hidelinks,
+  pdfpagelayout=SinglePage}
+
+\renewcommand{\normalsize}{\fontsize{10.5pt}{12.3pt}\selectfont}
+\renewcommand{\small}{\fontsize{9.5pt}{11.1pt}\selectfont}
+\renewcommand{\footnotesize}{\fontsize{8.5pt}{9.9pt}\selectfont}
+
+%% Modelica code configuration
+% \lstset{language = Modelica,
+%        basicstyle=\fontsize{9pt}{10.5pt}\selectfont,
+%        backgroundcolor = \color{white}}
+
+% usefull commands
+\newcommand{\myr}{\textsuperscript{\textregistered}}
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\matx}[1]{\mathbf{#1}}
+\newcommand{\impact}{\texttt{impact}} % impact is going to get used quite a lot :)
+\newcommand{\code}[1]{\texttt{#1}} % make quoting code text a bit simpler
+
+
+% begin the document
+\begin{document}
+\thispagestyle{empty}
+
+\title{\textbf{Where \impact\ got \emph{go}ing}}
+\renewcommand\Authfont{\large}        %% Set author font
+\renewcommand\Affilfont{\normalsize}       %% Set affiliation font
+\renewcommand\Authsep{\quad}                     %% Set text between authors names
+\renewcommand\Authand{\quad}                     %% Set text between authors names
+\renewcommand\Authands{\quad}                    %% Set text between authors names
+\author[1]{Michal Tiller}
+\author[2]{Dietmar Winkler}
+\affil[1]{\href{http://xogeny.com}{Xogeny Inc.}, USA, {\small \href{mailto:michael.tiller@xogeny.com}{\nolinkurl{michael.tiller@xogeny.com}}}}
+\affil[2]{\href{http://www.hit.no}{Telemark University College}, Norway, {\small\href{mailto:dietmar.winkler@hit.no}{\nolinkurl{dietmar.winkler@hit.no}}}}
+% \title{\textbf{Int. Modelica Conf. 2015 Paper Title}}
+% \author{{\large
+% Author Name$^1$ \quad Author Name$^1$ \quad Author Name$^2$\vspace{2mm}\\
+%   {}$^1$Department, University, Country, \textsf{\{name1,name2\}@university.org}\\
+%   {}$^2$Company, Contry, \textsf{name3@company}}
+
+
+\date{} % <--- leave date empty
+\maketitle\thispagestyle{empty} %% <-- you need this for the first page
+\abstract{
+TODO
+}
+
+\noindent\emph{Keywords: Modelica, package manager, GitHub, dependency management, golang}
+
+\section{Introduction}
+
+TODO
+
+\subsection{History}
+TODO
+
+\subsection{Why golang?}
+TODO
+
+
+\section{TODO}
+
+Outline paper sections\ldots
+
+%%% Remove the following line once we got real citations in place.
+\nocite{*}
+
+%--------------------------------------------------------------------------------
+% References using bibtex
+\small
+\bibliographystyle{plainnat}
+\bibliography{impact}
+\normalsize
+
+\end{document}
