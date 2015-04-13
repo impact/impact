@@ -88,7 +88,7 @@ func (c GitHubCrawler) processVersion(client *github.Client, r recorder.Recorder
 	}
 
 	// Formulate directory info (impact.json) for this version of this repository
-	di := ExtractInfo(client, c.user, altname, repo, sha, versionString, logger)
+	di := ExtractInfo(client, c.user, altname, repo, sha, versionString, verbose, logger)
 
 	if len(di.Libraries) == 0 {
 		logger.Printf("    No Modelica libraries found in repository %s:%s",
@@ -107,7 +107,7 @@ func (c GitHubCrawler) processVersion(client *github.Client, r recorder.Recorder
 			continue
 		}
 
-		libr := r.GetLibrary(lib.Name, *repo.HTMLURL, di.Owner)
+		libr := r.GetLibrary(lib.Name, *repo.HTMLURL, di.OwnerURI)
 
 		if repo.Description != nil {
 			libr.SetDescription(*repo.Description)

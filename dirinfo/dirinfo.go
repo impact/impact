@@ -36,7 +36,7 @@ type Dependency struct {
 }
 
 type DirectoryInfo struct {
-	Owner     string            `json:"owner"`     // Owner of this content
+	OwnerURI  string            `json:"owner_uri"` // Owner of this content
 	Email     string            `json:"email"`     // Email address for contact
 	Libraries []*LocalLibrary   `json:"libraries"` // Libraries defined here
 	Alias     map[string]string `json:"alias"`     // key: library name, value: URI of library
