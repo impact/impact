@@ -14,7 +14,7 @@ func TestVersionConstruction(t *testing.T) {
 		vl := NewVersionList()
 		Equals(c, 0, vl.Len())
 
-		v1, err := semver.New("1.0.0")
+		v1, err := semver.Parse("1.0.0")
 		NoError(c, err)
 
 		vl.Add(v1)
@@ -42,7 +42,7 @@ func TestOrdering(t *testing.T) {
 		}
 
 		for _, n := range names {
-			v, err := semver.New(n)
+			v, err := semver.Parse(n)
 			NoError(c, err)
 			vers.Add(v)
 		}

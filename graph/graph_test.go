@@ -22,7 +22,7 @@ func parse(libs string) (LibraryName, semver.Version) {
 	if len(parts) != 2 {
 		panic(fmt.Errorf("Invalid library spec: %s", libs))
 	}
-	v, err := semver.New(parts[1])
+	v, err := semver.Parse(parts[1])
 	if err != nil {
 		panic(err)
 	}
@@ -342,8 +342,8 @@ func TestResolution2(t *testing.T) {
 		Resembles(c, *rootVers, VersionList{root1})
 
 		// Introduce a circular dependency that makes resolution fail
-		root2, err := semver.New("1.0.1")
-		a2, err := semver.New("1.0.1")
+		root2, err := semver.Parse("1.0.1")
+		a2, err := semver.Parse("1.0.1")
 		NoError(c, err)
 
 		index.AddLibrary("Root", root2)
