@@ -37,6 +37,12 @@ func (nr NullRecorder) SetZipballURL(url string)                             {}
 func (nr NullRecorder) AddDependency(library string, version semver.Version) {}
 
 func TestGitHub(t *testing.T) {
+	// Don't test if we are doing CI testing...
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
+		return
+	}
+
 	Convey("Testing GitHub crawler", t, func(c C) {
 		logger := log.New(os.Stdout, "impact: ", 0)
 		cr, err := MakeGitHubCrawler("modelica-3rdparty", "", "")
