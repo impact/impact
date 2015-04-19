@@ -21,10 +21,11 @@ func (nr NullRecorder) GetLibrary(name string, owner string,
 	return nr
 }
 
-func (nr NullRecorder) SetStars(int)          {}
-func (nr NullRecorder) SetEmail(string)       {}
-func (nr NullRecorder) SetDescription(string) {}
-func (nr NullRecorder) SetHomepage(string)    {}
+func (nr NullRecorder) SetStars(int)                 {}
+func (nr NullRecorder) SetEmail(string)              {}
+func (nr NullRecorder) SetDescription(string)        {}
+func (nr NullRecorder) SetHomepage(string)           {}
+func (nr NullRecorder) SetRepository(string, string) {}
 
 func (nr NullRecorder) AddVersion(v semver.Version) recorder.VersionRecorder {
 	return nr
