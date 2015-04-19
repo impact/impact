@@ -241,7 +241,10 @@ func ExtractInfo(client *github.Client, user string, altname string, repo github
 				},
 			}
 		} else {
-			log.Printf("Nothing found in %s/%s for %v or %v", repostr, filenames, dirnames)
+			if verbose {
+				log.Printf("Nothing found in %s/%s for among %v or %v", repostr, versionString,
+					filenames, dirnames)
+			}
 		}
 	}
 
