@@ -3,19 +3,12 @@ package main
 import (
 	"errors"
 	"fmt"
-	"io"
-	"io/ioutil"
-	"net/http"
-	"os"
-	"path"
-	"strings"
 
-	"github.com/opesun/copyrecur"
-	"github.com/pierrre/archivefile/zip"
 	"github.com/wsxiaoys/terminal/color"
 
 	"github.com/xogeny/impact/graph"
 	"github.com/xogeny/impact/index"
+	"github.com/xogeny/impact/install"
 )
 
 /* Define a struct listing all command line options for 'install' */
@@ -89,88 +82,16 @@ func (x *InstallCommand) Execute(args []string) error {
 	// Install dependencies
 	color.Printf("@{y}Installing...\n")
 	for name, version := range solution {
-		color.Printf("  Library: @{g}%s\n", name)
-		color.Printf("    Required version: @{g}%v\n", version)
+		color.Printf("  @{g}Library: @{!g}%s\n", name)
+		color.Printf("    @{g}Required version: @{!g}%v\n", version)
 		lv, err := ind.Find(string(name), version)
 		if err != nil {
 			return fmt.Errorf("Couldn't find version %v of library %s (this should not happen)",
 				version, name)
 		}
 		if !x.DryRun {
-			Install(lv, ind, ".", x.Verbose)
+			install.Install(string(name), lv, ind, ".", x.Verbose)
 		}
-	}
-
-	return nil
-}
-
-func Install(ver index.VersionDetails, ind *index.Index, target string, verbose bool) error {
-	/* Download the Zipball to a temporary file */
-	if verbose {
-		color.Println("  @{y}Downloading source from: @{!y}" + string(ver.Zipball))
-	}
-
-	/*   Do a GET request */
-	resp, err := http.Get(ver.Zipball)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close() // Make sure this gets closed
-
-	/*   Open a temporary file to direct the download into */
-	tzf, err := ioutil.TempFile("", "impact")
-	defer func() {
-		tzf.Close()           // Make sure we close this file and...
-		os.Remove(tzf.Name()) // ...delete it.
-	}()
-	/*   Copy the bytes to temporary file */
-	zsize, err := io.Copy(tzf, resp.Body)
-	if err != nil {
-		return err
-	}
-
-	/* Create a temporary directory to extract into */
-	tdir, err := ioutil.TempDir("", "impact")
-	defer func() {
-		os.RemoveAll(string(tdir)) // Make sure this gets removed in case of a panic
-	}()
-	if err != nil {
-		return err
-	}
-
-	/* Extract the zip file into our temporary directory */
-	var adir string = ""
-	err = zip.Unarchive(tzf, zsize, string(tdir), func(x string) {
-		if adir == "" {
-			adir = strings.Split(x, "/")[0]
-		}
-	})
-	if err != nil {
-		return err
-	}
-
-	/* Figure out where the Modelica code is in our temporary directory */
-	keep := path.Join(string(tdir), adir, ver.Path)
-
-	/* Figure out whether we are dealing with a package stored as a file or diretory */
-	fi, err := os.Stat(keep)
-	if err != nil {
-		return err
-	}
-
-	/* Copy the Modelica code to our target installation directory */
-	if fi.IsDir() {
-		if verbose {
-			color.Println("  @{y}Copying  @{!y}" + ver.Path +
-				"@{y} to @{!y}" + path.Join(target, fi.Name()))
-		}
-		copyrecur.CopyDir(keep, path.Join(target, fi.Name()))
-	} else {
-		if verbose {
-			color.Println("  @{y}Copying  @{!y}" + ver.Path +
-				"@{y} to @{!y}" + path.Join(target, fi.Name()))
-		}
-		copyrecur.CopyFile(keep, path.Join(target, fi.Name()))
 	}
 
 	return nil
