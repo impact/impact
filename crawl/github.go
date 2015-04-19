@@ -87,8 +87,9 @@ func (c GitHubCrawler) processVersion(client *github.Client, r recorder.Recorder
 		logger.Printf("  %s: Recording", versionString)
 	}
 
+	ownerid := *repo.Owner.Login
 	// Formulate directory info (impact.json) for this version of this repository
-	di := ExtractInfo(client, c.user, altname, repo, sha, versionString, verbose, logger)
+	di := ExtractInfo(client, ownerid, altname, repo, sha, versionString, verbose, logger)
 
 	if len(di.Libraries) == 0 {
 		logger.Printf("    No Modelica libraries found in repository %s:%s",
@@ -187,14 +188,13 @@ func (c GitHubCrawler) Crawl(r recorder.Recorder, verbose bool, logger *log.Logg
 
 		repo := *single
 
-		/*
-			if single.Source != nil {
-				repo = *single.Source
-				log.Printf("Source for %s exists", *repo.Name)
-			} else {
-				log.Printf("No source for %s", *repo.Name)
-			}
-		*/
+		// If this is a fork, index the "real" repository
+		if *minrepo.Fork && single.Source != nil {
+			repo = *single.Source
+			log.Printf("Source for %s exists", *repo.Name)
+		} else {
+			log.Printf("No source for %s", *repo.Name)
+		}
 
 		// TODO: Record both Source and fork?!?
 
