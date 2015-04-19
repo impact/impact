@@ -36,6 +36,11 @@ func main() {
 		"Print information about a specific library",
 		&InfoCommand{})
 
+	parser.AddCommand("version",
+		"Version information about impact itself",
+		"Version information about impact itself",
+		&VersionCommand{})
+
 	if _, err := parser.Parse(); err != nil {
 		os.Exit(1)
 	}
