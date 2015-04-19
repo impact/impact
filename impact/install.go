@@ -10,12 +10,12 @@ import (
 	"path"
 	"strings"
 
-	//"github.com/xogeny/impact/graph"
-	"github.com/xogeny/impact/index"
-
 	"github.com/opesun/copyrecur"
 	"github.com/pierrre/archivefile/zip"
 	"github.com/wsxiaoys/terminal/color"
+
+	"github.com/xogeny/impact/graph"
+	"github.com/xogeny/impact/index"
 )
 
 /* Define a struct listing all command line options for 'install' */
@@ -62,10 +62,35 @@ func (x *InstallCommand) Execute(args []string) error {
 		return errors.New("No libraries requested for installation")
 	}
 
-	// Build the index
-	_, err := index.DownloadIndex()
+	// Load index
+	ind, err := index.LoadIndex()
 	if err != nil {
-		return fmt.Errorf("Error downloading index: %v", err)
+		return fmt.Errorf("Error loading indices: %v", err)
+	}
+
+	// Build dependency graph from index
+	resolver, err := ind.BuildGraph(x.Verbose)
+	if err != nil {
+		return fmt.Errorf("Error building dependency graph: %v", err)
+	}
+
+	// State root dependencies
+	libnames := []graph.LibraryName{}
+	for _, n := range args {
+		libnames = append(libnames, graph.LibraryName(n))
+	}
+
+	// Resolve dependencies
+	solution, err := resolver.Resolve(libnames...)
+	if err != nil {
+		return fmt.Errorf("Error resolving dependencies for %v: %v", libnames, err)
+	}
+
+	// Install dependencies
+	color.Printf("@{y}Installing...\n")
+	for name, version := range solution {
+		color.Printf("  Library: @{g}%s\n", name)
+		color.Printf("    Required version: @{g}%v\n", version)
 	}
 
 	/*
