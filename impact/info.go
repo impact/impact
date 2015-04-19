@@ -21,9 +21,10 @@ func (x *InfoCommand) Execute(args []string) error {
 		fmt.Print("Ignoring (extra) unrecognized arguments: ")
 		fmt.Println(args)
 	}
-	_, err := index.DownloadIndex()
+
+	_, err := index.LoadIndex()
 	if err != nil {
-		return fmt.Errorf("Error downloading index: %v", err)
+		return fmt.Errorf("Error loading indices: %v", err)
 	}
 
 	log.Printf("info sub-command not implemented")

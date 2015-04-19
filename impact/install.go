@@ -91,110 +91,20 @@ func (x *InstallCommand) Execute(args []string) error {
 	for name, version := range solution {
 		color.Printf("  Library: @{g}%s\n", name)
 		color.Printf("    Required version: @{g}%v\n", version)
+		lv, err := ind.Find(string(name), version)
+		if err != nil {
+			return fmt.Errorf("Couldn't find version %v of library %s (this should not happen)",
+				version, name)
+		}
+		if !x.DryRun {
+			Install(lv, ind, ".", x.Verbose)
+		}
 	}
 
-	/*
-			// Create an empty set of libraries
-			var resolver graph.Resolver = graph.NewLibraryGraph()
-
-			for libname, lib := range ind {
-				for _, ver := range lib.Versions {
-					v := ver.Version
-					resolver.AddLibrary(graph.LibraryName(libname), v)
-					for _, dep := range ver.Dependencies {
-						dlib, err := ind.Find(dep.Name, dep.Version)
-						if err != nil {
-							//log.Printf("Unable to find version %s of library %s",
-							//  dep.Version, dep.Name)
-							continue
-						}
-
-						//log.Printf("%s %s -> %s %s", libname, v.String(), dep.Name, dv.String())
-
-						deplib := graph.LibraryName(dep.Name)
-						depver := dlib.Version
-
-						if !resolver.Contains(deplib, depver) {
-							resolver.AddLibrary(deplib, depver)
-						}
-
-						err = resolver.AddDependency(graph.LibraryName(libname), v, deplib, depver)
-						if err != nil {
-							return err
-						}
-					}
-				}
-			}
-
-			// TODO: Add a universal LibraryName alias
-			libnames := []graph.LibraryName{}
-			for _, n := range args {
-				libnames = append(libnames, graph.LibraryName(n))
-			}
-
-			config, err := resolver.Resolve(libnames...)
-			if err != nil {
-				log.Printf("Error resolving libraries: %v", err)
-			}
-			if x.Verbose {
-				color.Println("Libraries to be installed:")
-				for name, ver := range config {
-					color.Printf("  @{c}%s %v\n", name, ver)
-				}
-				color.Printf("\n")
-			}
-
-			// Loop over all the libraries we have identified for installation and install them
-		for ln, v := range config {
-			lib, exists := ind[index.LibraryName(ln)]
-			if !exists {
-				fmt.Printf("Unable to locate library named %s (this should not happen)", ln)
-				return fmt.Errorf("Unable to locate library named %s (this should not happen)", ln)
-			}
-
-			var lv index.VersionDetails
-
-			found := false
-			for _, ver := range lib.Versions {
-				if ver.Version.Equals(v) {
-					found = true
-					lv = ver
-					break
-				}
-			}
-
-			if !found {
-				fmt.Printf("Unable to locate version %s of library %s",
-					v.String(), ln)
-				return fmt.Errorf("Unable to locate version %s of library %s",
-					v.String(), ln)
-			}
-			if x.Verbose {
-				color.Println("@!Installing @{c}%s, version %s...", string(ln), string(lv.Version.String()))
-			}
-
-			// If this is just a DryRun, don't actually install
-			if !x.DryRun {
-				ierr := Install(lv, ind, ".", x.Verbose)
-				if ierr != nil {
-					color.Println("@{r}Error: " + ierr.Error())
-				}
-			}
-
-			if x.Verbose {
-				color.Println("...@{!g}done")
-			}
-
-		}
-
-		if x.Verbose {
-			color.Println("\n@{!g}All libraries installed.\n")
-		}
-	*/
 	return nil
 }
 
-func Install(ver index.VersionDetails, ind index.Index, target string, verbose bool) error {
+func Install(ver index.VersionDetails, ind *index.Index, target string, verbose bool) error {
 	/* Download the Zipball to a temporary file */
 	if verbose {
 		color.Println("  @{y}Downloading source from: @{!y}" + string(ver.Zipball))

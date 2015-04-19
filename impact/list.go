@@ -20,10 +20,10 @@ func (x *ListCommand) Execute(args []string) error {
 	}
 	url := x.URL
 
-	ind, err := index.DownloadIndex()
-
+	// Load index
+	ind, err := index.LoadIndex()
 	if err != nil {
-		return fmt.Errorf("Error downloading index: %v", err)
+		return fmt.Errorf("Error loading indices: %v", err)
 	}
 
 	for libname, lib := range ind.Libraries {
