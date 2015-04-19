@@ -17,6 +17,7 @@ type Recorder interface {
 type LibraryRecorder interface {
 	SetDescription(desc string)
 	SetHomepage(url string)
+	SetRepository(url string, format string)
 	SetStars(int)
 	SetEmail(string)
 	AddVersion(v semver.Version) VersionRecorder

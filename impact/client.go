@@ -26,6 +26,11 @@ func main() {
 		"Install named libraries",
 		&InstallCommand{})
 
+	parser.AddCommand("index",
+		"Build library index",
+		"Build library index",
+		&IndexCommand{})
+
 	parser.AddCommand("info",
 		"Print information about a specific library",
 		"Print information about a specific library",

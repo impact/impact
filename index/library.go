@@ -23,6 +23,10 @@ type Library struct {
 	Email string `json:"email"`
 	// Web site
 	Homepage string `json:"homepage"`
+	// Repository
+	Repository string `json:"repository"`
+	// Repository format
+	Format string `json:"repository_format"`
 	// Textual description
 	Description string `json:"description"`
 	// Stars (if applicable, otherwise -1)
@@ -43,6 +47,11 @@ func (lib *Library) SetDescription(desc string) {
 
 func (lib *Library) SetHomepage(url string) {
 	lib.Homepage = url
+}
+
+func (lib *Library) SetRepository(url string, format string) {
+	lib.Repository = url
+	lib.Format = format
 }
 
 func (lib *Library) AddVersion(v semver.Version) recorder.VersionRecorder {

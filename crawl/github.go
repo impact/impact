@@ -115,6 +115,7 @@ func (c GitHubCrawler) processVersion(client *github.Client, r recorder.Recorder
 		}
 
 		libr.SetHomepage(*repo.HTMLURL)
+		libr.SetRepository(*repo.GitURL, "git")
 		libr.SetStars(*repo.StargazersCount)
 		libr.SetEmail(di.Email)
 
@@ -191,9 +192,13 @@ func (c GitHubCrawler) Crawl(r recorder.Recorder, verbose bool, logger *log.Logg
 		// If this is a fork, index the "real" repository
 		if *minrepo.Fork && single.Source != nil {
 			repo = *single.Source
-			log.Printf("Source for %s exists", *repo.Name)
+			if verbose {
+				log.Printf("Source for %s exists", *repo.Name)
+			}
 		} else {
-			log.Printf("No source for %s", *repo.Name)
+			if verbose {
+				log.Printf("No source for %s", *repo.Name)
+			}
 		}
 
 		// TODO: Record both Source and fork?!?

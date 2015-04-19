@@ -13,8 +13,8 @@ import (
 
 /* Define a struct listing all command line options for 'install' */
 type InstallCommand struct {
-	Verbose bool `short:"v" login:"verbose" description:"Turn on verbose output"`
-	DryRun  bool `short:"d" login:"dryrun" description:"Resolve dependencies but don't install"`
+	Verbose bool `short:"v" long:"verbose" description:"Turn on verbose output"`
+	DryRun  bool `short:"d" long:"dryrun" description:"Resolve dependencies but don't install"`
 }
 
 /*
@@ -49,7 +49,7 @@ func ParseVersion(libver string, ind index.Index) (libname index.LibraryName,
 }
 */
 
-func (x *InstallCommand) Execute(args []string) error {
+func (x InstallCommand) Execute(args []string) error {
 	//Check to make sure we have something to install
 	if len(args) == 0 {
 		return errors.New("No libraries requested for installation")
