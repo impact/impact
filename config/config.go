@@ -23,37 +23,30 @@ func SettingsFile() string {
 		return os.Getenv(envvar)
 	}
 
+	home, _ := homedir.Dir()
+
 	// Otherwise, find out what platform we are on...
 	platform := runtime.GOOS
 
 	datadir := ""
-	var err error
 
 	switch platform {
 	case "windows":
 		// On windows, check to see if APPDATA is defined...
 		datadir = os.Getenv("APPDATA")
 		if datadir == "" {
-			datadir, err = homedir.Expand("~/.config")
+			datadir = path.Join(home, ".config")
 		}
 	case "linux":
 		// On windows, check to see if APPDATA is defined...
 		datadir = os.Getenv("XDG_CONFIG_HOME")
 		if datadir == "" {
-			datadir, err = homedir.Expand("~/.config")
+			datadir = path.Join(home, ".config")
 		}
 	case "darwin":
-		datadir, err = homedir.Expand("~/Library/Preferences")
+		datadir = path.Join(home, "Library", "Preferences")
 	default:
 		log.Printf("Unknown platform %v", platform)
-	}
-
-	if err != nil {
-		log.Printf("Error expanding directory: %v", err)
-	}
-
-	if datadir == "" {
-		datadir = "."
 	}
 
 	return path.Join(datadir, "impact", "impactrc")
