@@ -16,11 +16,6 @@ func main() {
 		"Search for libraries associated with specific terms",
 		&SearchCommand{})
 
-	parser.AddCommand("list",
-		"List all available libraries",
-		"List all available libraries",
-		&ListCommand{})
-
 	parser.AddCommand("install",
 		"Install named libraries",
 		"Install named libraries",
@@ -30,11 +25,6 @@ func main() {
 		"Build library index",
 		"Build library index",
 		&IndexCommand{})
-
-	parser.AddCommand("info",
-		"Print information about a specific library",
-		"Print information about a specific library",
-		&InfoCommand{})
 
 	parser.AddCommand("version",
 		"Version information about impact itself",
