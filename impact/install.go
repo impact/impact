@@ -6,6 +6,7 @@ import (
 
 	"github.com/wsxiaoys/terminal/color"
 
+	"github.com/xogeny/impact/config"
 	"github.com/xogeny/impact/graph"
 	"github.com/xogeny/impact/index"
 	"github.com/xogeny/impact/install"
@@ -23,11 +24,22 @@ func (x InstallCommand) Execute(args []string) error {
 		return errors.New("No libraries requested for installation")
 	}
 
+	// Load user settings
+	settings, err := config.ReadSettings()
+	if err != nil {
+		return fmt.Errorf("Error reading settings: %v", err)
+	}
+
 	// Load index
 	ind, err := index.LoadIndex(x.Verbose)
 	if err != nil {
 		return fmt.Errorf("Error loading indices: %v", err)
 	}
+
+	// This uses the settings information to decide what specific version
+	// of a library to associated with a given library name.  This can happen,
+	// for example, when there is a fork of a library.
+	ind = ind.Reduce(settings.Choices)
 
 	// Build dependency graph from index
 	resolver, err := ind.BuildGraph(x.Verbose)

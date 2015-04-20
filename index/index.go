@@ -40,6 +40,11 @@ func (i *Index) GetLibrary(name string, uri string, owner_uri string) recorder.L
 	return lib
 }
 
+func (i Index) Reduce(disamb map[string]string) *Index {
+	g := i.GroupByOrder(disamb)
+	return g.Selected()
+}
+
 func (i Index) JSON() (string, error) {
 	b, err := json.MarshalIndent(i, "", "  ")
 	if err != nil {

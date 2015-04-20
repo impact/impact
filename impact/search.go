@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/wsxiaoys/terminal/color"
+
+	"github.com/xogeny/impact/config"
 	"github.com/xogeny/impact/index"
 )
 
@@ -12,6 +14,7 @@ type SearchCommand struct {
 	Positional struct {
 		Term string `description:"Search term"`
 	} `positional-args:"true" required:"true"`
+	All     bool `short:"a" long:"all" description:"Include all libraries in index"`
 	URL     bool `short:"u" long:"url" description:"Include homepage"`
 	Verbose bool `short:"v" long:"verbose" description:"Turn on verbose output"`
 }
@@ -25,10 +28,22 @@ func (x *SearchCommand) Execute(args []string) error {
 	term := x.Positional.Term
 	url := x.URL
 
+	// Load user settings
+	settings, err := config.ReadSettings()
+	if err != nil {
+		return fmt.Errorf("Error reading settings: %v", err)
+	}
+
 	// Load index
 	ind, err := index.LoadIndex(x.Verbose)
 	if err != nil {
 		return fmt.Errorf("Error loading indices: %v", err)
+	}
+
+	if x.All {
+		return fmt.Errorf("The --all flag in search is currently not implemented")
+	} else {
+		ind = ind.Reduce(settings.Choices)
 	}
 
 	for _, lib := range ind.Libraries {
