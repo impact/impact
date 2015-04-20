@@ -15,20 +15,20 @@ LAST_TAG := $(shell git describe --abbrev=0 --tags)
 USER := xogeny
 EXECUTABLE := impact
 GITHUB_RELEASE = github-release
+BUILD_CMD =  go build
 
-# only include the amd64 binaries, otherwise the github release will become
-# too big
 UNIX_EXECUTABLES := \
 	darwin/386/$(EXECUTABLE) \
 	darwin/amd64/$(EXECUTABLE) \
+	linux/386/$(EXECUTABLE) \
+	linux/amd64/$(EXECUTABLE) \
+#	linux/arm/$(EXECUTABLE) \
 	freebsd/386/$(EXECUTABLE) \
 	freebsd/amd64/$(EXECUTABLE) \
 	freebsd/arm/$(EXECUTABLE) \
-	linux/386/$(EXECUTABLE) \
-	linux/amd64/$(EXECUTABLE) \
-	linux/arm/$(EXECUTABLE) \
 	netbsd/386/$(EXECUTABLE) \
 	netbsd/amd64/$(EXECUTABLE)
+
 WIN_EXECUTABLES := \
 	windows/386/$(EXECUTABLE).exe \
 	windows/amd64/$(EXECUTABLE).exe
@@ -44,33 +44,35 @@ builds: $(COMPRESSED_EXECUTABLE_TARGETS)
 
 # 386
 build/darwin/386/$(EXECUTABLE):
-	GOARCH=386 GOOS=darwin go build -o "$@"
-build/freebsd/386/$(EXECUTABLE):
-	GOARCH=386 GOOS=freebsd go build -o "$@"
+	GOARCH=386 GOOS=darwin $(BUILD_CMD) -o "$@"
 build/linux/386/$(EXECUTABLE):
-	GOARCH=386 GOOS=linux go build -o "$@"
-build/netbsd/386/$(EXECUTABLE):
-	GOARCH=386 GOOS=netbsd go build -o "$@"
+	GOARCH=386 GOOS=linux $(BUILD_CMD) -o "$@"
 build/windows/386/$(EXECUTABLE).exe:
-	GOARCH=386 GOOS=windows go build -o "$@"
+	GOARCH=386 GOOS=windows $(BUILD_CMD) -o "$@"
+# We don't build the more uncomon platforms for now
+#build/freebsd/386/$(EXECUTABLE):
+#	GOARCH=386 GOOS=freebsd $(BUILD_CMD) -o "$@"
+#build/netbsd/386/$(EXECUTABLE):
+#	GOARCH=386 GOOS=netbsd $(BUILD_CMD) -o "$@"
+
 
 # amd64
 build/darwin/amd64/$(EXECUTABLE):
-	GOARCH=amd64 GOOS=darwin go build -o "$@"
-build/freebsd/amd64/$(EXECUTABLE):
-	GOARCH=amd64 GOOS=freebsd go build -o "$@"
+	GOARCH=amd64 GOOS=darwin $(BUILD_CMD) -o "$@"
 build/linux/amd64/$(EXECUTABLE):
-	GOARCH=amd64 GOOS=linux go build -o "$@"
-build/netbsd/amd64/$(EXECUTABLE):
-	GOARCH=amd64 GOOS=netbsd go build -o "$@"
+	GOARCH=amd64 GOOS=linux $(BUILD_CMD) -o "$@"
 build/windows/amd64/$(EXECUTABLE).exe:
-	GOARCH=amd64 GOOS=windows go build -o "$@"
-
+	GOARCH=amd64 GOOS=windows $(BUILD_CMD) -o "$@"
+# We don't build the more uncomon platforms for now
+#build/freebsd/amd64/$(EXECUTABLE):
+#	GOARCH=amd64 GOOS=freebsd $(BUILD_CMD) -o "$@"
+#build/netbsd/amd64/$(EXECUTABLE):
+#	GOARCH=amd64 GOOS=netbsd $(BUILD_CMD) -o "$@"
 # arm
-build/freebsd/arm/$(EXECUTABLE):
-	GOARCH=arm GOOS=freebsd go build -o "$@"
-build/linux/arm/$(EXECUTABLE):
-	GOARCH=arm GOOS=linux go build -o "$@"
+#build/freebsd/arm/$(EXECUTABLE):
+#	GOARCH=arm GOOS=freebsd $(BUILD_CMD) -o "$@"
+#build/linux/arm/$(EXECUTABLE):
+#	GOARCH=arm GOOS=linux $(BUILD_CMD) -o "$@"
 
 
 # compressed artifacts, makes a huge difference (Go executable is ~9MB,
@@ -87,14 +89,11 @@ release: $(COMPRESSED_EXECUTABLE_TARGETS)
 		-t $(LAST_TAG) -n $(LAST_TAG) --pre-release || true
 	$(foreach FILE,$(COMPRESSED_EXECUTABLES),$(UPLOAD_CMD);)
 
-# install and/or update all dependencies, run this from the project directory
-# go get -u ./...
-# go test -i ./
 dep:
-	go list -f '{{join .Deps "\n"}}' | xargs go list -e -f '{{if not .Standard}}{{.ImportPath}}{{end}}' | xargs go get -u
+	go get -t ../...
 
 $(EXECUTABLE): dep
-	go build -o "$@"
+	$(BUILD_CMD) -o "$@"
 
 clean:
 	rm $(EXECUTABLE) || true
@@ -102,7 +101,7 @@ clean:
 
 # Some standard commands though the original go commands are shorter :-)
 test:
-	go test
+	go test ../...
 
 install:
 	go install
