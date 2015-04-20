@@ -10,7 +10,7 @@ func makeGroupedIndex() GroupedIndex {
 	}
 }
 
-func (i Index) GroupByOrder(disamb map[string]string) GroupedIndex {
+func (i Index) Group(disamb map[string]string) GroupedIndex {
 	ret := makeGroupedIndex()
 	for _, lib := range i.Libraries {
 		list, exists := ret.Libraries[lib.Name]
@@ -32,8 +32,8 @@ func (i Index) GroupByOrder(disamb map[string]string) GroupedIndex {
 	return ret
 }
 
-func (i Index) GroupByRating() GroupedIndex {
-	return makeGroupedIndex()
+func (g GroupedIndex) SortByRating() GroupedIndex {
+	return g
 }
 
 // Return and index that has no "extra" libraries in it, only the ones that

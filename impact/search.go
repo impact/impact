@@ -40,19 +40,27 @@ func (x *SearchCommand) Execute(args []string) error {
 		return fmt.Errorf("Error loading indices: %v", err)
 	}
 
+	g := ind.Group(settings.Choices)
+
 	if x.All {
-		return fmt.Errorf("The --all flag in search is currently not implemented")
-	} else {
-		ind = ind.Reduce(settings.Choices)
+		// If we are going to consider all of them, sort them by rating
+		g = g.SortByRating()
 	}
 
-	for _, lib := range ind.Libraries {
-		if lib.Matches(term) {
-			if url {
-				color.Printf("@{!}%s @{y}(%s):\n@{c} - %s\n", lib.Name, lib.Homepage,
-					lib.Description)
-			} else {
-				color.Printf("@{!}%s:\n@{c} - %s\n", lib.Name, lib.Description)
+	for _, libs := range g.Libraries {
+		for index, lib := range libs {
+			if index > 0 && !x.All {
+				continue
+			}
+			// TODO: Should have some way of indicating the "chosen" one (i.e., what
+			// would be installed).
+			if lib.Matches(term) {
+				if url {
+					color.Printf("@{!}%s @{y}(%s):\n@{c} - %s\n", lib.Name, lib.Homepage,
+						lib.Description)
+				} else {
+					color.Printf("@{!}%s:\n@{c} - %s\n", lib.Name, lib.Description)
+				}
 			}
 		}
 	}

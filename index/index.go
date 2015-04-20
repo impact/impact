@@ -41,7 +41,7 @@ func (i *Index) GetLibrary(name string, uri string, owner_uri string) recorder.L
 }
 
 func (i Index) Reduce(disamb map[string]string) *Index {
-	g := i.GroupByOrder(disamb)
+	g := i.Group(disamb)
 	return g.Selected()
 }
 
