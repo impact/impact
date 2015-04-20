@@ -58,6 +58,8 @@ func SettingsFile() string {
 var syntax = `
 index = "$string" "indices*";
 github source = "$string" "sources*";
+
+choose _ = "$string" "choices*";
 `
 
 func ReadSettings() (Settings, error) {
@@ -93,7 +95,7 @@ func ReadSettings() (Settings, error) {
 
 	// If no indices were specified, use the default:
 	if len(ret.Indices) == 0 {
-		ret.Indices = []string{"https://impact.modelica.org/impact_data2.json"}
+		ret.Indices = []string{"https://impact.modelica.org/impact_index.json"}
 	}
 
 	mo := denada.NewDeclaration("source", "", "github")
@@ -144,6 +146,12 @@ func ReadSettings() (Settings, error) {
 				fmt.Errorf("Unrecognized scheme in source %s, expected 'github'",
 					val)
 		}
+	}
+
+	// Now parse mappings
+	choices := settings.OfRule("choices", true)
+	for _, choice := range choices {
+		ret.Choices[choice.Name] = choice.StringValueOf("")
 	}
 
 	return ret, nil

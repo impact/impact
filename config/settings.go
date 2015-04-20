@@ -9,12 +9,14 @@ import (
 type Settings struct {
 	Indices []string
 	Sources []crawl.Crawler
+	Choices map[string]string
 }
 
 func MakeSettings() Settings {
 	return Settings{
 		Indices: []string{},
 		Sources: []crawl.Crawler{},
+		Choices: map[string]string{},
 	}
 }
 
@@ -31,6 +33,14 @@ func (s Settings) List(prefix string) string {
 	ret = ret + fmt.Sprintf("%sSources:\n", prefix)
 	for _, source := range s.Sources {
 		ret = ret + fmt.Sprintf("%s  %s\n", prefix, source.String())
+	}
+	if len(s.Choices) == 0 {
+		ret = ret + fmt.Sprintf("%sDisambiguations: None\n", prefix)
+	} else {
+		ret = ret + fmt.Sprintf("%sDisambiguations:\n", prefix)
+		for name, uri := range s.Choices {
+			ret = ret + fmt.Sprintf("%s  %s -> %s\n", prefix, name, uri)
+		}
 	}
 	return ret
 }
