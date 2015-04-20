@@ -84,6 +84,7 @@ build/windows/amd64/$(EXECUTABLE).exe:
 
 # git tag -a v$(RELEASE) -m 'release $(RELEASE)'
 release: $(COMPRESSED_EXECUTABLE_TARGETS)
+	go get github.com/aktau/github-release
 	git push && git push --tags
 	$(GITHUB_RELEASE) release -u $(USER) -r $(EXECUTABLE) \
 		-t $(LAST_TAG) -n $(LAST_TAG) --pre-release || true
