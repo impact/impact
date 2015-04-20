@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"path"
-	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -94,13 +93,7 @@ func ReadSettings() (Settings, error) {
 
 	// If no indices were specified, use the default:
 	if len(ret.Indices) == 0 {
-		if false {
-			ret.Indices = []string{"https://impact.modelica.org/impact_data2.json"}
-		} else {
-			dir, _ := filepath.Abs(path.Join(os.Getenv("GOPATH"), "src", "github.com", "xogeny",
-				"impact", "sample_index.json"))
-			ret.Indices = []string{"file://" + dir}
-		}
+		ret.Indices = []string{"https://impact.modelica.org/impact_data2.json"}
 	}
 
 	mo := denada.NewDeclaration("source", "", "github")
