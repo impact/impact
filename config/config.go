@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"runtime"
 
+	//"github.com/xogeny/denada-go"
+
 	"github.com/mitchellh/go-homedir"
 )
 
@@ -58,8 +60,7 @@ func SettingsFile() string {
 }
 
 func ReadSettings() (Settings, error) {
-	settings := SettingsFile()
-	log.Printf("Settings file: %s", settings)
+	//settings := SettingsFile()
 
 	dir, _ := filepath.Abs(path.Join(os.Getenv("GOPATH"), "src", "github.com", "xogeny",
 		"impact", "sample_index.json"))

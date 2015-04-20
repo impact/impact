@@ -30,11 +30,13 @@ func (x *SearchCommand) Execute(args []string) error {
 		return fmt.Errorf("Error loading indices: %v", err)
 	}
 
-	for libname, lib := range ind.Libraries {
+	for _, lib := range ind.Libraries {
 		if lib.Matches(term) {
-			color.Println("@{g}" + string(libname) + ":\n@{c}  - " + string(lib.Description))
 			if url {
-				color.Println("    @{y}" + lib.Homepage)
+				color.Printf("@{!}%s @{y}(%s):\n@{c} - %s\n", lib.Name, lib.Homepage,
+					lib.Description)
+			} else {
+				color.Printf("@{!}%s:\n@{c} - %s\n", lib.Name, lib.Description)
 			}
 		}
 	}

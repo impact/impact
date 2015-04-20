@@ -70,53 +70,20 @@ func NewLibrary(name string, uri string, owner_uri string) *Library {
 	}
 }
 
-var _ recorder.LibraryRecorder = (*Library)(nil)
-
-/*
-func (lib Library) Latest() (ver VersionDetails, err error) {
-	var first = true
-	if len(lib.Versions) == 0 {
-		err = EmptyLibraryError{Name: lib.Name}
-		return
-	}
-	for _, v := range lib.Versions {
-		if first {
-			ver = v
-			first = false
-		}
-		if !first && v.Version.GT(ver.Version) {
-			ver = v
-		}
-	}
-	return
-}
-*/
-
 func (lib Library) Matches(term string) bool {
-	var match = false
-	if strings.Contains(string(lib.Name), term) {
+	match := false
+
+	t := strings.ToLower(term)
+	lname := strings.ToLower(lib.Name)
+	ldesc := strings.ToLower(lib.Description)
+
+	if strings.Contains(lname, t) {
 		match = true
 	}
-	if strings.Contains(string(lib.Description), term) {
+	if strings.Contains(ldesc, t) {
 		match = true
 	}
 	return match
 }
 
-type Libraries map[string]VersionDetails
-
-/*
-func (libs *Libraries) Merge(olibs Libraries) error {
-	for ln, lv := range olibs {
-		ev, exists := (*libs)[ln]
-		if exists {
-			if lv.Version.Equals(ev.Version) {
-				return VersionConflictError{Name: ln, Existing: ev, Additional: lv}
-			}
-		} else {
-			(*libs)[ln] = lv
-		}
-	}
-	return nil
-}
-*/
+var _ recorder.LibraryRecorder = (*Library)(nil)

@@ -17,38 +17,6 @@ type InstallCommand struct {
 	DryRun  bool `short:"d" long:"dryrun" description:"Resolve dependencies but don't install"`
 }
 
-/*
-// TODO: This probably needs to be refactored
-func ParseVersion(libver string, ind index.Index) (libname index.LibraryName,
-	ver index.VersionString, err error) {
-	parts := strings.Split(libver, "#")
-
-	libname = index.LibraryName(parts[0])
-
-	lib, ok := ind[libname]
-	if !ok {
-		err = index.MissingLibraryError{Name: libname}
-		return
-	}
-
-	if len(parts) == 1 {
-		version, lerr := lib.Latest()
-		if lerr != nil {
-			err = lerr
-			return
-		}
-		ver = index.VersionString(version.Version.String())
-	} else if len(parts) == 2 {
-		ver = index.VersionString(parts[1])
-	} else if len(parts) > 2 {
-		err = errors.New("Invalid version specification: " + libver +
-			" (must be libraryName#version)")
-		return
-	}
-	return
-}
-*/
-
 func (x InstallCommand) Execute(args []string) error {
 	//Check to make sure we have something to install
 	if len(args) == 0 {
