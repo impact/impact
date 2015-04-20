@@ -34,15 +34,6 @@ Available versions can be grouped into:
  * `<= v0.5.x`: Python based implementation (kept on  [python-version branch](../../tree/python-version))
 
 
-## Status
-
-So far, this [Go language](https://golang.org/) implementation can read the `impact` library
-data and implements the `search`, `install` and `info` sub-commands.
-
-It currently lacks support of the `refresh` sub-command which is needed to
-build the package index (you'll need to use the  [python-version](../../tree/python-version))
-for that)
-
 ## Installation
 
 Self-contained executable binaries are available under the [release section](../../releases)
@@ -81,41 +72,40 @@ any manual configuration.  Here are the conventions that *Impact* expects:
 
 ## Building
 
-To build this, you need create the proper build environment.  This means you need to
-create the following directory structure somewhere on your computer:
+To build this, you need to have [Go](http://golang.org/) installed.
+Go will create the proper build environment for you.
+All you need to specify is:
+
+`$ export GOPATH=/some/path`
+
+and then run:
+
+`$ go get github.com/xogeny/impact`
+
+which will automatically clone a copy of the git repository and all its dependencies,
+compile impact and put them in a structure like
 
 ```
-SomeDir/
+$GOPATH/
   bin/
   pkg/
   src/
-    github.com/xogeny/
+    github.com/xogeny/impact
 ```
 
-Inside the `xogeny` directory, you need to do:
-
-`$ git clone https://github.com/xogeny/impact`
-
-Finally, it is essential to set the GOPATH environment variable to the
-full name of `SomeDir`.
-
-Once this is setup, you can go to the `impact` directory and do:
-
-`$ go get`
-
-...to install all the dependencies.  To run the client, you can do
-
-`$ go run client.go [options]`
-
-To build an static executable, just run:
+To build as static executable again, just run:
 
 `$ go install`
 
-This will create a static executable of called `impact` in `SomeDir/bin`.
+from inside
+
+`$GOPATH/src/github.com/xogeny/impact/impact`
+
+This will create a static executable of called `impact` in `$GOPATH/bin`.
 
 ## Cross Compiling
 
-The `Makefile` includes targets to build cross-compiled executables.
+The `impact/Makefile` includes targets to build cross-compiled executables.
 
 In order to be able to cross-compile you need to have
 built GO for all the compilation targets.
