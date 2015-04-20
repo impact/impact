@@ -12,7 +12,8 @@ type SearchCommand struct {
 	Positional struct {
 		Term string `description:"Search term"`
 	} `positional-args:"true" required:"true"`
-	URL bool `short:"u" long:"url" description:"Include homepage"`
+	URL     bool `short:"u" long:"url" description:"Include homepage"`
+	Verbose bool `short:"v" long:"verbose" description:"Turn on verbose output"`
 }
 
 /* This is the function called when the 'search' subcommand is executed */
@@ -25,7 +26,7 @@ func (x *SearchCommand) Execute(args []string) error {
 	url := x.URL
 
 	// Load index
-	ind, err := index.LoadIndex()
+	ind, err := index.LoadIndex(x.Verbose)
 	if err != nil {
 		return fmt.Errorf("Error loading indices: %v", err)
 	}

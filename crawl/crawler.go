@@ -7,4 +7,5 @@ import (
 
 type Crawler interface {
 	Crawl(r recorder.Recorder, verbose bool, logger *log.Logger) error
+	String() string
 }

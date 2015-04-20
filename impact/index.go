@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/xogeny/impact/crawl"
+	"github.com/xogeny/impact/config"
 	"github.com/xogeny/impact/index"
 )
 
@@ -20,23 +20,16 @@ func (x IndexCommand) Execute(args []string) error {
 
 	ind := index.NewIndex()
 
-	cr, err := crawl.MakeGitHubCrawler("modelica-3rdparty", "", "")
+	settings, err := config.ReadSettings()
 	if err != nil {
-		return fmt.Errorf("Error building crawler for modelica-3rdparty: %v", err)
-	}
-	err = cr.Crawl(ind, false, logger)
-	if err != nil {
-		return fmt.Errorf("Error indexing modelica-3rdparty: %v", err)
+		return fmt.Errorf("Error reading settings: %v", err)
 	}
 
-	cr, err = crawl.MakeGitHubCrawler("modelica", "", "")
-	if err != nil {
-		return fmt.Errorf("Error building crawler for modelica: %v", err)
-	}
-
-	err = cr.Crawl(ind, false, logger)
-	if err != nil {
-		return fmt.Errorf("Error indexing modelica: %v", err)
+	for _, cr := range settings.Sources {
+		err = cr.Crawl(ind, x.Verbose, logger)
+		if err != nil {
+			return fmt.Errorf("Error indexing modelica-3rdparty: %v", err)
+		}
 	}
 
 	str, err := ind.JSON()

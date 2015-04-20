@@ -255,6 +255,10 @@ func (c GitHubCrawler) Crawl(r recorder.Recorder, verbose bool, logger *log.Logg
 	return nil
 }
 
+func (c GitHubCrawler) String() string {
+	return fmt.Sprintf("github://%s/%s", c.user, c.pattern)
+}
+
 func MakeGitHubCrawler(user string, pattern string, token string) (GitHubCrawler, error) {
 	if pattern == "" {
 		pattern = ".+"

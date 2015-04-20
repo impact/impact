@@ -10,7 +10,7 @@ import (
 
 func TestIndexLoading(t *testing.T) {
 	Convey("Test index loading", t, func(c C) {
-		ind, err := LoadIndex()
+		ind, err := LoadIndex(false)
 		NoError(c, err)
 		NotNil(c, ind)
 		j, err := ind.JSON()

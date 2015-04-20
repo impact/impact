@@ -15,5 +15,11 @@ type VersionCommand struct {
 func (x VersionCommand) Execute(args []string) error {
 	color.Printf("@{g}Impact version @{!g}%s\n", version)
 	color.Printf("  Settings file: %s\n", config.SettingsFile())
+	settings, err := config.ReadSettings()
+	if err != nil {
+		color.Printf("    @{!r}%s\n", err.Error())
+	} else {
+		color.Printf("@{g}%s\n", settings.List(""))
+	}
 	return nil
 }

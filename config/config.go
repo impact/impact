@@ -1,15 +1,19 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
 	"runtime"
+	"strings"
 
-	//"github.com/xogeny/denada-go"
+	"github.com/xogeny/denada-go"
 
 	"github.com/mitchellh/go-homedir"
+
+	"github.com/xogeny/impact/crawl"
 )
 
 // If this environment variable is set, we use the file it
@@ -52,14 +56,102 @@ func SettingsFile() string {
 	return path.Join(datadir, "impact", "impactrc")
 }
 
+var syntax = `
+index = "$string" "indices*";
+github source = "$string" "sources*";
+`
+
 func ReadSettings() (Settings, error) {
-	//settings := SettingsFile()
+	blank := MakeSettings()
+	sfile := SettingsFile()
 
-	dir, _ := filepath.Abs(path.Join(os.Getenv("GOPATH"), "src", "github.com", "xogeny",
-		"impact", "sample_index.json"))
+	settings, err := denada.ParseFile(sfile)
+	if err != nil {
+		log.Printf("Ignoring settings file, got error while parsing: %v", err)
+		settings = denada.ElementList{}
+	}
 
-	return Settings{
-		//		Indices: []string{"https://impact.modelica.org/impact_data.json"},
-		Indices: []string{"file://" + dir},
-	}, nil
+	grammar, err := denada.ParseString(syntax)
+	if err != nil {
+		return blank,
+			fmt.Errorf("Error parsing settings file syntax specification: %v", err)
+	} else {
+		err = denada.Check(settings, grammar, false)
+		if err != nil {
+			return blank,
+				fmt.Errorf("Error in settings file: %v", err)
+		}
+	}
+
+	ret := MakeSettings()
+
+	// Parse index sources...
+	indices := settings.OfRule("indices", true)
+	for _, index := range indices {
+		url := index.StringValueOf("")
+		ret.Indices = append(ret.Indices, url)
+	}
+
+	// If no indices were specified, use the default:
+	if len(ret.Indices) == 0 {
+		if false {
+			ret.Indices = []string{"https://impact.modelica.org/impact_data2.json"}
+		} else {
+			dir, _ := filepath.Abs(path.Join(os.Getenv("GOPATH"), "src", "github.com", "xogeny",
+				"impact", "sample_index.json"))
+			ret.Indices = []string{"file://" + dir}
+		}
+	}
+
+	mo := denada.NewDeclaration("source", "", "github")
+	mo.SetValue("modelica/.+")
+	mo3 := denada.NewDeclaration("source", "", "github")
+	mo3.SetValue("modelica-3rdparty/.+")
+
+	// Now parse sources
+	sources := settings.OfRule("sources", true)
+
+	if len(sources) == 0 {
+		sources = append(sources, mo, mo3)
+	}
+
+	for _, source := range sources {
+		val := source.StringValueOf("")
+
+		scheme := source.Qualifiers[0]
+
+		switch scheme {
+		case "github":
+			path := strings.Split(val, "/")
+			switch len(path) {
+			case 1:
+				c, err := crawl.MakeGitHubCrawler(path[0], "", "")
+				if err != nil {
+					return blank,
+						fmt.Errorf("Unable to create GitHub crawler from %s: %v",
+							val, err)
+				}
+				ret.Sources = append(ret.Sources, c)
+			case 2:
+				c, err := crawl.MakeGitHubCrawler(path[0], path[1], "")
+				if err != nil {
+					return blank,
+						fmt.Errorf("Unable to create GitHub crawler from %s: %v",
+							val, err)
+				}
+				ret.Sources = append(ret.Sources, c)
+			default:
+				return blank,
+					fmt.Errorf("GitHub source syntax: repo{/pattern}, found %s",
+						val)
+			}
+
+		default:
+			return blank,
+				fmt.Errorf("Unrecognized scheme in source %s, expected 'github'",
+					val)
+		}
+	}
+
+	return ret, nil
 }

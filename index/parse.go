@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"net/url"
 	"os"
 )
@@ -39,9 +40,19 @@ func (index *Index) ParseIndex(index_url string) error {
 		}
 
 		bytes = data
-	//case "http":
-	//	fallthrough
-	//case "https":
+	case "http":
+		fallthrough
+	case "https":
+		resp, err := http.Get(index_url)
+		if err != nil {
+			return fmt.Errorf("Error for GET %s: %v", index_url, err)
+		}
+		defer resp.Body.Close()
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return fmt.Errorf("Unable to read body of response from GET %s: %v", index_url, err)
+		}
+		bytes = body
 	default:
 		// If we don't suppor the scheme, throw an error
 		return fmt.Errorf("Unsupported URL scheme '%s', unable to download", u.Scheme)

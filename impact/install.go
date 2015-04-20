@@ -24,7 +24,7 @@ func (x InstallCommand) Execute(args []string) error {
 	}
 
 	// Load index
-	ind, err := index.LoadIndex()
+	ind, err := index.LoadIndex(x.Verbose)
 	if err != nil {
 		return fmt.Errorf("Error loading indices: %v", err)
 	}
