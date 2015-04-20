@@ -20,6 +20,10 @@ func (x IndexCommand) Execute(args []string) error {
 
 	ind := index.NewIndex()
 
+	if x.Output == "" {
+		x.Output = "impact_index.json"
+	}
+
 	settings, err := config.ReadSettings()
 	if err != nil {
 		return fmt.Errorf("Error reading settings: %v", err)
@@ -32,11 +36,12 @@ func (x IndexCommand) Execute(args []string) error {
 		}
 	}
 
-	str, err := ind.JSON()
-	if x.Output != "" {
-		ioutil.WriteFile(x.Output, []byte(str), os.ModePerm)
-	} else {
+	str, _ := ind.JSON()
+
+	if x.Output == "-" {
 		fmt.Printf("%s\n", str)
+	} else {
+		ioutil.WriteFile(x.Output, []byte(str), os.ModePerm)
 	}
 	return nil
 }
