@@ -80,7 +80,7 @@ All you need to specify is:
 
 and then run:
 
-`$ go get github.com/xogeny/impact`
+`$ go get github.com/xogeny/impact/impact`
 
 which will automatically clone a copy of the git repository and all its dependencies,
 compile impact and put them in a structure like
