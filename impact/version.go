@@ -6,7 +6,7 @@ import (
 	"github.com/xogeny/impact/config"
 )
 
-var version = "0.8.0-dev"
+var version = "0.8.0"
 
 type VersionCommand struct {
 	Verbose bool `short:"v" long:"verbose" description:"Turn on verbose output"`
