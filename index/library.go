@@ -24,7 +24,7 @@ type Library struct {
 	// Web site
 	Homepage string `json:"homepage"`
 	// Repository
-	Repository string `json:"repository"`
+	Repository string `json:"repository_uri"`
 	// Repository format
 	Format string `json:"repository_format"`
 	// Textual description

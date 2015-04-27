@@ -25,7 +25,7 @@ type LocalLibrary struct {
 	Name         string       `json:"name"`         // Name of library
 	Path         string       `json:"path"`         // Path to library (relative to impact.json)
 	IsFile       bool         `json:"isFile"`       // If the library is stored as a single file
-	IssuesURL    string       `json:"issuesURL"`    // URL to issue tracker
+	IssuesURL    string       `json:"issues_url"`   // URL to issue tracker
 	Dependencies []Dependency `json:"dependencies"` // Dependencies of this library
 }
 
