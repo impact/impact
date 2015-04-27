@@ -77,39 +77,118 @@
 \date{} % <--- leave date empty
 \maketitle\thispagestyle{empty} %% <-- you need this for the first page
 \abstract{
-TODO
+
+  This paper discussed the \code{impact} package manager.  The primary
+  goal of this project is to support the development of a healthy
+  eco-system around Modelica.  For many other languages, the existance
+  of an easy to use package manager has made it easier for people to
+  explore and adopt those languages.  We seek to bring that same kind
+  of capability to the Modelica community by incorporating useful
+  features from other package managers like \code{bower}, \code{npm},
+  \it{etc}.
+
+  This paper is an update on the status of the \code{impact} package
+  manager which was discussed previously in \cite{}.  This latest
+  version of \code{impact} involves a complete rewrite that
+  incorporates a more advanced dependency resolution algorithm.  That
+  dependency resolution will be discussed in depth along with many of
+  the subtle issues that arose during the development of this latest
+  version of impact.  Along with a superior dependency resolution
+  scheme, the new version of \code{impact} is much easier to install
+  and use.  Futhermore, it includes many useful new features as well.
+
 }
 
-\noindent\emph{Keywords: Modelica, package manager, GitHub, dependency management, golang}
+\noindent\emph{Keywords: Modelica, package management, GitHub, dependency resolution, golang}
 
 \section{Introduction}
 
 \subsection{Motivation}
 
-* encourage best practices (version control)
+The motivation behind the \code{impact} project is to support two
+critical aspects of library development.  The first is to make it very
+easy for library developers to {\em publish} their work.  The second
+is, at the same time, to make it easy for library consumers to both
+find and install published libraries.
 
-* make it easy for library developers to publish work
+We also feel it is important  to reinforce best practices with respect
+to model development.   For this reason, we have  made version control
+an integral  part of  our solution.   Rather than  putting users  in a
+position to have  to figure out how to make  \code{impact} work with a
+version control  system, we've build \code{impact}  around the version
+control system.   Not only  do users not  have to find  a way  to make
+these technologies work together,  \code{impact} actually nudges those
+not using  version control  toward solutions that  incorporate version
+control.  In this way, we hope to demonstrate to people the advantages
+of both \code{impact} and version control and establish both as ``best
+practices'' for model development.
 
-* make it easy for people to locate and use existing libraries
-
-* **healthy ecosystem**
+By creating a tool that makes it easy to both publish and install
+libraries, we feel we are creating a critical piece of the foundation
+necessary to establish a {\bf health ecosystem} for model development.
 
 \subsection{History}
 
-* Was, at one point, a single file Python script
-
-* Was Python, switched to Golang for reasons that will be discussed.
+Earlier, we mentioned that \code{impact} has been completely
+rewritten.  In fact, the very first version of \code{impact} was just
+a single Python script for indexing and installing Modelica
+code\cite{https://gist.github.com/xogeny/fac3ea9174e74275e7fe}.  It
+eventually involved into a multi-file package that could be installed
+using the Python package management tools.
 
 \section{Requirements}
 
-After initial version, we thought about what works and what doesn't.
+After building the original Python version, we gave some thought to
+what worked and what didn't work well.  One issue we ran into almost
+immediately was the complexity of installing the Python version of
+\code{impact}.  Python is unusual in that it has two package managers,
+\code{easy\_install} and \code{pip}.  It comes with
+\code{easy\_install}, but \code{pip} is the more capable package
+manager.  So in order for someone to install \code{impact}, they first
+needed to install Python, then install \code{pip} and then install
+\code{impact}.  This was far too complicated.  So we wanted to come up
+with a way for people to install \code{impact} {\bf as a simple
+  executable} without any runtime or prerequisites.
 
-* Static binary (no runtime, easy install)
-  - Discuss issues with Python (https, 2 vs 3, runtime)
+Another issue we ran into with the Python version was the fact that
+there are two different and incompatible versions of Python being used
+today.  Trying to support both was an unnecessarily inefficient use of
+resources.  For this reason, we felt we needed to move away from
+Python altogether.
 
-* easy cross-compilation
+We also had some difficulties in the Python version with support for
+SSL under Windows \cite{issue}.  Because we were doing lots of
+``crawling'' (more on this shortly), we needed a platform that
+provided {\bf solid HTTP client support}.
 
-* reasonably fast (important for dependency resolution)
+Although most users Modelica run their development tools and
+simulations under Windows, there are several tools that support OSX
+and Linux as well as Windows.  So as to not neglect users of those
+tools and to support more cross-platform options, we also wanted to be
+able to {\bf compile impact for all three major platforms}.
+
+Furthermore, we wanted to provide a simple executable for all
+platforms without having to have actual development machines for each
+of these different platforms.  For this reason, {\bf cross
+  compilation} between different platforms was an important
+consideration was well.
+
+Of course, we also wanted to have {\bf good performance}.  For most
+package management related functions, the speed of the internet
+connection is probably the biggest limitating factor.  So CPU
+performance wasn't that high on the list.  But, as we shall discuss
+shortly, the computational complexity of the dependency resolution
+algorithm we implemented could lead to some computationally intensive
+calculations for complex systems of dependencies.
+
+For these reasons, we ultimately rewrote \code{impact} in Go.  Go is a
+relatively new language from Google that stresses simplicity in
+language semantics but, at the same time, provides a fairly complete
+standard library.  You can think of Go as being quite similar to C
+with support for extremely simple object-oriented functionality,
+automatic garbage collection and language level support for CSP-based
+concurrency.  With Go, we were able to satisfy all the requirements
+above.
 
 \section{Version Numbering}
 
