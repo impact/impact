@@ -85,7 +85,7 @@
   explore and adopt those languages.  We seek to bring that same kind
   of capability to the Modelica community by incorporating useful
   features from other package managers like \code{bower}, \code{npm},
-  \it{etc}.
+  {\it etc.}
 
   This paper is an update on the status of the \code{impact} package
   manager which was discussed previously in \cite{impact1}.  This
@@ -125,7 +125,8 @@ practices'' for model development.
 
 By creating a tool that makes it easy to both publish and install
 libraries, we feel we are creating a critical piece of the foundation
-necessary to establish a {\bf health ecosystem} for model development.
+necessary to establish a {\bf healthy ecosystem} for model
+development.
 
 \subsection{History}
 
@@ -191,6 +192,7 @@ concurrency.  With Go, we were able to satisfy all the requirements
 above.
 
 \section{Version Numbering}
+\label{sec:numbers}
 
 Before we dive into all the details associated with crawling,
 indexing, resolving and installing, it is useful to take a moment to
@@ -266,23 +268,269 @@ other words, it must be applied consistently to both the
 
 \section{Indexing}
 
+As mentioned previously, there are two main functions that
+\code{impact} performs.  The first is making it easy for library
+developers to publish their libraries and the other is making it easy
+for consumers to find and install those same libraries.  Where these
+two needs meet is the library index.  The index is {\bf built} by
+collecting information about publish libraries.  The same index is
+{\bf used} by consumers searching for information about available
+libraries.
+
+Building the index involves crawling through repositories and
+extracting information about libraries that those repositories
+contain.  In the following section we will discuss this crawling
+process in detail and describe the information that is collected and
+published in the resulting index.
+
 \subsection{Sources}
 
-* tags
+Currently, \code{impact} only supports crawling GitHub\cite{github}
+repositories.  It does this by usin the GitHub API\cite{gh-api} to
+search through repositories associated with particular users and to
+look for Modelica libraries stored in those repositories.  We will
+shortly discuss exactly how it identifies Modelica libraries.  But
+before we cover those details it is first necessary to understand
+which {\em versions} of the repository it looks in.
+
+Each change in a Git repository involves a {\em commit}.  That commit
+affects the contents of one or more files in the repository.  During
+development, there are frequent commits.  To identify specific
+versions of the repository, a tag can be associated with that
+version.  Each tag in the repository history that starts with a
+\code{v} and is followed by a semantic version number is analyzed by
+\code{impact}.
 
 \subsection{Repository Structure}
+
+For each version of a repository tagged with a semantic version
+number, \code{impact} inspects to contents of that version of the
+repository looking for Modelica libraries.  There are effectively two
+ways that \code{impact} finds Modelica libraries in a repository.  The
+first is to check for libraries in ``obvious'' places that conform to
+some common conventions.  In addition, it also looks for a special
+file in each repository to provide guidance on where to find Modelica
+libraries in non-conventional cases.
+
 \subsubsection{Conventions}
-\subsubsection{impact.json}
+
+The following is a list of structural entities that \code{impact}
+checks for when parsing repositories:
+
+\begin{description}
+  \item[./package.mo] The entire repository is treated as a Modelica
+    package whose name is the name of the repository.
+
+  \item[./<reponame>/package.mo] The directory \code{<reponame>}
+    contains a Modelica package.
+
+  \item[./<reponame> <ver>/package.mo] The directory \code{<reponame>}
+    contains a Modelica package.
+
+  \item[./<reponame>.mo] The file \code{./<reponame>.mo} is a file
+    containing the library named \code{<reponame>}.
+
+  \item[./<reponame> <ver>.mo] The file \code{./<reponame>.mo} is a file
+    containing the library named \code{<reponame>}.
+\end{description}
+
+where \code{<reponame>} represents the name of the repository and
+\code{<ver>} is the version number associated with the current tag.
+
+\subsubsection{\code{impact.json}}
+\label{sec:dirinfo}
+
+For various reasons, library developers may not wish to conform to the
+repository structure patterns discussed previous.  Furthermore, there
+may be additional information they wish to include about their
+libraries.  For this reason, a library developer can include an
+\code{impact.json} file in the root of the repository directory that
+provides additional information about the contents of the repository.
+For example, a repository may contain two or more Modelica libraries
+in subdirectories.  The \code{impact.json} file allows information
+about the storage location of each library in the repository to be
+provided by the library developer.  Furthermore, the author may wish
+to include contact information beyond what can be extracted from
+information about the repository and its owner.  These are just a few
+use cases for why an \code{impact.json} file might be useful for
+library developers.  A complete schema for the \code{impact.json} file
+can be found later in Section \ref{sec:dirinfo_schema}.
 
 \subsection{Handling Forks}
 
-* Present basic data structures assuming uniqueness
+The Modelica specification implicitly assumes that each library is
+uniquely identified by its name.  This name is used in both the
+\code{version} and \code{uses} annotations as well as any references
+in Modelica code (e.g., \code{Modelica} in \code{Modelica.SIunits}).
+This assumption works well when discussing libraries currently loaded
+into a given tool.  But when you expand the scope of your
+``namespace'' to include all libraries available from multiple
+sources, the chance for overlap becomes possible and must be dealt
+with.
 
-* forks (URIs, disambiguation)
+Previously, we mentioned the importance of supporting best practices
+in model development and the specific need to accomodate version
+control as part of that process.  Up until now, we have leveraged
+version control to make the process of indexing and collection
+libraries easier.  However, version control does introduce one
+complexity as well.  That complexity is how to deal with {\em forks}.
+
+A fork occurs when there are multiple perspectives on how development
+should progress on a given project.  In some cases, rather than
+reconciling these different perspectives, developers decide to proceed
+in different directions.  When this happens, the project becomes
+``forked'' and there are then (at least) two {\bf different} libraries
+being developed in parallel.  Each of these libraries may share a
+common name and perhaps even the same version numbers but still be
+fundamentally different libraries.
+
+A fork can arise for another, more positive, reason.  When someone
+improves a library they may not have permission to simply fold their
+improvement back into the original library.  On GitHub in particular,
+it is extremely common for a library to be forked simply to enable a
+third-party to make an improvement.  The author of the improvement
+then sends what is called a {\em pull request} to the library author
+asking them to incorporate the improvement.  In such a workflow, the
+fork is simply a temporary measure to support concurrent development.
+Once the pull request is accepted, the fork can be removed entirely.
+
+Regardless of why the fork occurs, it is important that \code{impact}
+accomodates cases where forking occurs.  This is because forking is a
+very common occurrence in a healthy eco-system.  It indicates progress
+and interest and we should not do anything to stiffle either of
+these.The issue with forking is that the same name might be used by
+multiple libraries.  In such cases, we need a better way to uniquely
+identify libraries.
+
+For this reason, \code{impact} records {\bf not only the library name,
+  but also a URI associated with each library}.  In this way, the URI
+serves as a completely unambiguous way of identifying different
+libraries.  While two forks may have the same name, they will never
+have the same URI.
 
 \subsection{Schema}
 
-* JSON Schema?
+We've mentioned the kinds of information \code{impact} collects while
+indexing as well as the kind of information that might be provided by
+library developers (via \code{impact.json} files).  In this section,
+we will provide a complete description of information used by
+\code{impact}.
+
+\subsubsection{\code{impact\_index.json}}
+\label{sec:index_schema}
+
+The root of an \code{impact\_index.json} file contains only two
+elements:
+
+\begin{description}
+  \item[\code{version}] A string indicating what version of impact
+    generated the index.  The string is, of course, a semantic
+    version.
+  \item[\code{libraries}] The libraries field is an array.  Each
+    element in the array describes a library that was found.  {\bf The
+      order of the elements is significant}.  Libraries that occur
+    earlier in the list take precedence over libraries that appear
+    later.  This is important in cases where libraries have the same
+    name.
+\end{description}
+
+For each library in the \code{libraries} array, the following
+information may be present:
+
+\begin{description}
+  \item[\code{name}] The name of the library (as used in Modelica)
+  \item[\code{description}] A textual description of the library
+  \item[\code{stars}] A way of ``rating'' libraries.  In the case of
+    GitHub, this the number of times the repository has been starred.
+    But for other types of sources, other metrics can be used.
+  \item[\code{uri}] A URI to uniquely identify the given library (when
+    it shares a common \code{name} with another library)
+  \item[\code{owner\_uri}] A URI to uniquely identify the owner of the
+    library
+  \item[\code{email}] The email address of the owner/maintainer of the
+    library
+  \item[\code{homepage}] The URL for the library's homepage
+  \item[\code{repository}] The URI for the library's source code
+    repository
+  \item[\code{format}] The format of the library's source code
+    repository (e.g., Git, Mercurial, Subversion, {\it etc.})
+  \item[\code{versions}] This is an object that maps a semantic
+    version (in the form of a string) to details associated with that
+    specific version)
+\end{description}
+
+The details associated with each version are as follows:
+
+\begin{description}
+  \item[\code{version}] A string representation of the semantic
+    version ({\it i.e.,} one that is identical to the key).
+  \item[\code{tarball\_url}] A URL that points to an archive of the
+    repository in \code{tar} format.
+  \item[\code{zipball\_url}] A URL that points to an archive of the
+    repository in \code{zip} format.
+  \item[\code{path}] The location of the library within the
+    repository.
+  \item[\code{isfile}] Whether the Modelica library is stored as a
+    file (\code{true}) or as a directory (\code{false})
+  \item[\code{sha}] This is a hash associated with this particular
+    version.  This is currently recorded by \code{impact} during
+    indexing but not used.  Such a hash could be useful for caching
+    repository information locally.
+  \item[\code{dependencies}] This is an array listing the dependencies
+    that this particular version has on other Modelica libraries.
+    Each element in this array is an object with one field,
+    \code{name}, giving the name of the required library and another
+    field, \code{version}, which is the {\bf semantic version} of that
+    library represented as a string (see previous discussion on
+    normalization in \ref{sec:numbers}).
+\end{description}
+
+\subsubsection{\code{impact.json}}
+\label{sec:dirinfo_schema}
+
+As mentioned previously in Section \ref{sec:dirinfo}, each directory
+can include a file named \code{impact.json} that provides explicit
+information about Modelica libraries contained in that repository.
+The root of the \code{impact.json} file contains the following
+information:
+
+\begin{description}
+  \item[\code{owner\_uri}] A link to information about the libraries
+    owner
+  \item[\code{email}] The email address of the owner or maintainer
+  \item[\code{alias}] An object that whose keys are the names of
+    libraries and whose associated values are the unique URIs of those
+    libraries.  This information can, therefore, be used to
+    disambiguate between dependencies where there may be multiple
+    libraries with that name.
+  \item[\code{libraries}] This is an array where each element contains
+    information about a library present in the repository.
+\end{description}
+
+For each library listed in the \code{libraries} field, the following
+information may be provided:
+
+\begin{description}
+  \item[\code{name}] The name of the library
+  \item[\code{path}] The path to the library
+  \item[\code{isfile}] Whether the entity pointed to by \code{path} is
+    a Modelica library stored as a file (\code{true}) or as a
+    directory (\code{false}).
+  \item[\code{issues\_url}] A link pointing to the issue tracker for
+    this library
+  \item[\code{dependencies}] An explicit list of dependencies for this
+    library (if not provided, the list will be based on the
+    \code{uses} annotations found in the package definition).
+\end{description}
+
+For each dependency, the following information should be provided:
+
+\begin{description}
+  \item[\code{name}] Name of the required library
+  \item[\code{uri}] Unique URI of the required library
+  \item[\code{version}] {\bf Semantic version} number of the required
+    library (represented as a string)
+\end{description}
 
 \section{Installation}
 
