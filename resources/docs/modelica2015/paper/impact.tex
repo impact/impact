@@ -88,8 +88,8 @@
   \it{etc}.
 
   This paper is an update on the status of the \code{impact} package
-  manager which was discussed previously in \cite{}.  This latest
-  version of \code{impact} involves a complete rewrite that
+  manager which was discussed previously in \cite{impact1}.  This
+  latest version of \code{impact} involves a complete rewrite that
   incorporates a more advanced dependency resolution algorithm.  That
   dependency resolution will be discussed in depth along with many of
   the subtle issues that arose during the development of this latest
@@ -132,9 +132,9 @@ necessary to establish a {\bf health ecosystem} for model development.
 Earlier, we mentioned that \code{impact} has been completely
 rewritten.  In fact, the very first version of \code{impact} was just
 a single Python script for indexing and installing Modelica
-code\cite{https://gist.github.com/xogeny/fac3ea9174e74275e7fe}.  It
-eventually involved into a multi-file package that could be installed
-using the Python package management tools.
+code\cite{impact-gist}.  It eventually involved into a multi-file
+package that could be installed using the Python package management
+tools.
 
 \section{Requirements}
 
@@ -157,7 +157,7 @@ resources.  For this reason, we felt we needed to move away from
 Python altogether.
 
 We also had some difficulties in the Python version with support for
-SSL under Windows \cite{issue}.  Because we were doing lots of
+SSL under Windows \cite{python-ssl}.  Because we were doing lots of
 ``crawling'' (more on this shortly), we needed a platform that
 provided {\bf solid HTTP client support}.
 
@@ -192,12 +192,77 @@ above.
 
 \section{Version Numbering}
 
-* Semantic versioning
+Before we dive into all the details associated with crawling,
+indexing, resolving and installing, it is useful to take a moment to
+briefly discuss versioning.  Modelica supports the notion of versions
+through the use of the `version` and `uses` annotations.  These two
+annotations allow libraries to explicitly state what version they are
+and what versions of other libraries they use, respectively.
 
-* Best practices
+But there is one complication to the way Modelica deals with versions.
+In Modelica, a version is simply a string.  This by itself isn't a
+problem.  But it becomes a problem, as we will discuss in greater
+detail shortly, when you need to understand relationships between
+version.  In particular, there are two important things we would like
+to determine when dealing with version numbers.  The first is an
+unambiguous ordering of versions.  In other words, which, of any two
+versions, is the ``latest'' version?  The second is whether a newer
+version of a library is ``backwards compatible'' with a previous
+version.  These are essential questions when trying to resolve
+dependencies and the current string based approach to versions in
+Modelica is not semantically rich enough to help us answer either of
+these.
 
-* Normalization
-  - Used for Modelica
+This issue is not unique to the Modelica world.  These same questions
+have been asked for a very long time and various approaches have been
+invented to deal with answering these questions.  One recent and
+widely used approach is to employ what is called {\bf semantic
+  versioning}\cite{semver}.  Semantic versioning is pretty much what
+it sounds like, an approach to defining version numbers where the
+version numbers have very explicit meanings associated with them.
+
+A very simple summary of semantic versioning would be that {\bf all}
+versions have exactly three numerical components, a major version
+number, a minor version number and a patch.  A semantic version must
+have all of these numbers and they must be .-separated.  For this
+reason, the following versions are not legal semantic version numbers:
+\code{1}, \code{1a}, \code{1.0}, \code{1.0-beta5}, \code{4.0.2.4096}.
+Each of these number means something.  If you make a non-backward
+compatible change, you must increment the major version.  If you make
+a backward compatible version, you must increment the minor version.
+If you make a change that should be completely compatible with the
+previous version, you increment only the patch version.
+
+There are additional provisions in semantic versioning to handle
+pre-release versions as well as build annotations.  We will not
+discuss those semantics here, but they are incorporated into our
+implementation's treatment of version numbers.
+
+Our use of semantic versioning is aligned with our goal of strongly
+encouraging best practices.  It is important to point out that the use
+of semantic versions is completely legal in Modelica.  In other words,
+Modelica allows a wider range of interpretations of version numbers.
+By using semantic versions, we narrow these interpretations but we
+feel that this narrowing is much better for the developer since it
+also provides meaning to the version numbers assigned to a library.
+
+However, because Modelica libraries are free to use nearly any string
+as a version number, we need to find a way to ``bridge the gap''
+between past usage and the usage we are encouraging moving forward.
+Although internally \code{impact} understands {\bf only} semantic
+versions, it is still able to work with nearly all existing Modelica
+libraries.  This is achieved through a process of ``normalizing''
+existing versions.  When \code{impact} comes across versions that are
+not legal semantic versions, it attempts to create an equivalent
+semantic version representation.  For example, a library with a
+version string of \code{1.0} would be represented by the semantic
+version \code{1.0.0}.
+
+For this normalization to work, it is important to make sure that the
+normalization is performed {\em both} on the version number associated
+with a library and on the version numbers of the libraries used.  In
+other words, it must be applied consistently to both the
+\code{version} and \code{uses} annotations.
 
 \section{Indexing}
 
@@ -280,7 +345,7 @@ Talk about what happens during installation.
 * Different files (impact.json, impact.proj, impactrc and their purposes)
 
 %%% Remove the following line once we got real citations in place.
-\nocite{*}
+% \nocite{impact}
 
 %--------------------------------------------------------------------------------
 % References using bibtex
