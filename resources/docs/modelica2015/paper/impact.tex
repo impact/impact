@@ -84,18 +84,121 @@ TODO
 
 \section{Introduction}
 
-TODO
+\subsection{Motivation}
+
+* encourage best practices (version control)
+
+* make it easy for library developers to publish work
+
+* make it easy for people to locate and use existing libraries
+
+* **healthy ecosystem**
 
 \subsection{History}
-TODO
 
-\subsection{Why golang?}
-TODO
+* Was, at one point, a single file Python script
 
+* Was Python, switched to Golang for reasons that will be discussed.
 
-\section{TODO}
+\section{Requirements}
 
-Outline paper sections\ldots
+After initial version, we thought about what works and what doesn't.
+
+* Static binary (no runtime, easy install)
+  - Discuss issues with Python (https, 2 vs 3, runtime)
+
+* easy cross-compilation
+
+* reasonably fast (important for dependency resolution)
+
+\section{Version Numbering}
+
+* Semantic versioning
+
+* Best practices
+
+* Normalization
+  - Used for Modelica
+
+\section{Indexing}
+
+\subsection{Sources}
+
+* tags
+
+\subsection{Repository Structure}
+\subsubsection{Conventions}
+\subsubsection{impact.json}
+
+\subsection{Handling Forks}
+
+* Present basic data structures assuming uniqueness
+
+* forks (URIs, disambiguation)
+
+\subsection{Schema}
+
+* JSON Schema?
+
+\section{Installation}
+
+Talk about what happens during installation.
+
+\subsection{Dependency Resolution}
+
+* Basic algorithm (show some graphs)
+
+* Extracting explicit dependency information from Modelica
+
+* Implicit dependency information from semantic versions
+
+* Backtracking and why it isn't so bad (give some performance numbers here)
+
+\subsection{Directory Structure}
+
+* No version numbers
+
+* In a version control context
+
+\subsection{impact.proj}
+
+* --save option?
+
+* .gitignore and repopulation
+
+* disambiguation
+
+\section{Go Implementation}
+
+* package structure
+
+* 3rd party libraries
+  - GitHub API
+  - Semver
+
+* GitHub API tokens
+
+* CI
+
+\section{Additional Features}
+
+\subsection{Searching}
+
+* Ordering (matching URI/source then by stars)  
+
+\section{Future Development}
+
+* Bitbucket
+
+* Subversion
+
+* Intranet applications
+
+* Web based search
+
+\section{Conclusion}
+
+* Different files (impact.json, impact.proj, impactrc and their purposes)
 
 %%% Remove the following line once we got real citations in place.
 \nocite{*}
