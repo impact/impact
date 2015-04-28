@@ -25,8 +25,6 @@ var exclusionList []string
 func init() {
 	exclusionList = []string{
 		"modelica-3rdparty:BrineProp:0.1.9",      // Directory structure is a mess
-		"modelica-3rdparty:BondLib:2.3",          // Too large
-		"modelica-3rdparty:DESLib:1.6.1",         // Too large
 		"modelica-3rdparty:FCSys:0.2.3",          // Tag dir mismatch
 		"modelica-3rdparty:FCSys:0.2.2",          // Tag dir mismatch
 		"modelica-3rdparty:FCSys:0.2.1",          // Tag dir mismatch
@@ -51,7 +49,6 @@ func init() {
 		"modelica-3rdparty:HelmholtzMedia:0.1",   // Unsupported directory structure
 		"modelica-3rdparty:LinearMPC:0.1",        // Tag dir mismatch
 		"modelica-3rdparty:ModelicaDEVS:1.0",     // Self reference (and invalid at that)
-		"modelica-3rdparty:MotorcycleLib:1.0",    // Too large
 		"modelica-3rdparty:NCLib:0.82",           // Missing package.mo
 		"modelica:Modelica_LinearSystems2:2.3.1", // Dir name error
 	}

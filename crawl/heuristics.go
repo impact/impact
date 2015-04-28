@@ -2,7 +2,10 @@ package crawl
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"path"
 
 	"github.com/blang/semver"
 
@@ -13,31 +16,42 @@ import (
 )
 
 func getUses(client *github.Client, user string, reponame string,
-	path string, opts *github.RepositoryContentGetOptions) (map[string]semver.Version, error) {
+	mopath string, opts *github.RepositoryContentGetOptions) (map[string]semver.Version, error) {
 	blank := map[string]semver.Version{}
 
-	// Read contents of top-level package
-	lcon, _, _, err := client.Repositories.GetContents(user, reponame, path, opts)
-	if err != nil {
-		return blank,
-			fmt.Errorf("Error while reading contents of %s in github repository %s: %v",
-				path, reponame, err)
-	}
+	// Get data for parent directory (we do this because the API sometimes chokes
+	// on downloading large Modelica files, but if we do it this way, we can always
+	// get the file).
+	dir := path.Dir(mopath)
+	fname := path.Base(mopath)
 
-	dec, err := lcon.Decode()
-	if err != nil {
-		return blank,
-			fmt.Errorf("Error while decoding contents of %s in github repository %s: %v",
-				path, reponame, err)
-	}
+	contents := ""
 
-	contents := string(dec)
+	log.Printf("Getting contents of %s", dir)
+	_, dcon, _, err := client.Repositories.GetContents(user, reponame, dir, opts)
+	for _, con := range dcon {
+		if *con.Name == fname {
+			if con.DownloadURL == nil || *con.DownloadURL == "" {
+				return blank, fmt.Errorf("No download link present for %s", mopath)
+			}
+			resp, err := http.Get(*con.DownloadURL)
+			if err != nil {
+				return blank, fmt.Errorf("Error downloading %s from %s: %v", mopath,
+					*con.DownloadURL, err)
+			}
+			raw, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return blank, fmt.Errorf("Error reading response: %v", err)
+			}
+			contents = string(raw)
+		}
+	}
 
 	uses, err := parsing.ParseUses(contents)
 	if err != nil {
 		return blank,
 			fmt.Errorf("Error while parsing contents of %s in github repository %s: %v",
-				path, reponame, err)
+				mopath, reponame, err)
 	}
 
 	return uses, nil
