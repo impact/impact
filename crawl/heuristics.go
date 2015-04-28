@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"net/http"
-	"path"
 
 	"github.com/blang/semver"
 
@@ -19,34 +17,16 @@ func getUses(client *github.Client, user string, reponame string,
 	mopath string, opts *github.RepositoryContentGetOptions) (map[string]semver.Version, error) {
 	blank := map[string]semver.Version{}
 
-	// Get data for parent directory (we do this because the API sometimes chokes
-	// on downloading large Modelica files, but if we do it this way, we can always
-	// get the file).
-	dir := path.Dir(mopath)
-	fname := path.Base(mopath)
-
-	contents := ""
-
-	log.Printf("Getting contents of %s", dir)
-	_, dcon, _, err := client.Repositories.GetContents(user, reponame, dir, opts)
-	for _, con := range dcon {
-		if *con.Name == fname {
-			if con.DownloadURL == nil || *con.DownloadURL == "" {
-				return blank, fmt.Errorf("No download link present for %s", mopath)
-			}
-			resp, err := http.Get(*con.DownloadURL)
-			if err != nil {
-				return blank, fmt.Errorf("Error downloading %s from %s: %v", mopath,
-					*con.DownloadURL, err)
-			}
-			defer resp.Body.Close()
-			raw, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				return blank, fmt.Errorf("Error reading response: %v", err)
-			}
-			contents = string(raw)
-		}
+	reader, err := client.Repositories.DownloadContents(user, reponame, mopath, opts)
+	if err != nil {
+		return blank, fmt.Errorf("Unable to download Modelica code for %s: %v", mopath)
 	}
+	raw, err := ioutil.ReadAll(reader)
+	if err != nil {
+		return blank, fmt.Errorf("Error reading response: %v", err)
+	}
+
+	contents := string(raw)
 
 	uses, err := parsing.ParseUses(contents)
 	if err != nil {
