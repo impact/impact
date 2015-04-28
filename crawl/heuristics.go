@@ -39,6 +39,7 @@ func getUses(client *github.Client, user string, reponame string,
 				return blank, fmt.Errorf("Error downloading %s from %s: %v", mopath,
 					*con.DownloadURL, err)
 			}
+			defer resp.Body.Close()
 			raw, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
 				return blank, fmt.Errorf("Error reading response: %v", err)
