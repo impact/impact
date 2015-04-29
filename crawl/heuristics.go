@@ -2,8 +2,10 @@ package crawl
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
+	"strings"
 
 	"github.com/blang/semver"
 
@@ -13,29 +15,116 @@ import (
 	"github.com/xogeny/impact/parsing"
 )
 
-func getUses(client *github.Client, user string, reponame string,
-	mopath string, opts *github.RepositoryContentGetOptions) (map[string]semver.Version, error) {
+func parsePackage(client *github.Client, user string, reponame string,
+	mopath string, opts *github.RepositoryContentGetOptions) (string,
+	map[string]semver.Version, error) {
 	blank := map[string]semver.Version{}
 
 	reader, err := client.Repositories.DownloadContents(user, reponame, mopath, opts)
 	if err != nil {
-		return blank, fmt.Errorf("Unable to download Modelica code for %s: %v", mopath)
+		return "", blank, fmt.Errorf("Unable to download Modelica code for %s: %v", mopath)
 	}
 	raw, err := ioutil.ReadAll(reader)
 	if err != nil {
-		return blank, fmt.Errorf("Error reading response: %v", err)
+		return "", blank, fmt.Errorf("Error reading response: %v", err)
 	}
 
 	contents := string(raw)
 
 	uses, err := parsing.ParseUses(contents)
 	if err != nil {
-		return blank,
-			fmt.Errorf("Error while parsing contents of %s in github repository %s: %v",
+		return "", blank,
+			fmt.Errorf("Error while parsing uses annotation of %s in github repository %s: %v",
 				mopath, reponame, err)
 	}
 
-	return uses, nil
+	name, err := parsing.ParseName(contents)
+	if err != nil {
+		return "", blank,
+			fmt.Errorf("Error while parsing name of %s in github repository %s: %v",
+				mopath, reponame, err)
+	}
+
+	return name, uses, nil
+}
+
+func getName(code io.ReadCloser) (string, error) {
+	return "", fmt.Errorf("Unimplemented")
+}
+
+func getLibraries(client *github.Client, user string, repostr string, verbose bool,
+	opts *github.RepositoryContentGetOptions) ([]*dirinfo.LocalLibrary, error) {
+	blank := []*dirinfo.LocalLibrary{}
+
+	if verbose {
+		log.Printf("  Reviewing contents of %s/%s", user, repostr)
+	}
+	// Grab information about the contents of repository's root directory
+	_, dcon, _, err := client.Repositories.GetContents(user, repostr, ".", opts)
+	if err != nil {
+		return blank, fmt.Errorf("Unable to fetch repository files: %v", err)
+	}
+
+	// First check to see if the root of the repository contains a package.mo
+	// file.  If so, the whole repository is a library...
+	for _, con := range dcon {
+		if *con.Name == "package.mo" {
+			if verbose {
+				log.Printf("  Repository is a library")
+			}
+			body, err := client.Repositories.DownloadContents(user, repostr, *con.Path, opts)
+			if err != nil {
+				log.Printf("Unable to read contents of %s/%s/%s: %v", user, repostr, *con.Path,
+					err)
+				continue
+			}
+			name, err := getName(body)
+			if err != nil {
+				log.Printf("Unable to extract name from %s/%s/%s", user, repostr, *con.Path)
+				continue
+			}
+			return []*dirinfo.LocalLibrary{
+				&dirinfo.LocalLibrary{
+					Name:         name,
+					Path:         ".",
+					IsFile:       false,
+					Dependencies: []dirinfo.Dependency{},
+				},
+			}, nil
+		}
+	}
+
+	ret := []*dirinfo.LocalLibrary{}
+	for _, con := range dcon {
+		switch *con.Type {
+		case "file":
+			if strings.HasSuffix(*con.Name, ".mo") {
+				ret = append(ret, &dirinfo.LocalLibrary{
+					Name:         repostr,
+					Path:         *con.Path,
+					IsFile:       true,
+					Dependencies: []dirinfo.Dependency{},
+				})
+			}
+		case "dir":
+			_, subcons, _, err := client.Repositories.GetContents(user, repostr, *con.Name, opts)
+			if err != nil {
+				continue
+			}
+			for _, sub := range subcons {
+				if *sub.Name == "package.mo" {
+					ret = append(ret, &dirinfo.LocalLibrary{
+						Name:         repostr,
+						Path:         *con.Path,
+						IsFile:       false,
+						Dependencies: []dirinfo.Dependency{},
+					})
+				}
+			}
+		}
+	}
+
+	return blank, fmt.Errorf("No libraries found in %s/%s", user, repostr)
 }
 
 func Exists(client *github.Client, user string, reponame string,
@@ -83,11 +172,11 @@ func ExtractInfo(client *github.Client, user string, altname string, repo github
 	di := dirinfo.MakeDirectoryInfo()
 
 	// Parse any impact.json file the is present
-	dcon, _, _, err := client.Repositories.GetContents(user, repostr, "impact.json", opts)
+	fcon, _, _, err := client.Repositories.GetContents(user, repostr, "impact.json", opts)
 
 	// If impact.json exists, parse it and use that as our baseline
-	if dcon != nil && err == nil {
-		pdi, perr := dirinfo.Parse(*dcon.Content)
+	if fcon != nil && err == nil {
+		pdi, perr := dirinfo.Parse(*fcon.Content)
 		if perr == nil {
 			log.Printf("Parsed impact.json file in %s: %v", repostr, pdi)
 			di = pdi
@@ -110,137 +199,18 @@ func ExtractInfo(client *github.Client, user string, altname string, repo github
 		di.Email = email
 	}
 
-	// This is local function where only the path is an argument, all the other
-	// arguments come from the local environment.
-	lookupPath := func(path string) (bool, bool) {
-		return Exists(client, user, repostr, path, opts)
-	}
-
 	// Are any libraries mentioned?  If not, we need to figure out what the structure
 	// is here.  There are two patterns.  Either a file named <RepoName>.mo or a
 	// directory named <RepoName>.  If neither of these conventions is followed, the
 	// library developers needs to add an explicit impact.json
 	if len(di.Libraries) == 0 {
-		// Provide default values for path and isfile
-		path := ""
-		isfile := true
-
-		// This is a simplified version of the version string that strips build
-		// information away.  This is necessary because some library developers
-		// don't include build information in the names of files and directories
-		// that include an explicit version number.  So we check for this as well.
-		sver := parsing.SimpleVersion(versionString)
-
-		// Flag to indicate whether we have found a library
-		found := false
-
-		// A list of Modelica files to look for that could be libraries
-		// (stored as files)
-		filenames := []string{
-			repostr + ".mo",
-			repostr + " " + versionString + ".mo",
-			altname + ".mo",
-			altname + " " + versionString + ".mo",
-		}
-
-		// A list of directories to look for that could be Modelica libraries
-		// (stored as directories)
-		dirnames := []string{
-			repostr,
-			repostr + " " + versionString,
-			altname,
-			altname + " " + versionString,
-		}
-
-		// If the simple version string isn't the same as the full version string,
-		// add a few more variations.
-		if sver != versionString {
-			filenames = append(filenames, repostr+" "+sver+".mo")
-			filenames = append(filenames, altname+" "+sver+".mo")
-			dirnames = append(dirnames, repostr+" "+sver)
-			dirnames = append(dirnames, altname+" "+sver)
-		}
-
-		// First, check for the library stored as a file...
-		for _, fpath := range filenames {
-			// Look for that file in the repository
-			fexists, _ := lookupPath(fpath)
+		libs, err := getLibraries(client, user, repostr, verbose, opts)
+		if err != nil {
 			if verbose {
-				log.Printf("Looking for file %s in %s:%s: %v", fpath, repostr,
-					versionString, fexists)
-			}
-			// If no library has been found yet and this file exists, record
-			// its information and set the found flag
-			if !found && fexists {
-				path = fpath
-				found = true
-				if verbose {
-					log.Printf("  Found")
-				}
+				log.Printf("No libraries found in %s/%s", user, repostr)
 			}
 		}
-
-		// Next, check for the library stored as a directory...
-		for _, dpath := range dirnames {
-			// Look for a directory in the repository with the matching name
-			// TODO: Look for package.mo inside!
-			_, dexists := lookupPath(dpath)
-			if verbose {
-				log.Printf("Looking for directory %s in %s:%s: %v", dpath, repostr,
-					versionString, dexists)
-			}
-			// If we haven't yet found a match and this directory exists, then
-			// record the information and set found flag
-			if !found && dexists {
-				path = dpath
-				isfile = false
-				found = true
-				if verbose {
-					log.Printf("  Found")
-				}
-			}
-		}
-
-		// Finally, if we still haven't found a library, chec to see if the
-		// repository itself is a library
-		if !found {
-			// Check if repository IS a package
-			fexists, _ := lookupPath("package.mo")
-			if verbose {
-				log.Printf("Check if directory %s:%s is a package: %v", repostr, versionString,
-					fexists)
-			}
-			// If so, record information about it
-			if fexists {
-				path = ""
-				isfile = false
-				found = true
-				if verbose {
-					log.Printf("  Found")
-				}
-			}
-		}
-
-		// If we found a library, create an instance of dirinfo.LocalLibrary
-		// N.B. - These heuristics only look for one library in the repository.
-		// If a library developer wants to store more than one, they need to
-		// state this explicitly in the impact.json file and not rely on us
-		// inferring it somehow.
-		if found {
-			di.Libraries = []*dirinfo.LocalLibrary{
-				&dirinfo.LocalLibrary{
-					Name:         repostr,
-					Path:         path,
-					IsFile:       isfile,
-					Dependencies: []dirinfo.Dependency{},
-				},
-			}
-		} else {
-			if verbose {
-				log.Printf("Nothing found in %s/%s for among %v or %v", repostr, versionString,
-					filenames, dirnames)
-			}
-		}
+		di.Libraries = libs
 	}
 
 	// Now, let's loop over all the libraries we are aware of...
@@ -252,11 +222,13 @@ func ExtractInfo(client *github.Client, user string, altname string, repo github
 		}
 
 		// Extract information about any libraries this library uses
-		uses, err := getUses(client, user, repostr, path, opts)
+		name, uses, err := parsePackage(client, user, repostr, path, opts)
 		if err != nil {
 			log.Printf("Error extracting uses annotation: %v", err)
 			continue
 		}
+
+		lib.Name = name
 
 		for libname, ver := range uses {
 			lib.Dependencies = append(lib.Dependencies, dirinfo.Dependency{
