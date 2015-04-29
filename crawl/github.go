@@ -24,33 +24,9 @@ var exclusionList []string
 
 func init() {
 	exclusionList = []string{
-		"modelica-3rdparty:BrineProp:0.1.9",      // Directory structure is a mess
-		"modelica-3rdparty:FCSys:0.2.3",          // Tag dir mismatch
-		"modelica-3rdparty:FCSys:0.2.2",          // Tag dir mismatch
-		"modelica-3rdparty:FCSys:0.2.1",          // Tag dir mismatch
-		"modelica-3rdparty:FCSys:0.2.0",          // Tag dir mismatch
-		"modelica-3rdparty:FCSys:0.1.2",          // Tag dir mismatch
-		"modelica-3rdparty:FCSys:0.1.1",          // Tag dir mismatch
-		"modelica-3rdparty:FCSys:0.1.0",          // Tag dir mismatch
-		"modelica-3rdparty:HelmholtzMedia:0.9.1", // Unsupported directory structure
-		"modelica-3rdparty:HelmholtzMedia:0.9.0", // Unsupported directory structure
-		"modelica-3rdparty:HelmholtzMedia:0.8.4", // Unsupported directory structure
-		"modelica-3rdparty:HelmholtzMedia:0.8.2", // Unsupported directory structure
-		"modelica-3rdparty:HelmholtzMedia:0.8.1", // Unsupported directory structure
-		"modelica-3rdparty:HelmholtzMedia:0.8",   // Unsupported directory structure
-		"modelica-3rdparty:HelmholtzMedia:0.7.1", // Unsupported directory structure
-		"modelica-3rdparty:HelmholtzMedia:0.7",   // Unsupported directory structure
-		"modelica-3rdparty:HelmholtzMedia:0.6",   // Unsupported directory structure
-		"modelica-3rdparty:HelmholtzMedia:0.6.1", // Unsupported directory structure
-		"modelica-3rdparty:HelmholtzMedia:0.5",   // Unsupported directory structure
-		"modelica-3rdparty:HelmholtzMedia:0.4",   // Unsupported directory structure
-		"modelica-3rdparty:HelmholtzMedia:0.3",   // Unsupported directory structure
-		"modelica-3rdparty:HelmholtzMedia:0.2",   // Unsupported directory structure
-		"modelica-3rdparty:HelmholtzMedia:0.1",   // Unsupported directory structure
-		"modelica-3rdparty:LinearMPC:0.1",        // Tag dir mismatch
-		"modelica-3rdparty:ModelicaDEVS:1.0",     // Self reference (and invalid at that)
-		"modelica-3rdparty:NCLib:0.82",           // Missing package.mo
-		"modelica:Modelica_LinearSystems2:2.3.1", // Dir name error
+		"modelica-3rdparty:BrineProp:0.1.9",  // Directory structure is a mess
+		"modelica-3rdparty:ModelicaDEVS:1.0", // Self reference (and invalid at that)
+		"modelica-3rdparty:NCLib:0.82",       // Missing package.mo
 	}
 }
 
@@ -152,13 +128,30 @@ func (c GitHubCrawler) Crawl(r recorder.Recorder, verbose bool, logger *log.Logg
 	}
 
 	lopts := github.RepositoryListOptions{}
+	lopts.Page = 1
+	lopts.PerPage = 10
 
-	// Get a list of all repositories associated with the specified
-	// organization
-	repos, _, err := client.Repositories.List(c.user, &lopts)
-	if err != nil {
-		logger.Printf("Error listing repositories for %s: %v", c.user, err)
-		return fmt.Errorf("Error listing repositories for %s: %v", c.user, err)
+	if verbose {
+		logger.Printf("Fetching repositories for %s", c.user)
+	}
+	repos := []github.Repository{}
+	for {
+		// Get a list of all repositories associated with the specified
+		// organization
+		page, _, err := client.Repositories.List(c.user, &lopts)
+		if err != nil {
+			logger.Printf("Error listing repositories for %s: %v", c.user, err)
+			return fmt.Errorf("Error listing repositories for %s: %v", c.user, err)
+		}
+		repos = append(repos, page...)
+		if verbose {
+			logger.Printf("  Fetching page %d, %d entries", lopts.Page, len(page))
+		}
+
+		if len(page) == 0 {
+			break
+		}
+		lopts.Page = lopts.Page + 1
 	}
 
 	// Loop over all repos associated with the given owner
@@ -219,6 +212,9 @@ func (c GitHubCrawler) Crawl(r recorder.Recorder, verbose bool, logger *log.Logg
 
 		// Loop over the tags
 		for _, tag := range tags {
+			if verbose {
+				log.Printf("Processing tag %s", *tag.Name)
+			}
 			// Check if this has a semantic version
 			versionString := *tag.Name
 			sha := *tag.Commit.SHA

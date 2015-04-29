@@ -2,7 +2,6 @@ package crawl
 
 import (
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"strings"
@@ -22,7 +21,7 @@ func parsePackage(client *github.Client, user string, reponame string,
 
 	reader, err := client.Repositories.DownloadContents(user, reponame, mopath, opts)
 	if err != nil {
-		return "", blank, fmt.Errorf("Unable to download Modelica code for %s: %v", mopath)
+		return "", blank, fmt.Errorf("Unable to download Modelica code for %s: %v", mopath, err)
 	}
 	raw, err := ioutil.ReadAll(reader)
 	if err != nil {
@@ -48,10 +47,6 @@ func parsePackage(client *github.Client, user string, reponame string,
 	return name, uses, nil
 }
 
-func getName(code io.ReadCloser) (string, error) {
-	return "", fmt.Errorf("Unimplemented")
-}
-
 func getLibraries(client *github.Client, user string, repostr string, verbose bool,
 	opts *github.RepositoryContentGetOptions) ([]*dirinfo.LocalLibrary, error) {
 	blank := []*dirinfo.LocalLibrary{}
@@ -72,20 +67,11 @@ func getLibraries(client *github.Client, user string, repostr string, verbose bo
 			if verbose {
 				log.Printf("  Repository is a library")
 			}
-			body, err := client.Repositories.DownloadContents(user, repostr, *con.Path, opts)
-			if err != nil {
-				log.Printf("Unable to read contents of %s/%s/%s: %v", user, repostr, *con.Path,
-					err)
-				continue
-			}
-			name, err := getName(body)
-			if err != nil {
-				log.Printf("Unable to extract name from %s/%s/%s", user, repostr, *con.Path)
-				continue
-			}
+
+			// Name and depedencies will be adjusted later
 			return []*dirinfo.LocalLibrary{
 				&dirinfo.LocalLibrary{
-					Name:         name,
+					Name:         repostr,
 					Path:         ".",
 					IsFile:       false,
 					Dependencies: []dirinfo.Dependency{},
@@ -99,6 +85,7 @@ func getLibraries(client *github.Client, user string, repostr string, verbose bo
 		switch *con.Type {
 		case "file":
 			if strings.HasSuffix(*con.Name, ".mo") {
+				// Name and depedencies will be adjusted later
 				ret = append(ret, &dirinfo.LocalLibrary{
 					Name:         repostr,
 					Path:         *con.Path,
@@ -113,6 +100,7 @@ func getLibraries(client *github.Client, user string, repostr string, verbose bo
 			}
 			for _, sub := range subcons {
 				if *sub.Name == "package.mo" {
+					// Name and depedencies will be adjusted later
 					ret = append(ret, &dirinfo.LocalLibrary{
 						Name:         repostr,
 						Path:         *con.Path,
@@ -124,7 +112,7 @@ func getLibraries(client *github.Client, user string, repostr string, verbose bo
 		}
 	}
 
-	return blank, fmt.Errorf("No libraries found in %s/%s", user, repostr)
+	return ret, nil
 }
 
 func Exists(client *github.Client, user string, reponame string,

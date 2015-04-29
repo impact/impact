@@ -12,5 +12,17 @@ func TestParseName(t *testing.T) {
 		name, err := ParseName("package XYZ  blah blah end  XYZ;  ")
 		NoError(c, err)
 		Equals(c, name, "XYZ")
+
+		name, err = ParseName(`within ;
+package HelmholtzMedia "Data and models of real pure fluids (liquid, two-phase and gas)"
+  extends Modelica.Icons.MaterialPropertiesPackage;
+
+
+
+
+  annotation (uses(Modelica(version="3.2.1")));
+end HelmholtzMedia;`)
+		NoError(c, err)
+		Equals(c, name, "HelmholtzMedia")
 	})
 }
