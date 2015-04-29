@@ -534,9 +534,24 @@ For each dependency, the following information should be provided:
 
 \section{Installation}
 
-Talk about what happens during installation.
+The previous section focused on how \code{impact} collects information
+about available libraries.  The main application for this information
+is support installation of those libraries.  In this section, we'll
+discuss the installation side of using \code{impact}.
 
 \subsection{Dependency Resolution}
+
+The indexing process collects quite a bit of information about
+avialable libraries.  Most of the complexity in implementing the
+installation functionality in \code{impact} is in figuring out {\be
+  what} to install.
+
+For example, a user may wish to install the
+\code{MotorcycleLib} library.  If the user doesn't specify a
+specific version number, we assume they want the latest version which,
+at the time of this paper, was \code{1.0.0}.  But it turns out the
+version \code{1.0.0} depends on \code{Modelica 3.2.1} and
+\code{Modelica\_Synchronous 0.92.0'}.
 
 * Basic algorithm (show some graphs)
 
