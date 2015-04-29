@@ -65,8 +65,10 @@
 \renewcommand\Authands{\quad}                    %% Set text between authors names
 \author[1]{Michal Tiller}
 \author[2]{Dietmar Winkler}
+\author[3]{Christoph H\"oger}
 \affil[1]{\href{http://xogeny.com}{Xogeny Inc.}, USA, {\small \href{mailto:michael.tiller@xogeny.com}{\nolinkurl{michael.tiller@xogeny.com}}}}
 \affil[2]{\href{http://www.hit.no}{Telemark University College}, Norway, {\small\href{mailto:dietmar.winkler@hit.no}{\nolinkurl{dietmar.winkler@hit.no}}}}
+\affil[3]{\href{http://www.uebb.tu-berlin.de}{Technische Universit\"at Berlin}, Germany, {\small\href{mailto:christoph.hoeger@tu-berlin.de}{\nolinkurl{christoph.hoeger@tu-berlin.de}}}}
 % \title{\textbf{Int. Modelica Conf. 2015 Paper Title}}
 % \author{{\large
 % Author Name$^1$ \quad Author Name$^1$ \quad Author Name$^2$\vspace{2mm}\\
@@ -538,6 +540,39 @@ Talk about what happens during installation.
 
 \subsection{Dependency Resolution}
 
+To understand the abstract problem behind the concept of a dependency, we refer to the 
+formal study undertaken in \cite{boender2011formal}. 
+There, a repository is defined as a triple $(R,D,C)$ of a set of packages $R$, 
+a dependency function $D : R \rightarrow \mathcal{P}(\mathcal{P}(R))$,
+and a {\em conflict relation} $C \subseteq R \times R$.
+At that level, version numbers have been abstracted to (distinguishable) packages: 
+Every version yields a distinctive package $p \in P$. 
+
+The dependency function $D$ maps a package $p$ to sets of sets of packages $d \in D(p)$, 
+where each set represents a way to provide one required required feature of $p$.
+In other words: If for each $d \in D(p)$ at least one package in $d$ is installed, it is possible to use $p$.
+
+Currently, there is no way to express {\em conflicts} directly in a Modelica package.
+However, due to the existance of external libraries (which could conflict in arbitrary ways), 
+it is likely that such a need will arise in the future. 
+Additionally, current Modelica makes it impossible to refer to two different versions of a 
+library from the same model. 
+Hence, we consider different versions of the same package conflicting 
+({\code impact} can will only install one version of each package in a given context).
+
+The dependency resolution of {\code impact} fits into Boender's model. 
+Therefore, the conclusions drawn in \cite{boender2011formal} can be applied to {\code impact} as well:
+
+The set of packages {\impact} installs for a given project needs to fulfill two properties, Boender 
+calls {\em abundance} and {\em peace}. 
+Informally, abundance captures the requirement that all dependencies be met while peace avoids packages that are in conflict with each other. 
+A set of packages that is peaceful and abundant is called {\em healthy} and a package $p$ is called {\em installable} w.r.t. a given repository
+if and only if there exists a healthy set $I$ in said repository such that $p \in I$.
+
+The problem of finding such an installable set is however a hard one. 
+In fact, Boender proves by a simple isomorphism between the boolean satisifieability problem and the dependency resolution that finding such a set is NP-hard.
+Fortunately, for the current typical problem size, this does hardly matter.
+
 * Basic algorithm (show some graphs)
 
 * Extracting explicit dependency information from Modelica
@@ -579,6 +614,17 @@ Talk about what happens during installation.
 * Ordering (matching URI/source then by stars)  
 
 \section{Future Development}
+
+As already mentioned, there is currently no way to express conflicts between different packages. 
+However, it is highly likely that such conflicting pairs will exist as more and more packages are published. 
+For instance, two Modelica models might depend on different, specific versions of an external library that 
+cannot be linked or loaded at the same time, an already published package might contain known bugs etc. 
+Hence, {\code impact} could be extended by the means to express conflicts as well.
+
+Boender introduces the notions of {\em strong dependencies} and {\em strong conflicts} to optimize the handling
+of very large repositories. 
+This kind of optimizations might not be necessary in the Modelica ecosystem right now, but could provide helpful 
+performance enhancements in future versions of {\code impact}.
 
 * Bitbucket
 
