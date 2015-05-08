@@ -780,15 +780,14 @@ dependencies.  Consider the following simple set of dependencies:
 
 \begin{description}
   \item[1] {\code A:2.0.0} uses {\code B:1.2.0}
-  \item[2] {\code A:2.0.0} uses {\code C:1.0.0}
-  \item[3] {\code B:1.2.0} uses {\code C:1.1.0}
+  \item[2] {\code A:2.0.0} uses {\code C:1.1.0}
+  \item[3] {\code B:1.2.0} uses {\code C:1.2.0}
   \item[4] {\code A:1.0.0} uses {\code B:1.1.0} or {\code B:1.0.0} ({\it i.e.,} {\code A}
     can use {\code B:1.1.0} or {\code B:1.0.0})
   \item[5] {\code A:1.0.0} uses {\code D:1.1.0}
   \item[6] {\code B:1.0.0} uses {\code C:1.1.0}
   \item[7] {\code C:1.2.0} uses {\code D:1.0.0}
   \item[8] {\code B:1.1.0} uses {\code C:1.2.0}
-  \item[9] {\code C:1.1.0} uses {\code D:1.1.0}
 \end{description}
 
 Given these dependencies and the fact that the user wishes to install
@@ -855,25 +854,33 @@ proceeding as follows:
 \begin{description}
   \item[{\code A:2.0.0}] no conflicts
   \item[{\code A:2.0.0} & {\code B:1.2.0}] no conflicts
-  \item[{\code A:2.0.0} & {\code B:1.2.0} & {\code C:1.0.0}] violates #3
-  \item[{\code A:2.0.0} & {\code B:1.2.0} & {\code C:1.1.0}] violates #2
+  \item[{\code A:2.0.0} & {\code B:1.2.0} & {\code C:1.2.0}] violates #2
+  \item[{\code A:2.0.0} & {\code B:1.2.0} & {\code C:1.1.0}] violates #3
   \item[{\code A:2.0.0} & {\code B:1.1.0}] violates #1
   \item[{\code A:2.0.0} & {\code B:1.0.0}] violates #1
   \item[{\code A:1.0.0} & {\code B:1.2.0}] violates #4
-  \item[{\code A:1.0.0} & {\code B:1.1.0}] no conflicts
+i  \item[{\code A:1.0.0} & {\code B:1.1.0}] no conflicts
   \item[{\code A:1.0.0} & {\code B:1.1.0} & {\code D:1.1.0}] no conflicts
   \item[{\code A:1.0.0} & {\code B:1.1.0} & {\code D:1.1.0} & {\code C:1.2.0}] violates #7
-  \item[{\code A:1.0.0} & {\code B:1.1.0} & {\code D:1.1.0} & {\code C:1.1.0}] violates #9
+  \item[{\code A:1.0.0} & {\code B:1.1.0} & {\code D:1.1.0} & {\code C:1.1.0}] violates #8
+  \item[{\code A:1.0.0} & {\code B:1.1.0} & {\code D:1.0.0}] violates #5
+  \item[{\code A:1.0.0} & {\code B:1.0.0} & {\code D:1.1.0} & {\code C:1.2.0}] violates #6
+  \item[{\code A:1.0.0} & {\code B:1.0.0} & {\code D:1.1.0} & {\code C:1.1.0}] {\bf solution}
 \end{description}
+
+This elaboration of the search shows the role that the relative
+priority of libraries and versions has on the search order but also
+how a particular library is not even considered until a dependency on
+that library is introduced by choosing a particular version that
+depends on it.
+
+% TODO: Insert graphic (see images directory)...should probably redo
+% with yEd
 
 It should be noted that there are a variety of other special cases we
 also deal with like self dependency and cyclic dependency.  But these
-are constraints like any other constraint and don't really impact the
-algorithm in any significant way.
-
-* Basic algorithm (show some graphs)
-
-* Backtracking and why it isn't so bad (give some performance numbers here)
+are constraints like any other and don't really impact the algorithm
+in any significant way.
 
 \subsubsection{Formulating Constraints}
 * Extracting explicit dependency information from Modelica
