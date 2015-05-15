@@ -87,7 +87,7 @@
   explore and adopt those languages.  We seek to bring that same kind
   of capability to the Modelica community by incorporating useful
   features from other package managers like \code{bower}, \code{npm},
-  {\it etc.}
+  \emph{etc.}
 
   This paper is an update on the status of the \code{impact} package
   manager which was discussed previously in \cite{impact1}.  This
@@ -95,7 +95,7 @@
   incorporates a more advanced dependency resolution algorithm.  That
   dependency resolution will be discussed in depth along with many of
   the subtle issues that arose during the development of this latest
-  version of impact.  Along with a superior dependency resolution
+  version of \code{impact}.  Along with a superior dependency resolution
   scheme, the new version of \code{impact} is much easier to install
   and use.  Futhermore, it includes many useful new features as well.
 
@@ -109,7 +109,7 @@
 
 The motivation behind the \code{impact} project is to support two
 critical aspects of library development.  The first is to make it very
-easy for library developers to {\em publish} their work.  The second
+easy for library developers to \emph{publish} their work.  The second
 is, at the same time, to make it easy for library consumers to both
 find and install published libraries.
 
@@ -127,7 +127,7 @@ practices'' for model development.
 
 By creating a tool that makes it easy to both publish and install
 libraries, we feel we are creating a critical piece of the foundation
-necessary to establish a {\bf healthy ecosystem} for model
+necessary to establish a \textbf{healthy ecosystem} for model
 development.
 
 \subsection{History}
@@ -150,7 +150,7 @@ immediately was the complexity of installing the Python version of
 manager.  So in order for someone to install \code{impact}, they first
 needed to install Python, then install \code{pip} and then install
 \code{impact}.  This was far too complicated.  So we wanted to come up
-with a way for people to install \code{impact} {\bf as a simple
+with a way for people to install \code{impact} \textbf{as a simple
   executable} without any runtime or prerequisites.
 
 Another issue we ran into with the Python version was the fact that
@@ -162,21 +162,21 @@ Python altogether.
 We also had some difficulties in the Python version with support for
 SSL under Windows \cite{python-ssl}.  Because we were doing lots of
 ``crawling'' (more on this shortly), we needed a platform that
-provided {\bf solid HTTP client support}.
+provided \textbf{solid HTTP client support}.
 
 Although most users Modelica run their development tools and
 simulations under Windows, there are several tools that support OSX
 and Linux as well as Windows.  So as to not neglect users of those
 tools and to support more cross-platform options, we also wanted to be
-able to {\bf compile impact for all three major platforms}.
+able to \textbf{compile \code{impact} for all three major platforms}.
 
 Furthermore, we wanted to provide a simple executable for all
 platforms without having to have actual development machines for each
-of these different platforms.  For this reason, {\bf cross
+of these different platforms.  For this reason, \textbf{cross
   compilation} between different platforms was an important
 consideration was well.
 
-Of course, we also wanted to have {\bf good performance}.  For most
+Of course, we also wanted to have \textbf{good performance}.  For most
 package management related functions, the speed of the internet
 connection is probably the biggest limitating factor.  So CPU
 performance wasn't that high on the list.  But, as we shall discuss
@@ -220,12 +220,12 @@ these.
 This issue is not unique to the Modelica world.  These same questions
 have been asked for a very long time and various approaches have been
 invented to deal with answering these questions.  One recent and
-widely used approach is to employ what is called {\bf semantic
+widely used approach is to employ what is called \textbf{semantic
   versioning}\cite{semver}.  Semantic versioning is pretty much what
 it sounds like, an approach to defining version numbers where the
 version numbers have very explicit meanings associated with them.
 
-A very simple summary of semantic versioning would be that {\bf all}
+A very simple summary of semantic versioning would be that \textbf{all}
 versions have exactly three numerical components, a major version
 number, a minor version number and a patch.  A semantic version must
 have all of these numbers and they must be .-separated.  For this
@@ -253,7 +253,7 @@ also provides meaning to the version numbers assigned to a library.
 However, because Modelica libraries are free to use nearly any string
 as a version number, we need to find a way to ``bridge the gap''
 between past usage and the usage we are encouraging moving forward.
-Although internally \code{impact} understands {\bf only} semantic
+Although internally \code{impact} understands \textbf{only} semantic
 versions, it is still able to work with nearly all existing Modelica
 libraries.  This is achieved through a process of ``normalizing''
 existing versions.  When \code{impact} comes across versions that are
@@ -263,7 +263,7 @@ version string of \code{1.0} would be represented by the semantic
 version \code{1.0.0}.
 
 For this normalization to work, it is important to make sure that the
-normalization is performed {\em both} on the version number associated
+normalization is performed \emph{both} on the version number associated
 with a library and on the version numbers of the libraries used.  In
 other words, it must be applied consistently to both the
 \code{version} and \code{uses} annotations.
@@ -274,9 +274,9 @@ As mentioned previously, there are two main functions that
 \code{impact} performs.  The first is making it easy for library
 developers to publish their libraries and the other is making it easy
 for consumers to find and install those same libraries.  Where these
-two needs meet is the library index.  The index is {\bf built} by
+two needs meet is the library index.  The index is \textbf{built} by
 collecting information about publish libraries.  The same index is
-{\bf used} by consumers searching for information about available
+\textbf{used} by consumers searching for information about available
 libraries.
 
 Building the index involves crawling through repositories and
@@ -293,9 +293,9 @@ search through repositories associated with particular users and to
 look for Modelica libraries stored in those repositories.  We will
 shortly discuss exactly how it identifies Modelica libraries.  But
 before we cover those details it is first necessary to understand
-which {\em versions} of the repository it looks in.
+which \emph{versions} of the repository it looks in.
 
-Each change in a Git repository involves a {\em commit}.  That commit
+Each change in a Git repository involves a \emph{commit}.  That commit
 affects the contents of one or more files in the repository.  During
 development, there are frequent commits.  To identify specific
 versions of the repository, a tag can be associated with that
@@ -374,13 +374,13 @@ in model development and the specific need to accomodate version
 control as part of that process.  Up until now, we have leveraged
 version control to make the process of indexing and collection
 libraries easier.  However, version control does introduce one
-complexity as well.  That complexity is how to deal with {\em forks}.
+complexity as well.  That complexity is how to deal with \emph{forks}.
 
 A fork occurs when there are multiple perspectives on how development
 should progress on a given project.  In some cases, rather than
 reconciling these different perspectives, developers decide to proceed
 in different directions.  When this happens, the project becomes
-``forked'' and there are then (at least) two {\bf different} libraries
+``forked'' and there are then (at least) two \textbf{different} libraries
 being developed in parallel.  Each of these libraries may share a
 common name and perhaps even the same version numbers but still be
 fundamentally different libraries.
@@ -390,7 +390,7 @@ improves a library they may not have permission to simply fold their
 improvement back into the original library.  On GitHub in particular,
 it is extremely common for a library to be forked simply to enable a
 third-party to make an improvement.  The author of the improvement
-then sends what is called a {\em pull request} to the library author
+then sends what is called a \emph{pull request} to the library author
 asking them to incorporate the improvement.  In such a workflow, the
 fork is simply a temporary measure to support concurrent development.
 Once the pull request is accepted, the fork can be removed entirely.
@@ -403,7 +403,7 @@ these.The issue with forking is that the same name might be used by
 multiple libraries.  In such cases, we need a better way to uniquely
 identify libraries.
 
-For this reason, \code{impact} records {\bf not only the library name,
+For this reason, \code{impact} records \textbf{not only the library name,
   but also a URI associated with each library}.  In this way, the URI
 serves as a completely unambiguous way of identifying different
 libraries.  While two forks may have the same name, they will never
@@ -428,7 +428,7 @@ elements:
     generated the index.  The string is, of course, a semantic
     version.
   \item[\code{libraries}] The libraries field is an array.  Each
-    element in the array describes a library that was found.  {\bf The
+    element in the array describes a library that was found.  \textbf{The
       order of the elements is significant}.  Libraries that occur
     earlier in the list take precedence over libraries that appear
     later.  This is important in cases where libraries have the same
@@ -454,7 +454,7 @@ information may be present:
   \item[\code{repository}] The URI for the library's source code
     repository
   \item[\code{format}] The format of the library's source code
-    repository (e.g., Git, Mercurial, Subversion, {\it etc.})
+    repository (e.g., Git, Mercurial, Subversion, \emph{etc.})
   \item[\code{versions}] This is an object that maps a semantic
     version (in the form of a string) to details associated with that
     specific version)
@@ -464,7 +464,7 @@ The details associated with each version are as follows:
 
 \begin{description}
   \item[\code{version}] A string representation of the semantic
-    version ({\it i.e.,} one that is identical to the key).
+    version (\emph{i.e.,} one that is identical to the key).
   \item[\code{tarball\_url}] A URL that points to an archive of the
     repository in \code{tar} format.
   \item[\code{zipball\_url}] A URL that points to an archive of the
@@ -481,7 +481,7 @@ The details associated with each version are as follows:
     that this particular version has on other Modelica libraries.
     Each element in this array is an object with one field,
     \code{name}, giving the name of the required library and another
-    field, \code{version}, which is the {\bf semantic version} of that
+    field, \code{version}, which is the \textbf{semantic version} of that
     library represented as a string (see previous discussion on
     normalization in \ref{sec:numbers}).
 \end{description}
@@ -529,7 +529,7 @@ For each dependency, the following information should be provided:
 \begin{description}
   \item[\code{name}] Name of the required library
   \item[\code{uri}] Unique URI of the required library
-  \item[\code{version}] {\bf Semantic version} number of the required
+  \item[\code{version}] \textbf{Semantic version} number of the required
     library (represented as a string)
 \end{description}
 
@@ -548,7 +548,7 @@ To understand the abstract problem behind the concept of a dependency,
 we refer to the formal study undertaken in \cite{boender2011formal}.
 There, a repository is defined as a triple $(R,D,C)$ of a set of
 packages $R$, a dependency function $D : R \rightarrow
-\mathcal{P}(\mathcal{P}(R))$, and a {\em conflict relation} $C
+\mathcal{P}(\mathcal{P}(R))$, and a \emph{conflict relation} $C
 \subseteq R \times R$.  At that level, version numbers have been
 abstracted to (distinguishable) packages: Every version yields a
 distinctive package $p \in P$.
@@ -559,25 +559,25 @@ required required feature of $p$.  In other words: If for each $d \in
 D(p)$ at least one package in $d$ is installed, it is possible to use
 $p$.
 
-Currently, there is no way to express {\em conflicts} directly in a
+Currently, there is no way to express \emph{conflicts} directly in a
 Modelica package.  However, due to the existance of external libraries
 (which could conflict in arbitrary ways), it is likely that such a
 need will arise in the future.  Additionally, current Modelica makes
 it impossible to refer to two different versions of a library from the
 same model.  Hence, we consider different versions of the same package
-conflicting ({\code impact} can will only install one version of each
+conflicting (\code{impact} can will only install one version of each
 package in a given context).
 
-The dependency resolution of {\code impact} fits into Boender's model.
+The dependency resolution of \code{impact} fits into Boender's model.
 Therefore, the conclusions drawn in \cite{boender2011formal} can be
-applied to {\code impact} as well:
+applied to \code{impact} as well:
 
-The set of packages {\impact} installs for a given project needs to
-fulfill two properties, Boender calls {\em abundance} and {\em peace}.
+The set of packages \code{impact} installs for a given project needs to
+fulfill two properties, Boender calls \emph{abundance} and \emph{peace}.
 Informally, abundance captures the requirement that all dependencies
 be met while peace avoids packages that are in conflict with each
 other.  A set of packages that is peaceful and abundant is called {\em
-  healthy} and a package $p$ is called {\em installable} w.r.t. a
+  healthy} and a package $p$ is called \emph{installable} w.r.t. a
 given repository if and only if there exists a healthy set $I$ in said
 repository such that $p \in I$.
 
@@ -591,8 +591,8 @@ this isn't really an issue.
 
 The indexing process collects quite a bit of information about
 available libraries.  Most of the complexity in implementing the
-installation functionality in \code{impact} is in figuring out {\be
-  what} to install.  And most of that complexity is in finding a set
+installation functionality in \code{impact} is in figuring out
+\textbf{what} to install.  And most of that complexity is in finding a set
 of versions for the required libraries that satisfy all the dependency
 relations.  This process is called dependency resolution.
 
@@ -601,77 +601,77 @@ wants to install.  In some cases, this may be a single library but, in
 general, the list can be of any length.  For each library in the list,
 the user may specify a particular version of the library they wish to
 install, but this isn't mandatory.  One important point here is that
-we refer to this as a {\em list}, not a set.  Order is significant
+we refer to this as a \emph{list}, not a set.  Order is significant
 here.  The libraries that appear first are given a higher priority
 than those that appear later.
 
 Let's explain why this priority is important.  Consider a user who
-wishes to install libraries {\code A} and {\code B}.  If the user has
+wishes to install libraries \code{A} and \code{B}.  If the user has
 not explicitly specified what version of each library they are
-interested in, {\code impact} assumes the user wants the latest
-version.  But what if the latest version of {\em both} cannot be
+interested in, \code{impact} assumes the user wants the latest
+version.  But what if the latest version of \emph{both} cannot be
 used.  To understand this case, consider the following constraints:
 
 \begin{description}
-  \item {\code A:1.0.0} uses {\code B:2.0.0}
-  \item {\code A:2.0.0} uses {\code B:1.0.0}
+  \item \code{A:1.0.0} uses \code{B:2.0.0}
+  \item \code{A:2.0.0} uses \code{B:1.0.0}
 \end{description}
 
-where {\code A:1.0.0} means version {\code 1.0.0} of library {\code
-  A}.  This example is admittedly contrived, but the underlying issue
-is not.  We can see here that if we want the latest version of {\code
-  A}, we cannot also use the latest version of {\code B} (and {\it
-  vice versa}) while still honoring the constraints above.  The
+where \code{A:1.0.0} means version \code{1.0.0} of library \code{A}.
+This example is admittedly contrived, but the underlying issue
+is not.  We can see here that if we want the latest version of
+\code{A}, we cannot also use the latest version of \code{B} (and
+\emph{vice versa}) while still honoring the constraints above.  The
 ordering of the libraries determines how we ``break the tie'' here.
-Since {\code A} appears first, we assume it is more important to have
-the latest version of {\code A} than to have the latest version of
-{\code B}.
+Since \code{A} appears first, we assume it is more important to have
+the latest version of \code{A} than to have the latest version of
+\code{B}.
 
 Let's take this extremely simple example to outline how the resolution
 algorithm would function in this case.  In later sections, we'll
 introduce additional complexities that must be dealt with.
 
-If a user asks for libraries {\code A} and {\code B} to be installed,
-the question that the dependency algorithm has to answer is {\bf which
+If a user asks for libraries \code{A} and \code{B} to be installed,
+the question that the dependency algorithm has to answer is \textbf{which
   versions} do we use.  Assuming that each library has a version
-{\code 1.0.0} and {\code 2.0.0}, then each ``variable'' in this
+\code{1.0.0} and \code{2.0.0}, then each ``variable'' in this
 problem has two possible values.  The following table essentially
 summarizes the possibilities:
 
 \begin{tabular}{ l l }
-  Version of {\code A} & Version of {\code B} \\
-  {\code 1.0.0} & {\code 1.0.0} \\
-  {\code 1.0.0} & {\code 2.0.0} \\
-  {\code 2.0.0} & {\code 1.0.0} \\
-  {\code 2.0.0} & {\code 2.0.0} \\
+  Version of \code{A} & Version of \code{B} \\
+  \code{1.0.0} & \code{1.0.0} \\
+  \code{1.0.0} & \code{2.0.0} \\
+  \code{2.0.0} & \code{1.0.0} \\
+  \code{2.0.0} & \code{2.0.0} \\
 \end{tabular}
 
 This is a simple enumeration of the possibilities.  But {\em
   remember}, we assume the user wants the most recent version {\em
-  and} we assume {\code A} is more important than {\code B}.  Semantic
+  and} we assume \code{A} is more important than \code{B}.  Semantic
 versioning provides us with a basis for determining which version is
 more recent.  Given these we reorder these combinations so that the
 most desirable combinations appear first and the least desirable
 appear last:
 
 \begin{tabular}{ l l }
-  Version of {\code A} & Version of {\code B} \\
-  {\code 2.0.0} & {\code 2.0.0} \\
-  {\code 2.0.0} & {\code 1.0.0} \\
-  {\code 1.0.0} & {\code 2.0.0} \\
-  {\code 1.0.0} & {\code 1.0.0} \\
+  Version of \code{A} & Version of \code{B} \\
+  \code{2.0.0} & \code{2.0.0} \\
+  \code{2.0.0} & \code{1.0.0} \\
+  \code{1.0.0} & \code{2.0.0} \\
+  \code{1.0.0} & \code{1.0.0} \\
 \end{tabular}
 
-Now we see the impact of the dependency constraints.  Specifically,
+Now we see the \code{impact} of the dependency constraints.  Specifically,
 the first (most desirable) combination in this table does not satisfy
-the dependency constraints ({\it i.e.,} {\code A:2.0.0} does not work
-with {\code B:2.0.0}).  If we eliminate rows that violate our
+the dependency constraints (\emph{i.e.,} \code{A:2.0.0} does not work
+with \code{B:2.0.0}).  If we eliminate rows that violate our
 dependency constraints, we are left with:
 
 \begin{tabular}{ l l }
-  Version of {\code A} & Version of {\code B} \\
-  {\code 2.0.0} & {\code 1.0.0} \\
-  {\code 1.0.0} & {\code 2.0.0} \\
+  Version of \code{A} & Version of \code{B} \\
+  \code{2.0.0} & \code{1.0.0} \\
+  \code{1.0.0} & \code{2.0.0} \\
 \end{tabular}
 
 In summary, we order the combinations by their desirability
@@ -685,57 +685,57 @@ Consider now a slightly more complex case with the following
 dependencies:
 
 \begin{description}
-  \item[1] {\code A:3.0.0} uses {\code B:1.2.0}
-  \item[2] {\code A:3.0.0} uses {\code C:1.1.0}
-  \item[3] {\code B:1.2.0} uses {\code C:1.2.0}
-  \item[4] {\code A:2.0.0} uses {\code B:1.1.0}
-  \item[5] {\code A:2.0.0} uses {\code C:1.0.0}
-  \item[6] {\code B:1.1.0} uses {\code C:1.1.0}
-  \item[7] {\code A:1.0.0} uses {\code B:1.0.0}
-  \item[8] {\code A:1.0.0} uses {\code C:1.0.0}
-  \item[9] {\code B:1.0.0} uses {\code C:1.0.0}
+  \item[1] \code{A:3.0.0} uses \code{B:1.2.0}
+  \item[2] \code{A:3.0.0} uses \code{C:1.1.0}
+  \item[3] \code{B:1.2.0} uses \code{C:1.2.0}
+  \item[4] \code{A:2.0.0} uses \code{B:1.1.0}
+  \item[5] \code{A:2.0.0} uses \code{C:1.0.0}
+  \item[6] \code{B:1.1.0} uses \code{C:1.1.0}
+  \item[7] \code{A:1.0.0} uses \code{B:1.0.0}
+  \item[8] \code{A:1.0.0} uses \code{C:1.0.0}
+  \item[9] \code{B:1.0.0} uses \code{C:1.0.0}
 \end{description}
 
 Now we have three variables we need to solve for.  But we have a
 problem.  We can easily create a table of all possibilities:
 
 \begin{tabular}{ l l l }
-  Version of {\code A} & Version of {\code B} & Version of {\code C} \\
-  {\code 3.0.0} & {\code 1.2.0} & {\code 1.2.0} \\
-  {\code 3.0.0} & {\code 1.2.0} & {\code 1.1.0} \\
-  {\code 3.0.0} & {\code 1.2.0} & {\code 1.0.0} \\
-  {\code 3.0.0} & {\code 1.1.0} & {\code 1.2.0} \\
-  {\code 3.0.0} & {\code 1.1.0} & {\code 1.1.0} \\
-  {\code 3.0.0} & {\code 1.1.0} & {\code 1.0.0} \\
-  {\code 3.0.0} & {\code 1.0.0} & {\code 1.2.0} \\
-  {\code 3.0.0} & {\code 1.0.0} & {\code 1.1.0} \\
-  {\code 3.0.0} & {\code 1.0.0} & {\code 1.0.0} \\
-  {\code 2.0.0} & {\code 1.2.0} & {\code 1.2.0} \\
-  {\code 2.0.0} & {\code 1.2.0} & {\code 1.1.0} \\
-  {\code 2.0.0} & {\code 1.2.0} & {\code 1.0.0} \\
-  {\code 2.0.0} & {\code 1.1.0} & {\code 1.2.0} \\
-  {\code 2.0.0} & {\code 1.1.0} & {\code 1.1.0} \\
-  {\code 2.0.0} & {\code 1.1.0} & {\code 1.0.0} \\
-  {\code 2.0.0} & {\code 1.0.0} & {\code 1.2.0} \\
-  {\code 2.0.0} & {\code 1.0.0} & {\code 1.1.0} \\
-  {\code 2.0.0} & {\code 1.0.0} & {\code 1.0.0} \\
-  {\code 1.0.0} & {\code 1.2.0} & {\code 1.2.0} \\
-  {\code 1.0.0} & {\code 1.2.0} & {\code 1.1.0} \\
-  {\code 1.0.0} & {\code 1.2.0} & {\code 1.0.0} \\
-  {\code 1.0.0} & {\code 1.1.0} & {\code 1.2.0} \\
-  {\code 1.0.0} & {\code 1.1.0} & {\code 1.1.0} \\
-  {\code 1.0.0} & {\code 1.1.0} & {\code 1.0.0} \\
-  {\code 1.0.0} & {\code 1.0.0} & {\code 1.2.0} \\
-  {\code 1.0.0} & {\code 1.0.0} & {\code 1.1.0} \\
-  {\code 1.0.0} & {\code 1.0.0} & {\code 1.0.0} \\
+  Version of \code{A} & Version of \code{B} & Version of \code{C} \\
+  \code{3.0.0} & \code{1.2.0} & \code{1.2.0} \\
+  \code{3.0.0} & \code{1.2.0} & \code{1.1.0} \\
+  \code{3.0.0} & \code{1.2.0} & \code{1.0.0} \\
+  \code{3.0.0} & \code{1.1.0} & \code{1.2.0} \\
+  \code{3.0.0} & \code{1.1.0} & \code{1.1.0} \\
+  \code{3.0.0} & \code{1.1.0} & \code{1.0.0} \\
+  \code{3.0.0} & \code{1.0.0} & \code{1.2.0} \\
+  \code{3.0.0} & \code{1.0.0} & \code{1.1.0} \\
+  \code{3.0.0} & \code{1.0.0} & \code{1.0.0} \\
+  \code{2.0.0} & \code{1.2.0} & \code{1.2.0} \\
+  \code{2.0.0} & \code{1.2.0} & \code{1.1.0} \\
+  \code{2.0.0} & \code{1.2.0} & \code{1.0.0} \\
+  \code{2.0.0} & \code{1.1.0} & \code{1.2.0} \\
+  \code{2.0.0} & \code{1.1.0} & \code{1.1.0} \\
+  \code{2.0.0} & \code{1.1.0} & \code{1.0.0} \\
+  \code{2.0.0} & \code{1.0.0} & \code{1.2.0} \\
+  \code{2.0.0} & \code{1.0.0} & \code{1.1.0} \\
+  \code{2.0.0} & \code{1.0.0} & \code{1.0.0} \\
+  \code{1.0.0} & \code{1.2.0} & \code{1.2.0} \\
+  \code{1.0.0} & \code{1.2.0} & \code{1.1.0} \\
+  \code{1.0.0} & \code{1.2.0} & \code{1.0.0} \\
+  \code{1.0.0} & \code{1.1.0} & \code{1.2.0} \\
+  \code{1.0.0} & \code{1.1.0} & \code{1.1.0} \\
+  \code{1.0.0} & \code{1.1.0} & \code{1.0.0} \\
+  \code{1.0.0} & \code{1.0.0} & \code{1.2.0} \\
+  \code{1.0.0} & \code{1.0.0} & \code{1.1.0} \\
+  \code{1.0.0} & \code{1.0.0} & \code{1.0.0} \\
 \end{tabular}
 
 But there are several interesting things to notice about this case.
 First, although the problem is not particularly large (3 libraries
 with 3 versions each), the number of combinations to check is
-significant ({\it i.e.,} 3*3*3 = 27).  In addition, the only
+significant (\emph{i.e.,} 3*3*3 = 27).  In addition, the only
 combination in this table that actually satisfies the dependency
-constraints is the very last one ({\it i.e.,} the least desirable).
+constraints is the very last one (\emph{i.e.,} the least desirable).
 There is nothing we can really do about the fact that the oldest
 version of each of these libraries must be used (this is dictated by
 the dependencies themselves and has nothing to do with the algorithm).
@@ -746,7 +746,7 @@ In reality, we would not actually construct such a table.  Instead, we
 would simple consider each ``variable'' one at a time and loop over
 all possible versions.  If, at any point, we find a conflict with our
 constraints, we simply break out of the inner most loop.  This is
-referred to as {\em backtracking}.  In Modelica pseudo-code, the
+referred to as \emph{backtracking}.  In Modelica pseudo-code, the
 algorithm (for this specific case) might look like this:
 
 \begin{verbatim}
@@ -779,70 +779,70 @@ There is one last complication we must deal with when resolving
 dependencies.  Consider the following simple set of dependencies:
 
 \begin{description}
-  \item[1] {\code A:2.0.0} uses {\code B:1.2.0}
-  \item[2] {\code A:2.0.0} uses {\code C:1.1.0}
-  \item[3] {\code B:1.2.0} uses {\code C:1.2.0}
-  \item[4] {\code A:1.0.0} uses {\code B:1.1.0} or {\code B:1.0.0} ({\it i.e.,} {\code A}
-    can use {\code B:1.1.0} or {\code B:1.0.0})
-  \item[5] {\code A:1.0.0} uses {\code D:1.1.0}
-  \item[6] {\code B:1.0.0} uses {\code C:1.1.0}
-  \item[7] {\code C:1.2.0} uses {\code D:1.0.0}
-  \item[8] {\code B:1.1.0} uses {\code C:1.2.0}
+  \item[1] \code{A:2.0.0} uses \code{B:1.2.0}
+  \item[2] \code{A:2.0.0} uses \code{C:1.1.0}
+  \item[3] \code{B:1.2.0} uses \code{C:1.2.0}
+  \item[4] \code{A:1.0.0} uses \code{B:1.1.0} or \code{B:1.0.0} (\emph{i.e.,} \code{A}
+    can use \code{B:1.1.0} or \code{B:1.0.0})
+  \item[5] \code{A:1.0.0} uses \code{D:1.1.0}
+  \item[6] \code{B:1.0.0} uses \code{C:1.1.0}
+  \item[7] \code{C:1.2.0} uses \code{D:1.0.0}
+  \item[8] \code{B:1.1.0} uses \code{C:1.2.0}
 \end{description}
 
 Given these dependencies and the fact that the user wishes to install
-both {\code A} and {\code B}, what are the variables in our dependency
+both \code{A} and \code{B}, what are the variables in our dependency
 resolution algorithm?  Obviously, we must consider all the versions of
-both {\code A} and {\code B}.  But what about {\code C} and {\code D}?
+both \code{A} and \code{B}.  But what about \code{C} and \code{D}?
 It makes no sense to enumerate all possibilities for all these
 libraries because they aren't always present.  Furthermore, what is
-their relatively priority ({\it i.e.,} if a choice is required, is it
-more important to have the latest version of {\code C} or {\code D}?)
+their relatively priority (\emph{i.e.,} if a choice is required, is it
+more important to have the latest version of \code{C} or \code{D}?)
 
 When resolving dependencies, we only introduce new libraries when
-necessary ({\it i.e.,} if they are needed by our current choices of
+necessary (\emph{i.e.,} if they are needed by our current choices of
 existing libraries) and their relative priority is determined by the
 relative priority of the library that introduced them.
 
 To understand how the resolution works in this case, first consider
-the case of {\code A:2.0.0}.  This version cannot be chosen.  This is
-because {\code A:2.0.0} wants {\code C:1.0.0} while {\code B:1.2.0}
-wants {\code C:1.1.0}.  So no choice for {\code C} is valid.
-Furthermore, we don't even consider {\code D} because it isn't
+the case of \code{A:2.0.0}.  This version cannot be chosen.  This is
+because \code{A:2.0.0} wants \code{C:1.0.0} while \code{B:1.2.0}
+wants \code{C:1.1.0}.  So no choice for \code{C} is valid.
+Furthermore, we don't even consider \code{D} because it isn't
 required in any of these cases.
 
-Now if we move to the case of {\code A:1.0.0}, things are more
-complicated.  Now we {\bf do} need to consider both {\code D} and
-{\code C}.  However, note that because {\code A:1.0.0} depends
-directly on {\code D}, we consider {\code D} more important.  This is
-important because when considering {\code A:1.0.0} we have two
-versions of {\code B} that are compatible\footnote{It is not possible
+Now if we move to the case of \code{A:1.0.0}, things are more
+complicated.  Now we \textbf{do} need to consider both \code{D} and
+\code{C}.  However, note that because \code{A:1.0.0} depends
+directly on \code{D}, we consider \code{D} more important.  This is
+important because when considering \code{A:1.0.0} we have two
+versions of \code{B} that are compatible\footnote{It is not possible
   to express this kind of ``or'' dependency currently in Modelica, but
-  it is supported by {\code impact}.  This capability exists in {\code
+  it is supported by \code{impact}.  This capability exists in {\code
     impact} both to support anticipated future capabilities in
   Modelica \cite{} and/or to support cases we will discuss shortly
   that consider cases of compatibility implicit in semantic versions.}
-({\it i.e.,} {\code B:1.1.0} and {\code B:1.0.0}).  Given that we are
-considering {\code A:1.0.0} and we've already ruled out {\code
+(\emph{i.e.,} \code{B:1.1.0} and \code{B:1.0.0}).  Given that we are
+considering \code{A:1.0.0} and we've already ruled out {\code
   B:1.2.0}, we are left with the following combinations:
 
 \begin{tabular}{ l l l }
-  Version of {\code B} & Version of {\code D} & Version of {\code C} \\
-  {\code 1.1.0} & {\code 1.1.0} & {\code 1.2.0} \\
-  {\code 1.1.0} & {\code 1.1.0} & {\code 1.1.0} \\
-  {\code 1.1.0} & {\code 1.0.0} & {\code 1.2.0} \\
-  {\code 1.1.0} & {\code 1.0.0} & {\code 1.1.0} \\
-  {\code 1.0.0} & {\code 1.1.0} & {\code 1.2.0} \\
-  {\code 1.0.0} & {\code 1.1.0} & {\code 1.1.0} \\
-  {\code 1.0.0} & {\code 1.0.0} & {\code 1.2.0} \\
-  {\code 1.0.0} & {\code 1.0.0} & {\code 1.1.0} \\
+  Version of \code{B} & Version of \code{D} & Version of \code{C} \\
+  \code{1.1.0} & \code{1.1.0} & \code{1.2.0} \\
+  \code{1.1.0} & \code{1.1.0} & \code{1.1.0} \\
+  \code{1.1.0} & \code{1.0.0} & \code{1.2.0} \\
+  \code{1.1.0} & \code{1.0.0} & \code{1.1.0} \\
+  \code{1.0.0} & \code{1.1.0} & \code{1.2.0} \\
+  \code{1.0.0} & \code{1.1.0} & \code{1.1.0} \\
+  \code{1.0.0} & \code{1.0.0} & \code{1.2.0} \\
+  \code{1.0.0} & \code{1.0.0} & \code{1.1.0} \\
 \end{tabular}
 
 Notice the ordering of the columns?  Since the user originally asked
-for both {\code A} and {\code B}, {\code B} comes first.  But when it
-comes to {\code C} and {\code D}, having a more recent version of
-{\code D} is more important than having a more recent version of
-{\code C}.
+for both \code{A} and \code{B}, \code{B} comes first.  But when it
+comes to \code{C} and \code{D}, having a more recent version of
+\code{D} is more important than having a more recent version of
+\code{C}.
 
 As mentioned previously, we don't construct every combination.
 Furthermore, we don't always consider all libraries.  The best way to
@@ -852,20 +852,20 @@ backtracking occurs.  In such a case, we can think of the search as
 proceeding as follows:
 
 \begin{description}
-  \item[{\code A:2.0.0}] no conflicts
-  \item[{\code A:2.0.0} & {\code B:1.2.0}] no conflicts
-  \item[{\code A:2.0.0} & {\code B:1.2.0} & {\code C:1.2.0}] violates #2
-  \item[{\code A:2.0.0} & {\code B:1.2.0} & {\code C:1.1.0}] violates #3
-  \item[{\code A:2.0.0} & {\code B:1.1.0}] violates #1
-  \item[{\code A:2.0.0} & {\code B:1.0.0}] violates #1
-  \item[{\code A:1.0.0} & {\code B:1.2.0}] violates #4
-i  \item[{\code A:1.0.0} & {\code B:1.1.0}] no conflicts
-  \item[{\code A:1.0.0} & {\code B:1.1.0} & {\code D:1.1.0}] no conflicts
-  \item[{\code A:1.0.0} & {\code B:1.1.0} & {\code D:1.1.0} & {\code C:1.2.0}] violates #7
-  \item[{\code A:1.0.0} & {\code B:1.1.0} & {\code D:1.1.0} & {\code C:1.1.0}] violates #8
-  \item[{\code A:1.0.0} & {\code B:1.1.0} & {\code D:1.0.0}] violates #5
-  \item[{\code A:1.0.0} & {\code B:1.0.0} & {\code D:1.1.0} & {\code C:1.2.0}] violates #6
-  \item[{\code A:1.0.0} & {\code B:1.0.0} & {\code D:1.1.0} & {\code C:1.1.0}] {\bf solution}
+  \item[\code{A:2.0.0}] no conflicts
+  \item[\code{A:2.0.0} \& \code{B:1.2.0}] no conflicts
+  \item[\code{A:2.0.0} \& \code{B:1.2.0} \& \code{C:1.2.0}] violates \#2
+  \item[\code{A:2.0.0} \& \code{B:1.2.0} \& \code{C:1.1.0}] violates \#3
+  \item[\code{A:2.0.0} \& \code{B:1.1.0}] violates \#1
+  \item[\code{A:2.0.0} \& \code{B:1.0.0}] violates \#1
+  \item[\code{A:1.0.0} \& \code{B:1.2.0}] violates \#4
+i  \item[\code{A:1.0.0} \& \code{B:1.1.0}] no conflicts
+  \item[\code{A:1.0.0} \& \code{B:1.1.0} \& \code{D:1.1.0}] no conflicts
+  \item[\code{A:1.0.0} \& \code{B:1.1.0} \& \code{D:1.1.0} \& \code{C:1.2.0}] violates \#7
+  \item[\code{A:1.0.0} \& \code{B:1.1.0} \& \code{D:1.1.0} \& \code{C:1.1.0}] violates \#8
+  \item[\code{A:1.0.0} \& \code{B:1.1.0} \& \code{D:1.0.0}] violates \#5
+  \item[\code{A:1.0.0} \& \code{B:1.0.0} \& \code{D:1.1.0} \& \code{C:1.2.0}] violates \#6
+  \item[\code{A:1.0.0} \& \code{B:1.0.0} \& \code{D:1.1.0} \& \code{C:1.1.0}] \textbf{solution}
 \end{description}
 
 This elaboration of the search shows the role that the relative
@@ -919,7 +919,7 @@ in any significant way.
 
 \subsection{Searching}
 
-* Ordering (matching URI/source then by stars)  
+* Ordering (matching URI/source then by stars)
 
 \section{Future Development}
 
@@ -932,14 +932,14 @@ conflicting pairs will exist as more and more packages are published.
 For instance, two Modelica models might depend on different, specific
 versions of an external library that cannot be linked or loaded at the
 same time, an already published package might contain known bugs etc.
-Hence, {\code impact} could be extended by the means to express
+Hence, \code{impact} could be extended by the means to express
 conflicts as well.
 
-Boender introduces the notions of {\em strong dependencies} and {\em
-  strong conflicts} to optimize the handling of very large
+Boender introduces the notions of \emph{strong dependencies} and
+\emph{strong conflicts} to optimize the handling of very large
 repositories.  This kind of optimizations might not be necessary in
 the Modelica ecosystem right now, but could provide helpful
-performance enhancements in future versions of {\code impact}.
+performance enhancements in future versions of \code{impact}.
 
 * Bitbucket
 
