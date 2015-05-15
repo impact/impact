@@ -1027,6 +1027,66 @@ version of a release one can download (e.g., pure source distribution
 of that tag, customised version with additional files, different
 platform dependent versions with pre-compiled binaries)
 
+\subsection{Which license is best for your library}
+The \emph{Modelica Standard library} (\texttt{Modelica})~\parencite{MSL} is licensed under
+the ``Modelica License Version 2.0''~\parencite{MoLic2}. So in order
+to stay compatible with the \texttt{Modelica} library most user libraries choose the
+same license. This seemed to be just natural. Now there is one problem
+which is not very apparent to most library developers. This is that
+the ``Modelica License Version 2.0'' contains the section
+``4. Designation of Derivative Works and of Modified Works'' which
+says that ``\emph{\ldots This means especially that the (root-level)
+  name of a Modelica package under this license must be changed if the
+  package is modified \ldots}''.
+This clause makes perfect sense for a main library like the
+\texttt{Modelica} library that is developed and maintained by a major
+group centrally and wants to protect its product name.
+But what does this mean for open-source projects that no longer are
+hosted centrally but rather decentralized on platforms like GitHub and
+GitLab but were contributions no longer are made by committing
+directly into \textbf{one} central repository? In the de-centralised
+case contributions are given by first ``forking'' (i.e., generating a
+copy of the original repository), modifying that fork and then sending
+the contribution back via a ``pull-request'' (i.e., offering the
+originating project to accept the changes made on the fork). Now
+already the first step here, the ``forking'', generated a copy with the
+identical ``(root-level) name'' and at a different location. One could argue that this
+alone is already a violation of the terms of the ``Modelica License
+Version 2.0''.
+
+So what should the library developer do? The simplest solution is to
+``not'' use the ``Modelica License Version 2.0'' for user libraries
+but rather go for standard licenses~\parencite{lic} that are similar
+in  nature like, MIT or BSD style license. Interestingly enough the
+old ``Modelica License Version 1.1'' is still suitable for user
+libraries since it does not contain the restrictions of having to
+change the package name.
+
+So what about ``copy-left style'' licenses? The most famous being the
+GNU General Pubic license. People might think this
+would be a good choice for a license in order
+to protect parts of their library being used inside proprietary
+libraries without any bugfixes and improvements being fed back to them
+as ``upstream'' developers. Unfortunately the GPL also forbids the any
+other non-GPL library (even the Modelica Standard Library) to be using
+the GPL library and being distributed that way. So what about the
+LGPL, this allows the usage and distribution \emph{alongside} with
+other non-gpl libraries. The problem her is that it does not allow
+static linking. Something that happens when one creates a compiled
+version of simulation model that uses different Modelica libraries.
+A typical example would be the generation of an FMU~\parencite{FMI}.
+A way out is here the ``Mozilla Public License'' which is very much
+alike the LGPL but allows generated code to be statically linked
+together with non-GPL licensed code.
+
+Conclusion. For user libraries should if possible avoid the ``Modelica
+License Version 2.0'' as this was primarily designed for the
+requirements of the \emph{Modelica Standard library}. Perhaps there
+will be a future revision that is adapted to current open-source
+development models for user libraries. Until then try to use standard
+libraries that are BSD/MIT style.
+
+
 \section{Additional Features}
 
 \subsection{Searching}
