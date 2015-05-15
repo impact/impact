@@ -31,6 +31,7 @@
 \newcommand{\cmark}{\ding{52}}%
 \newcommand{\xmark}{\ding{56}}%
 \usepackage{dingbat}%
+\usepackage{enumitem}% for tweaking lists
 
 % do not change these lines:
 \pagestyle{empty}                %% no page numbers!
@@ -328,20 +329,20 @@ With respect to \code{impact}, the following is a list of ``obvious''
 places that \code{impact} checks for the presence of Modelica
 libraries:
 
-\begin{description}
-  \item[\code{./package.mo}] The entire repository is treated as a Modelica
+\begin{itemize}[noitemsep]
+  \item \textbf{\code{./package.mo}} The entire repository is treated as a Modelica
     package whose name is the name of the repository.
 
-  \item[\code{./<dirname>/package.mo} or \code{./<dirname>
-      <ver>/package.mo}] The directory \code{<dirname>} is presumed to
+  \item \textbf{\code{./<dirname>/package.mo}} or\\  \textbf{\code{./<dirname>
+      <ver>/package.mo}} The directory \code{<dirname>} is presumed to
     be a Modelica package.  The name of the library is determined by
     parsing the \code{package.mo} file.
 
-  \item[\code{./<filename>.mo} or \code{./<filename> <ver>.mo}] The
+  \item \textbf{\code{./<filename>.mo}} or\\ \textbf{\code{./<filename> <ver>.mo}} The
     file \code{./<filename>.mo} is a file containing a Modelica
     library.  The name of the library is determined by parsing the
     file.
-\end{description}
+\end{itemize}
 
 As can be seen from these conventions, only files and directories that
 exist at the root level are checked for Modelica content.
@@ -431,7 +432,7 @@ we will provide a complete description of information used by
 The root of an \code{impact\_index.json} file contains only two
 elements:
 
-\begin{description}
+\begin{description}[noitemsep]
   \item[\code{version}] A string indicating what version of impact
     generated the index.  The string is, of course, a semantic
     version.
@@ -446,7 +447,7 @@ elements:
 For each library in the \code{libraries} array, the following
 information may be present:
 
-\begin{description}
+\begin{description}[noitemsep]
   \item[\code{name}] The name of the library (as used in Modelica)
   \item[\code{description}] A textual description of the library
   \item[\code{stars}] A way of ``rating'' libraries.  In the case of
@@ -470,7 +471,7 @@ information may be present:
 
 The details associated with each version are as follows:
 
-\begin{description}
+\begin{description}[noitemsep]
   \item[\code{version}] A string representation of the semantic
     version (\emph{i.e.,} one that is identical to the key).
   \item[\code{tarball\_url}] A URL that points to an archive of the
@@ -503,7 +504,7 @@ information about Modelica libraries contained in that repository.
 The root of the \code{impact.json} file contains the following
 information:
 
-\begin{description}
+\begin{description}[noitemsep]
   \item[\code{owner\_uri}] A link to information about the libraries
     owner
   \item[\code{email}] The email address of the owner or maintainer
@@ -519,7 +520,7 @@ information:
 For each library listed in the \code{libraries} field, the following
 information may be provided:
 
-\begin{description}
+\begin{description}[noitemsep]
   \item[\code{name}] The name of the library
   \item[\code{path}] The path to the library
   \item[\code{isfile}] Whether the entity pointed to by \code{path} is
