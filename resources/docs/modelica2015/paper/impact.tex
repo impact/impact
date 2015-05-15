@@ -10,7 +10,7 @@
 % ------------------------------------------------
 \usepackage[T1]{fontenc}     %% get hyphenation and accented letters right
 \usepackage{mathptmx}        %% use fitting times fonts also in formulas
-\usepackage{amsmath,amssymb} %% Nice maths
+\usepackage{amsmath} %% Nice maths
 \usepackage{doi}             %% Create cor­rect hy­per­links for DOI num­bers
 \usepackage{booktabs}        %% Nice tables
 \usepackage{hyperref}
@@ -30,6 +30,7 @@
 \usepackage{pifont}% http://ctan.org/pkg/pifont
 \newcommand{\cmark}{\ding{52}}%
 \newcommand{\xmark}{\ding{56}}%
+\usepackage{dingbat}%
 
 % do not change these lines:
 \pagestyle{empty}                %% no page numbers!
@@ -673,7 +674,6 @@ appear last:
 \end{tabular}
 \end{center}
 }
-
 Now we see the \code{impact} of the dependency constraints.  Specifically,
 the first (most desirable) combination in this table does not satisfy
 the dependency constraints (\emph{i.e.,} \code{A:2.0.0} does not work
@@ -688,7 +688,6 @@ dependency constraints, we are left with:
 \end{tabular}
 \end{center}
 }
-
 In summary, we order the combinations by their desirability
 (considering both the relative priority of the libraries and their
 version numbers) and then we eliminate combinations that don't satisfy
@@ -713,11 +712,8 @@ dependencies:
 \end{tabular}
 \end{center}
 }
-
-
 Now we have three variables we need to solve for.  But we have a
 problem.  We can easily create a table of all possibilities:
-
 {\small
 \begin{center}
 \begin{tabular}{ c c c }
@@ -752,7 +748,6 @@ problem.  We can easily create a table of all possibilities:
 \end{tabular}
 \end{center}
 }
-
 But there are several interesting things to notice about this case.
 First, although the problem is not particularly large (3 libraries
 with 3 versions each), the number of combinations to check is
@@ -853,7 +848,6 @@ versions of \code{B} that are compatible\footnote{It is not possible
 (\emph{i.e.,} \code{B:1.1.0} and \code{B:1.0.0}).  Given that we are
 considering \code{A:1.0.0} and we've already ruled out {\code
   B:1.2.0}, we are left with the following combinations:
-
 {\small
 \begin{center}
 \begin{tabular}{ l l l }
@@ -869,7 +863,6 @@ considering \code{A:1.0.0} and we've already ruled out {\code
 \end{tabular}
 \end{center}
 }
-
 Notice the ordering of the columns?  Since the user originally asked
 for both \code{A} and \code{B}, \code{B} comes first.  But when it
 comes to \code{C} and \code{D}, having a more recent version of
@@ -886,20 +879,20 @@ proceeding as follows:
 {\small
 \begin{center}
 \begin{tabular}{ l l l }
-   \code{A:2.0.0} &\cmark\\
-   \code{A:2.0.0} \& \code{B:1.2.0} & \cmark\\
+   \code{A:2.0.0} &\leftthumbsup\\
+   \code{A:2.0.0} \& \code{B:1.2.0} & \leftthumbsup\\
    \code{A:2.0.0} \& \code{B:1.2.0} \& \code{C:1.2.0} &\xmark$\rightarrow$\#2\\
    \code{A:2.0.0} \& \code{B:1.2.0} \& \code{C:1.1.0} &\xmark$\rightarrow$\#3\\
    \code{A:2.0.0} \& \code{B:1.1.0} &\xmark$\rightarrow$\#1\\
    \code{A:2.0.0} \& \code{B:1.0.0} &\xmark$\rightarrow$\#1\\
    \code{A:1.0.0} \& \code{B:1.2.0} &\xmark$\rightarrow$\#4\\
-   \code{A:1.0.0} \& \code{B:1.1.0} &\cmark\\
-   \code{A:1.0.0} \& \code{B:1.1.0} \& \code{D:1.1.0}& \cmark\\
+   \code{A:1.0.0} \& \code{B:1.1.0} &\leftthumbsup\\
+   \code{A:1.0.0} \& \code{B:1.1.0} \& \code{D:1.1.0}& \leftthumbsup\\
    \code{A:1.0.0} \& \code{B:1.1.0} \& \code{D:1.1.0} \& \code{C:1.2.0}&\xmark$\rightarrow$\#7\\
    \code{A:1.0.0} \& \code{B:1.1.0} \& \code{D:1.1.0} \& \code{C:1.1.0}&\xmark$\rightarrow$\#8\\
    \code{A:1.0.0} \& \code{B:1.1.0} \& \code{D:1.0.0}&\xmark$\rightarrow$\#5\\
    \code{A:1.0.0} \& \code{B:1.0.0} \& \code{D:1.1.0} \& \code{C:1.2.0}&\xmark$\rightarrow$\#6\\
-  \code{A:1.0.0} \& \code{B:1.0.0} \& \code{D:1.1.0} \& \code{C:1.1.0} &\cmark\cmark
+  \code{A:1.0.0} \& \code{B:1.0.0} \& \code{D:1.1.0} \& \code{C:1.1.0} &\cmark
 \end{tabular}
 \end{center}
 }
