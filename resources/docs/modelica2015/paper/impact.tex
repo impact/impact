@@ -11,7 +11,6 @@
 \usepackage[T1]{fontenc}     %% get hyphenation and accented letters right
 \usepackage{mathptmx}        %% use fitting times fonts also in formulas
 \usepackage{amsmath,amssymb} %% Nice maths
-\usepackage[round]{natbib}   %% author-year style referencing
 \usepackage{doi}             %% Create cor­rect hy­per­links for DOI num­bers
 \usepackage{booktabs}        %% Nice tables
 \usepackage{hyperref}
@@ -22,6 +21,12 @@
 \usepackage{courier}         %% For proper courier fonts in texttt
 \usepackage{listings}        %% For code sections
 %\usepackage[bw]{dtsyntax}    %% For Modelica code
+
+%% We are using biblatex instead of bibtex in order to support "online" references
+\usepackage[backend=biber,
+            style=authoryear
+            ]{biblatex}
+\addbibresource{impact.bib}
 
 % do not change these lines:
 \pagestyle{empty}                %% no page numbers!
@@ -90,7 +95,7 @@
   \emph{etc.}
 
   This paper is an update on the status of the \code{impact} package
-  manager which was discussed previously in \cite{impact1}.  This
+  manager which was discussed previously in \parencite{impact1}.  This
   latest version of \code{impact} involves a complete rewrite that
   incorporates a more advanced dependency resolution algorithm.  That
   dependency resolution will be discussed in depth along with many of
@@ -135,7 +140,7 @@ development.
 Earlier, we mentioned that \code{impact} has been completely
 rewritten.  In fact, the very first version of \code{impact} was just
 a single Python script for indexing and installing Modelica
-code\cite{impact-gist}.  It eventually involved into a multi-file
+code\parencite{impact-gist}.  It eventually involved into a multi-file
 package that could be installed using the Python package management
 tools.
 
@@ -160,7 +165,7 @@ resources.  For this reason, we felt we needed to move away from
 Python altogether.
 
 We also had some difficulties in the Python version with support for
-SSL under Windows \cite{python-ssl}.  Because we were doing lots of
+SSL under Windows \parencite{python-ssl}.  Because we were doing lots of
 ``crawling'' (more on this shortly), we needed a platform that
 provided \textbf{solid HTTP client support}.
 
@@ -221,7 +226,7 @@ This issue is not unique to the Modelica world.  These same questions
 have been asked for a very long time and various approaches have been
 invented to deal with answering these questions.  One recent and
 widely used approach is to employ what is called \textbf{semantic
-  versioning}\cite{semver}.  Semantic versioning is pretty much what
+  versioning}\parencite{semver}.  Semantic versioning is pretty much what
 it sounds like, an approach to defining version numbers where the
 version numbers have very explicit meanings associated with them.
 
@@ -287,8 +292,8 @@ published in the resulting index.
 
 \subsection{Sources}
 
-Currently, \code{impact} only supports crawling GitHub\cite{github}
-repositories.  It does this by usin the GitHub API\cite{gh-api} to
+Currently, \code{impact} only supports crawling GitHub\parencite{github}
+repositories.  It does this by usin the GitHub API\parencite{gh-api} to
 search through repositories associated with particular users and to
 look for Modelica libraries stored in those repositories.  We will
 shortly discuss exactly how it identifies Modelica libraries.  But
@@ -545,7 +550,7 @@ discuss the installation side of using \code{impact}.
 \subsubsection{Background}
 
 To understand the abstract problem behind the concept of a dependency,
-we refer to the formal study undertaken in \cite{boender2011formal}.
+we refer to the formal study undertaken in \parencite{boender2011formal}.
 There, a repository is defined as a triple $(R,D,C)$ of a set of
 packages $R$, a dependency function $D : R \rightarrow
 \mathcal{P}(\mathcal{P}(R))$, and a \emph{conflict relation} $C
@@ -569,7 +574,7 @@ conflicting (\code{impact} can will only install one version of each
 package in a given context).
 
 The dependency resolution of \code{impact} fits into Boender's model.
-Therefore, the conclusions drawn in \cite{boender2011formal} can be
+Therefore, the conclusions drawn in \parencite{boender2011formal} can be
 applied to \code{impact} as well:
 
 The set of packages \code{impact} installs for a given project needs to
@@ -954,13 +959,11 @@ performance enhancements in future versions of \code{impact}.
 * Different files (impact.json, impact.proj, impactrc and their purposes)
 
 %%% Remove the following line once we got real citations in place.
-% \nocite{impact}
-
+%\nocite{*}
 %--------------------------------------------------------------------------------
-% References using bibtex
+% References using biblatex
 \small
-\bibliographystyle{plainnat}
-\bibliography{impact}
+\printbibliography
 \normalsize
 
 \end{document}
