@@ -24,9 +24,15 @@
 
 %% We are using biblatex instead of bibtex in order to support "online" references
 \usepackage[backend=biber,
-            style=authoryear
+            style=authoryear,
+            doi=false,
+            isbn=false,
             ]{biblatex}
 \addbibresource{impact.bib}
+% We do not need the note fields printed
+\AtEveryBibitem{%
+  \clearfield{note}%
+}
 \usepackage{pifont}% http://ctan.org/pkg/pifont
 \newcommand{\cmark}{\ding{52}}%
 \newcommand{\xmark}{\ding{56}}%
