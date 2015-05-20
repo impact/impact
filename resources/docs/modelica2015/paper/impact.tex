@@ -943,7 +943,9 @@ The algorithm then proceeds as follows:
       \item Update \code{avail} to include version of new dependencies
         that are compatible with our previous choices
       \item If there are no possible versions for any library we depend on, backtrack
-      \item Return the result of calling this function again recursively
+      \item Return the result of calling this function again
+        recursively using updated values for \code{mapped},
+        \code{avail} and \code{rest}.
     \end{enumerate}
 \end{enumerate}
 
@@ -1013,8 +1015,6 @@ only one that would satisfy the dependency constraints.  We tested the
 time required for find a solution for different values of $n$ and we
 got the following performance results:
 
-\subsection{Requirements}
-
 \begin{center}
 \begin{tabular}{ll}
 $n$ & Time (ms) \\
@@ -1025,12 +1025,12 @@ $n$ & Time (ms) \\
 \end{tabular}
 \end{center}
 
-It is important to keep in mind that this is a \textbf{contrived} case to
-demonstrate the worst possible case for resolution.  There may very
-well be other algorithmic approaches that find identical solutions be
-search more efficiently.  But given what we know about Modelica
-libraries and their dependencies, we found this performance more than
-sufficient for this particular problem.
+It is important to keep in mind that this is a \textbf{contrived} case
+to demonstrate the worst possible case for resolution.  There may very
+well be other algorithmic approaches that will find identical
+solutions but search more efficiently.  But given what we know about
+Modelica libraries and their dependencies, we found this performance
+more than sufficient for our application.
 
 One last point worth making about the implementation of \code{impact}
 has to do with security.  In order to generate an index from GitHub
@@ -1048,51 +1048,54 @@ variables.
 
 The \code{impact} source code is licensed under an MIT license and is
 hosted on GitHub.  The GitHub repository~\parencite{impact-repo}
-includes a \code{LICENSE},
-\code{README.md} and \code{CONTRIBUTING.md} which provide a details
-license, introductory documentation and instructions for contributors,
-respectively.  We've linked the GitHub repository to a continuous
-integration service so that each commit triggers tests and email out
-build status to the maintainers.
+includes a \code{LICENSE}, \code{README.md} and \code{CONTRIBUTING.md}
+which provide a detailed license, introductory documentation and
+instructions for contributors, respectively.  We've linked the GitHub
+repository to a continuous integration service so that each commit
+triggers tests and emails out build status to the maintainers.
 
 \section{\code{impact} on library developers}
 
-What does it mean for library developers wanting to make their library
-accessible via \code{impact}? Let us first have a look at the past
-``sins'' that were restricting the development work on Modelica
+What does all this mean for library developers wanting to make their
+library accessible via \code{impact}? Let us first have a look at the
+past ``sins'' that were restricting the development work on Modelica
 libraries.
 
 \subsection{Observations}
 \begin{enumerate}
-\item  We noticed that the \texttt{MODELICAPATH} concept is not properly
-  understood  by the users and often comes into their way.
-Therefore one should not rely on it but rather work with a
-\emph{working directory} (which should always part of the
-\texttt{MODELICAPATH} and made first priority for the look-up in the
-tool).
-\item  If we go away from having to collect all Modelica libraries
-in the \texttt{MODELICAPATH}  then there is no longer a need to store the
-  version number with the library folder name.
-I.e., simply ``\texttt{<PackageName>}'' is sufficient and no need for
-``\texttt{<PackageName>~<Version>}''.
-\item  Until now we advised the lib developers to have the development
-  work in a \texttt{master} branch and merge \texttt{master} into a
-  \texttt{release} branch where then the directory structure can be
-  changed (e.g., into ``\texttt{<PackageName> <Version>}'' and
-  generated content can be added) and then finally place the tag on
-  the release branch. This has the following effects:
+\item We noticed that the \texttt{MODELICAPATH} concept is not
+  properly understood by the users and often gets in their way.
+  Therefore we should not rely on it but rather work with all of our
+  files collected into a \emph{working directory} (which should always
+  part of the \texttt{MODELICAPATH} and made first priority for the
+  look-up in the tool).
+\item If we go away from having to collect all Modelica libraries in
+  the \texttt{MODELICAPATH} then there is no longer a need to store
+  the version number with the library folder name.  I.e., simply
+  ``\texttt{<PackageName>}'' is sufficient and no need for
+  ``\texttt{<PackageName>~<Version>}''.
+
+% TODO: Make it clear that this is progress and no longer necessary
+\item Until now, we advised the lib developers to keep the current
+  development version in a \texttt{master} branch and merge
+  \texttt{master} into a \texttt{release} branch where the directory
+  structure can be changed (e.g., into ``\texttt{<PackageName>
+    <Version>}'' and any generated content can be added).  Finally,
+  developers should then place a tag on the release branch. This was
+  done for the following reasons:
   \begin{description}
-  \item[\textbf{+}] The link to the tag will give one a (tar)zip file
-    that contains the library with the
+  \item[\textbf{+}] The link to the tag provided a (tar)zip file that
+    contained the library with the
     ``\texttt{<PackageName>~<Version>}'' format ready to be used with
-    \texttt{MODELICAPATH}. Since we don't want to rely on
+    \texttt{MODELICAPATH}. However, we no longer need to rely on
     \texttt{MODELICAPATH} any more we don't need to add the
     \texttt{<Version>} identifier to the folder anymore.
-  \item[\textbf{-}] If one would like to see what stage a certain
-    release in \texttt{master} was then one need to either inspect the
-    git history (following backwards from the release tag) or use an
-    additional tag (e.g., ``\texttt{1.2.3-dev}'') which is rather
-    cumbersome and seems unnecessary.
+  \item[\textbf{-}] If we would like to see what stage a certain
+    release in \texttt{master} was at, then we needed to either
+    inspect the \code{git} history (following backwards from the
+    release tag) or use an additional tag (e.g.,
+    ``\texttt{1.2.3-dev}'') which is rather cumbersome and seems
+    unnecessary.
   \end{description}
 \end{enumerate}
 
@@ -1100,19 +1103,17 @@ I.e., simply ``\texttt{<PackageName>}'' is sufficient and no need for
 There are new features/mechanisms made available both by GitHub and
 \code{impact}:
 \begin{itemize}
-\item GitHub's support for assets \parencite{gh-assets} allows one to
+\item GitHub's support for assets \parencite{gh-assets} allows us to
   upload additional files to tagged releases
-\item  \code{impact} does not use the \texttt{MODELCAPATH} model but
-  rather uses a ``one working directory per project'' approach where a
-  library of \textbf{one} version  and all dependencies live in one
-  (working) directory. A different version of the same library would
-  be placed in a different working directory.
-  Making these self-contained project folders.
+\item \code{impact} does not use the \texttt{MODELCAPATH} model but
+  rather uses a ``one working directory per project'' approach where
+  (one version) of all required libraries and their dependencies live
+  in one (working) directory.
 \end{itemize}
 
-We recommend that library developers make the most out of
-the new features above and change the structure in which
-they organize their library repositories.
+We recommend that library developers make the most out of the new
+features above and change the structure in which they organize their
+library repositories.
 \begin{enumerate}
 \item Get rid of the \texttt{release} branch as long as it was only
   for the sake of providing a download-able zip-file with a customized
@@ -1126,20 +1127,21 @@ they organize their library repositories.
     \texttt{master} branch and then generate a zip-file which contains
     that state and add the generated files to the tagged release.
     GitHub also provides some information on ``Creating
-    Releases''~\parencite{gh-releases} and there exist for example the
-    \texttt{aktau/github-release} tool~\parencite{aktau-github-release}
-    to help automating that process.
-  \item Another benefit of  the assets is that the GitHub
+    Releases''~\parencite{gh-releases} and there exists, for example,
+    the \texttt{aktau/github-release}
+    tool~\parencite{aktau-github-release} to help automating that
+    process.
+  \item Another benefit of the release assets is that the GitHub
     API~\parencite{gh-api} allows you to get the download count for
-    your releases~\parencite{gh-dl-count}.
-    This was not possible for the simple taggged-zip-ball downloads.
+    your releases~\parencite{gh-dl-count}.  This was not possible for
+    the simple taggged-zip-ball downloads.
   \end{itemize}
 \item Get rid of the \texttt{<PackageName> <Version>} formatted folder
-  names. The version number does not belong in the  \texttt{master}
-  (i.e., development)  branch anyway and the version annotation is
-  contained  in the \texttt{version} annotation which tools will happily
-  display for you. When you install a package with \code{impact} it
-  will strip that version number in any case.
+  names. The version number does not belong in the \texttt{master}
+  (i.e., development) branch anyway and the version annotation is
+  contained in the \texttt{version} annotation which tools will
+  happily display for you. When you install a package with
+  \code{impact} it will strip that version number in any case.
 \end{enumerate}
 
 \subsection{Changes for the library listing}
@@ -1150,78 +1152,80 @@ information with links. Currently it is a stand-alone \emph{Python}
 script but we are thinking of adding this functionality as a
 sub-module to \code{impact} itself.
 
-Currently the listing links directly to the (tar)zip-ball URL of the
+Currently the listing points directly to the (tar)zip-ball URL of the
 latest tag of a library. This works fine if the library uses the old
-\texttt{release} branch model where the ``ready to install'' version was
-placed.  Clicking on that coloured version link will result in a direct file download.
+\texttt{release} branch model where the ``ready to install'' version
+was placed.  Clicking on that coloured version link will result in a
+direct file download.
 
 This will be changed in such a way that if one clicks on the listed
-``Last Release'' button one will be redirected to the ``Releases'' page of
-that project showing the last release. This has the advantage that one
-does not immediately downloads the (tar)zip ball but gets to see
-proper release notes first \emph{and} is given a choice of what
-version of a release one can download (e.g., pure source distribution
-of that tag, customized version with additional files, different
-platform dependent versions with pre-compiled binaries).
+``Last Release'' button one will be redirected to the ``Releases''
+page of that project showing the last release. This has the advantage
+that one does not immediately downloads the (tar)zip ball but gets to
+see proper release notes first \emph{and} is given a choice of what
+version of a release to download (e.g., pure source distribution of
+that tag, customized version with additional files, different platform
+dependent versions with pre-compiled binaries).
 
 \subsection{Which license is best for your library}
-The \emph{Modelica Standard library} (\texttt{Modelica})~\parencite{MSL} is licensed under
-the ``Modelica License Version 2.0''~\parencite{MoLic2}. So in order
-to stay compatible with the \texttt{Modelica} library most user libraries chose the
-same license. This seemed to be just natural. Now there is one problem
-which is not very apparent to most library developers. This is that
-the ``Modelica License Version 2.0'' contains the section
-``4. Designation of Derivative Works and of Modified Works'' which
-says that ``\emph{\ldots This means especially that the (root-level)
-  name of a Modelica package under this license must be changed if the
-  package is modified \ldots}''.
-This clause makes perfect sense for a main library like the
-\texttt{Modelica} library that is developed and maintained by a major
-group centrally and wants to protect its product name.
-But what does this mean for open-source projects that no longer are
-hosted centrally but rather decentralized on platforms like GitHub and
-GitLab but were contributions no longer are made by committing
-directly into \textbf{one} central repository? In the de-centralized
-case contributions are given by first ``forking'' (i.e., generating a
-copy of the original repository), modifying that fork and then sending
-the contribution back via a ``pull-request'' (i.e., offering the
-originating project to accept the changes made on the fork). Now
-already the first step here, the ``forking'', generated a copy with the
-identical ``(root-level) name'' and at a different location. One could argue that this
-alone is already a violation of the terms of the ``Modelica License
-Version 2.0''.
+The \emph{Modelica Standard library}
+(\texttt{Modelica})~\parencite{MSL} is licensed under the ``Modelica
+License Version 2.0''~\parencite{MoLic2}. So in order to stay
+compatible with the \texttt{Modelica} library most user libraries
+chose the same license. This seemed like a natural choice. However,
+there is one problem which is not immediately apparent to most library
+developers. This is that the ``Modelica License Version 2.0'' contains
+the section ``4. Designation of Derivative Works and of Modified
+Works'' which says that ``\emph{\ldots This means especially that the
+  (root-level) name of a Modelica package under this license must be
+  changed if the package is modified \ldots}''.  This clause makes
+perfect sense for a main library like the \texttt{Modelica} library
+that is developed and maintained by a major group centrally and wants
+to protect its product name.  But what does this mean for open-source
+projects that no longer are hosted centrally but rather decentralized
+on platforms like GitHub and GitLab but were contributions no longer
+are made by committing directly into \textbf{one} central repository?
+In the de-centralized case contributions are given by first
+``forking'' (i.e., generating a copy of the original repository),
+modifying that fork and then sending the contribution back via a
+``pull-request'' (i.e., offering the originating project to accept the
+changes made on the fork).  The problem is that the very first step of
+``forking'' the library generated a copy with the identical
+``(root-level) name'' and at a different location. One could argue
+that this alone is already a violation of the terms of the ``Modelica
+License Version 2.0''.
 
 So what should the library developer do? The simplest solution is to
-\textbf{not} use the ``Modelica License Version 2.0'' for user libraries
-but rather go for standard licenses~\parencite{lic} that are similar
-in  nature like, MIT or BSD style license. Interestingly enough the
-old ``Modelica License Version 1.1'' is still suitable for user
-libraries since it does not contain the restrictions of having to
-change the package name.
+\textbf{not} use the ``Modelica License Version 2.0'' for libraries
+but rather go for standard licenses~\parencite{lic} that are more
+compatible with open source, community driven development ({\it e.g.,}
+MIT or BSD licenses). Interestingly, the old ``Modelica License
+Version 1.1'' is still suitable for user libraries since it does not
+contain the restrictions of having to change the package name.
 
-So what about ``copy-left style'' licenses? The most famous being the
-GNU General Pubic license. People might think this
-would be a good choice for a license in order
-to protect parts of their library being used inside proprietary
-libraries without any bug-fixes and improvements being fed back to them
-as ``upstream'' developers. Unfortunately the GPL also forbids that any
-other \mbox{non-GPL} library (even the Modelica Standard Library) uses
-the GPL licensed library and is distributed that way. So what about the
+So what about ``copy-left style'' licenses? The most famous copy-left
+license is the GNU General Pubic license. People might think this
+would be a good choice for a license in order to protect parts of
+their library from being used inside proprietary libraries without any
+bug-fixes and improvements being fed back to them as ``upstream''
+developers. Unfortunately the GPL also forbids that any other
+\mbox{non-GPL} library (even the Modelica Standard Library) uses the
+GPL licensed library and is distributed that way. So what about the
 LGPL, this allows the usage and distribution \emph{alongside} with
 other non-gpl libraries. The problem here is that it does not allow
-static linking. Something that happens when one creates a compiled
-version of a simulation model that uses different Modelica libraries.
-A typical example would be the generation of an FMU~\parencite{FMI}.
-A way out is here the ``Mozilla Public License'' which is very much
-alike the LGPL but allows generated code to be statically linked
-together with non-GPL licensed code.
+static linking. Something that typically happens when one creates a
+compiled version of a simulation model that uses different Modelica
+libraries.  A typical example would be the generation of an
+FMU~\parencite{FMI}.  A way out of this is the ``Mozilla Public
+License'' which is very much alike the LGPL but allows generated code
+to be statically linked together with non-GPL licensed code.
 
-Conclusion. User libraries should, if possible, avoid the ``Modelica
+In conclusion, libraries should, if possible, avoid the ``Modelica
 License Version 2.0'' as this was primarily designed for the
 requirements of the \emph{Modelica Standard Library}. Perhaps there
 will be a future revision that is adapted to current open-source
-development models for user libraries. Until then try to use standard
-libraries that are BSD/MIT or MPL style.
+development models. But until then, we suggest the use of standard
+licenses along the lines of BSD/MIT or MPL.
 
 
 \section{Future Development}
@@ -1252,8 +1256,8 @@ repositories.  There is nothing particularly special about GitHub
 and/or its APIs.  The authors are confident that indices could be
 constructed for many different storage types.  The most obvious next
 steps for crawling support would be to add support for GitLab and
-Bitbucket(Mercurial and Subversion) repositories.
-Pull requests to introduce such functionality would be welcome.
+Bitbucket(Mercurial and Subversion) repositories.  Pull requests to
+introduce such functionality are welcome.
 
 On a related note, we anticipate there will be many use cases where
 \code{impact} could be useful for closed source projects that involve
@@ -1262,24 +1266,25 @@ hope to provide support for crawling such repositories.  This would,
 for example, allow model developers at companies that have made a
 significant investment in building Modelica related models and
 libraries to use \code{impact} to search and install these proprietary
-libraries via the corporate intranet.
+libraries via their corporate intranet.
 
 \subsection{Project Details}
 
 We have already created a number of issues that require users to
 provide more explicit information about how they want impact to
-function on a per project bases.  For example, when working with
+function on a per project basis.  For example, when working with
 forked libraries (where the index contains multiple libraries with the
 same name), it is useful to use the URIs associated with each library
 in the index to disambiguate which particular library to use.
 Furthermore, there may be cases where the user is actually interested
-in making changes to the dependencies.  In such cases, those
-dependencies shouldn't simply be installed, they should be
-\textbf{checked out} from their repository to make modification and
+in doing development work on the dependencies as well.  In such cases,
+those dependencies shouldn't simply be installed, they should be
+\textbf{checked out} from their repository to make modifying and
 re-committing easier.
 
 For these and other project related features, we feel there is a need
-to introduce another file to provide such additional information.
+to introduce another file to provide such additional information that
+is project specific.
 
 \subsection{Web Based Search}
 
@@ -1305,12 +1310,12 @@ downloading some pre-specified libraries over the network.
 
 \section{Conclusion}
 
-In conclusion, \code{impact} leverage information already available in
-Modelica source code along with some common conventions in order to
+In conclusion, \code{impact} leverages information already available
+in Modelica source code along with some common conventions in order to
 help users find and install Modelica libraries.  It does this by
 crawling repositories and indexing their contents.  An index of
 publicly available libraries created by \code{impact} is hosted on
-\code{modelica.org}.
+\code{modelica.org} for use by the \code{impact} command line tool.
 
 If present, the \code{impact} command line tool is already used by
 OpenModelica to help find and install dependencies.  By making the
