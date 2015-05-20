@@ -44,7 +44,7 @@
 \usepackage{geometry}            %% please don't change geometry settings!
 \geometry{left=20mm, right=20mm, top=25mm, bottom=25mm, noheadfoot}
 
-\hypersetup{
+\hypersetup{%
   pdftitle = {Where impact got going},
   pdfauthor = {Michael Tiller and Dietmar Winkler},
   pdfsubject = {11th International Modelica Conference 2015},
@@ -93,7 +93,7 @@
 
 \date{} % <--- leave date empty
 \maketitle\thispagestyle{empty} %% <-- you need this for the first page
-\abstract{
+\abstract{%
 
   This paper discussed the \code{impact} package manager.  The primary
   goal of this project is to support the development of a healthy
@@ -655,7 +655,7 @@ problem has two possible values.  The following table essentially
 summarizes the possibilities:
 {\small
 \begin{center}
-\begin{tabular}{ c c }
+\begin{tabular}{cc}
   Version of \code{A} & Version of \code{B} \\
   \code{1.0.0} & \code{1.0.0} \\
   \code{1.0.0} & \code{2.0.0} \\
@@ -673,7 +673,7 @@ most desirable combinations appear first and the least desirable
 appear last:
 {\small
 \begin{center}
-\begin{tabular}{ c c }
+\begin{tabular}{cc}
   Version of \code{A} & Version of \code{B} \\
   \code{2.0.0} & \code{2.0.0} \\
   \code{2.0.0} & \code{1.0.0} \\
@@ -689,7 +689,7 @@ with \code{B:2.0.0}).  If we eliminate rows that violate our
 dependency constraints, we are left with:
 {\small
 \begin{center}
-\begin{tabular}{ c c }
+\begin{tabular}{cc}
   Version of \code{A} & Version of \code{B} \\
   \code{2.0.0} & \code{1.0.0} \\
   \code{1.0.0} & \code{2.0.0} \\
@@ -834,7 +834,7 @@ considering \code{A:1.0.0} and we've already ruled out \code{B:1.2.0},
 we are left with the following combinations:
 {\small
 \begin{center}
-\begin{tabular}{ l l l }
+\begin{tabular}{lll}
   Version of \code{B} & Version of \code{D} & Version of \code{C} \\
   \code{1.1.0} & \code{1.1.0} & \code{1.2.0} \\
   \code{1.1.0} & \code{1.1.0} & \code{1.1.0} \\
@@ -862,7 +862,7 @@ proceeding as follows:
 
 {\small
 \begin{center}
-\begin{tabular}{ l l l }
+\begin{tabular}{lll}
    \code{A:2.0.0} &\leftthumbsup\\
    \code{A:2.0.0} \& \code{B:1.2.0} & \leftthumbsup\\
    \code{A:2.0.0} \& \code{B:1.2.0} \& \code{C:1.2.0} &\xmark$\rightarrow$\#2\\
@@ -954,8 +954,8 @@ the only third party dependencies for \code{impact} are a Go
 implementation of the GitHub v3 API and an implementation of semantic
 versioning.
 
-The performance of compiled Go code is quite good.  In section
-\ref{sec:algorithm} we described how the algorithm we are using could,
+The performance of compiled Go code is quite good.  In
+Section~\ref{sec:algorithm} we described how the algorithm we are using could,
 in a worst case scenario, search every potential combination before
 finding either a solution or failing.  We constructed several test
 cases with $n$ variables where each variable had $2$ possible values.
@@ -994,7 +994,7 @@ number of allowed API calls, GitHub requires an ``API key'' to be
 used.  Such a key can be provided to \code{impact} but it cannot be
 provided via a command line option or a configuration file.  This is
 to avoid this sensitive information being inadvertently recorded or
-exposed ({\it e.g.,} by committing it to a version control
+exposed (\emph{e.g.,} by committing it to a version control
 repository).  Instead, such tokens must be provided as environment
 variables.
 
@@ -1242,7 +1242,7 @@ of functionality could be added in the future.
 \subsection{Installers}
 
 Finally, when installing software, it is common for developers to
-distribute ``installers'' ({\it i.e.,} executables that, when run,
+distribute ``installers'' (\emph{i.e.,} executables that, when run,
 unpack and install the software).  Another potential extension of
 \code{impact} could be to generate such installers.  In this case, we
 could once again leverage Go's static executable generation to build
