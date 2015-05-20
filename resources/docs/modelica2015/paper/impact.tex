@@ -97,7 +97,7 @@
 
   This paper discussed the \code{impact} package manager.  The primary
   goal of this project is to support the development of a healthy
-  eco-system around Modelica.  For many other languages, the existance
+  eco-system around Modelica.  For many other languages, the existence
   of an easy to use package manager has made it easier for people to
   explore and adopt those languages.  We seek to bring that same kind
   of capability to the Modelica community by incorporating useful
@@ -112,7 +112,7 @@
   the subtle issues that arose during the development of this latest
   version of \code{impact}.  Along with a superior dependency resolution
   scheme, the new version of \code{impact} is much easier to install
-  and use.  Futhermore, it includes many useful new features as well.
+  and use.  Furthermore, it includes many useful new features as well.
 
 }
 
@@ -166,7 +166,7 @@ manager.  So in order for someone to install \code{impact}, they first
 needed to install Python, then install \code{pip} and then install
 \code{impact}.  This was far too complicated.  So we wanted to come up
 with a way for people to install \code{impact} \textbf{as a simple
-  executable} without any runtime or prerequisites.
+  executable} without any run-time or prerequisites.
 
 Another issue we ran into with the Python version was the fact that
 there are two different and incompatible versions of Python being used
@@ -236,7 +236,7 @@ This issue is not unique to the Modelica world.  These same questions
 have been asked for a very long time and various approaches have been
 invented to deal with answering these questions.  One recent and
 widely used approach is to employ what is called \textbf{semantic
-  versioning}\parencite{semver}.  Semantic versioning is pretty much what
+  versioning}~\parencite{semver}.  Semantic versioning is pretty much what
 it sounds like, an approach to defining version numbers where the
 version numbers have very explicit meanings associated with them.
 
@@ -303,7 +303,7 @@ published in the resulting index.
 \subsection{Sources}
 
 Currently, \code{impact} only supports crawling GitHub\parencite{github}
-repositories.  It does this by usin the GitHub API\parencite{gh-api} to
+repositories.  It does this by using the GitHub API\parencite{gh-api} to
 search through repositories associated with particular users and to
 look for Modelica libraries stored in those repositories.  We will
 shortly discuss exactly how it identifies Modelica libraries.  But
@@ -363,7 +363,7 @@ libraries.  For this reason, a library developer can include an
 \code{impact.json} file in the root of the repository directory that
 provides additional information about the contents of the repository.
 For example, a repository may contain two or more Modelica libraries
-in subdirectories.  The \code{impact.json} file allows information
+in sub-directories.  The \code{impact.json} file allows information
 about the storage location of each library in the repository to be
 provided by the library developer.  Furthermore, the author may wish
 to include contact information beyond what can be extracted from
@@ -385,7 +385,7 @@ sources, the chance for overlap becomes possible and must be dealt
 with.
 
 Previously, we mentioned the importance of supporting best practices
-in model development and the specific need to accomodate version
+in model development and the specific need to accommodate version
 control as part of that process.  Up until now, we have leveraged
 version control to make the process of indexing and collection
 libraries easier.  However, version control does introduce one
@@ -411,9 +411,9 @@ fork is simply a temporary measure to support concurrent development.
 Once the pull request is accepted, the fork can be removed entirely.
 
 Regardless of why the fork occurs, it is important that \code{impact}
-accomodates cases where forking occurs.  This is because forking is a
+accommodates cases where forking occurs.  This is because forking is a
 very common occurrence in a healthy eco-system.  It indicates progress
-and interest and we should not do anything to stiffle either of
+and interest and we should not do anything to stifle either of
 these.The issue with forking is that the same name might be used by
 multiple libraries.  In such cases, we need a better way to uniquely
 identify libraries.
@@ -575,7 +575,7 @@ D(p)$ at least one package in $d$ is installed, it is possible to use
 $p$.
 
 Currently, there is no way to express \emph{conflicts} directly in a
-Modelica package.  However, due to the existance of external libraries
+Modelica package.  However, due to the existence of external libraries
 (which could conflict in arbitrary ways), it is likely that such a
 need will arise in the future.  Additionally, current Modelica makes
 it impossible to refer to two different versions of a library from the
@@ -721,7 +721,7 @@ dependencies:
 \end{center}
 } Now we have three variables we need to solve for, \code{A}, \code{B}
 and \code{C}.  For each variable, we have three possible values.  As
-we've already described, newer versions are prefered over older
+we've already described, newer versions are preferred over older
 versions while searching.  This means that the first combination we
 will consider will be:
 
@@ -743,8 +743,8 @@ nothing to do with the algorithm).  But the complication is that we
 must consider all of them (in this contrived case) before finding the
 one we want.
 
-In reality, we would not actually enumerate all possibilities {\it a
-  priori}.  Instead, we would simply consider each ``variable'' one at
+In reality, we would not actually enumerate all possibilities
+\emph{a priori}.  Instead, we would simply consider each ``variable'' one at
 a time and loop over all possible versions.  If, at any point, we find
 a conflict with our constraints, we simply break out of the inner most
 loop.  This is referred to as \emph{backtracking}.  In Modelica
@@ -905,14 +905,14 @@ The default assumption is that dependencies will come from the
 \code{uses} annotation in Modelica.  There is a proposal to extend the
 \code{uses} annotation to allow multiple compatible versions to be
 listed (vs.\ only a single compatible version today).  As mentioned
-perviously, such an \code{or} relationship is already supported by
+previously, such an \code{or} relationship is already supported by
 \code{impact}.  So this change would not impact the resolution
 algorithm used by \code{impact}.
 
 Although it hasn't yet been implemented, one proposed fallback mode
 for \code{impact} is to ignore the explicit dependencies contained in
-Modelica code and instead rely on the dependency relationships {\bf
-  implicit} in semantic versions.  In other words, if a library
+Modelica code and instead rely on the dependency relationships
+\textbf{implicit} in semantic versions.  In other words, if a library
 \code{B} has two versions, \code{1.1.1} and \code{1.1.2}, and those
 versions strictly follow semantic versioning conventions, then we know
 that any library that depends on \code{B:1.1.1} must also be
@@ -977,7 +977,7 @@ $n$ & Time (ms) \\
 \end{tabular}
 \end{center}
 
-It is important to keep in mind that this is a {\bf contrived} case to
+It is important to keep in mind that this is a \textbf{contrived} case to
 demonstrate the worst possible case for resolution.  There may very
 well be other algorithmic approaches that find identical solutions be
 search more efficiently.  But given what we know about Modelica
@@ -1052,7 +1052,7 @@ There are new features/mechanisms made available both by GitHub and
 \code{impact}:
 \begin{itemize}
 \item GitHub's support for assets \parencite{gh-assets} allows one to
-  upload adtional files to tagged releases
+  upload additional files to tagged releases
 \item  \code{impact} does not use the \texttt{MODELCAPATH} model but
   rather uses a ``one working directory per project'' approach where a
   library of \textbf{one} version  and all dependencies live in one
@@ -1111,7 +1111,7 @@ that project showing the last release. This has the advantage that one
 does not immediately downloads the (tar)zip ball but gets to see
 proper release notes first \emph{and} is given a choice of what
 version of a release one can download (e.g., pure source distribution
-of that tag, customised version with additional files, different
+of that tag, customized version with additional files, different
 platform dependent versions with pre-compiled binaries).
 
 \subsection{Which license is best for your library}
@@ -1131,7 +1131,7 @@ group centrally and wants to protect its product name.
 But what does this mean for open-source projects that no longer are
 hosted centrally but rather decentralized on platforms like GitHub and
 GitLab but were contributions no longer are made by committing
-directly into \textbf{one} central repository? In the de-centralised
+directly into \textbf{one} central repository? In the de-centralized
 case contributions are given by first ``forking'' (i.e., generating a
 copy of the original repository), modifying that fork and then sending
 the contribution back via a ``pull-request'' (i.e., offering the
@@ -1153,7 +1153,7 @@ So what about ``copy-left style'' licenses? The most famous being the
 GNU General Pubic license. People might think this
 would be a good choice for a license in order
 to protect parts of their library being used inside proprietary
-libraries without any bugfixes and improvements being fed back to them
+libraries without any bug-fixes and improvements being fed back to them
 as ``upstream'' developers. Unfortunately the GPL also forbids that any
 other non-GPL library (even the Modelica Standard Library) uses
 the GPL library and being distributed that way. So what about the
@@ -1191,7 +1191,7 @@ conflicts as well.
 
 Boender introduces the notions of \emph{strong dependencies} and
 \emph{strong conflicts} to optimize the handling of very large
-repositories.  This kind of optimizations might not be necessary in
+repositories.  This kind of optimization might not be necessary in
 the Modelica ecosystem right now, but could provide helpful
 performance enhancements in future versions of \code{impact}.
 
@@ -1224,8 +1224,8 @@ same name), it is useful to use the URIs associated with each library
 in the index to disambiguate which particular library to use.
 Furthermore, there may be cases where the user is actually interested
 in making changes to the dependencies.  In such cases, those
-dependencies shouldn't simply be installed, they should be {\bf
-  checked out} from their repository to make modification and
+dependencies shouldn't simply be installed, they should be
+\textbf{checked out} from their repository to make modification and
 re-committing easier.
 
 For these and other project related features, we feel there is a need
