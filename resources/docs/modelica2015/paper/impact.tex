@@ -797,14 +797,28 @@ dependencies.  Consider the following simple set of dependencies:
 \end{tabular}
 \end{center}
 }
+
+We can also represent this set of dependencies graphically as shown in
+Figure \ref{fig:deps}.  Graphically, we have a box to represent each
+library and that box contains the different versions available.  These
+versions are connected by the constraints shown in the table above.
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=\columnwidth]{fig/complex_case}
+  \caption{Graphical representation of package dependencies}\label{fig:deps}
+\end{figure}
+
 Given these dependencies and the fact that the user wishes to install
 both \code{A} and \code{B}, what are the variables in our dependency
 resolution algorithm?  Obviously, we must consider all the versions of
-both \code{A} and \code{B}.  But what about \code{C} and \code{D}?
-It makes no sense to enumerate all possibilities for all these
-libraries because they aren't always present.  Furthermore, what is
-their relatively priority (\emph{i.e.,} if a choice is required, is it
-more important to have the latest version of \code{C} or \code{D}?)
+both \code{A} and \code{B} ({\it i.e.,} we must pick a version from
+the box for library \code{A} and \code{B} in Figure \ref{fig:deps}).
+But what about \code{C} and \code{D}?  It makes no sense to enumerate
+all combinations of versions for these four libraries because in many
+cases \code{D} isn't even required.  Furthermore, what is their
+relatively priority (\emph{i.e.,} if a choice is required, is it more
+important to have the latest version of \code{C} or \code{D}?)
 
 When resolving dependencies, we only introduce new libraries when
 necessary (\emph{i.e.,} if they are needed by our current choices of
@@ -886,18 +900,44 @@ how a particular library is not even considered until a dependency on
 that library is introduced by choosing a particular version that
 depends on it.
 
-% TODO: should probably redo with yEd
-\begin{figure}[!ht]
-  \centering
-  \includegraphics[width=\columnwidth]{fig/complex_case}
-  \caption{Graphical representation of package dependencies}\label{fig:deps}
-\end{figure}
-
-
 It should be noted that there are a variety of other special cases we
 also deal with like self dependency and cyclic dependency.  But these
 are constraints like any other and don't really impact the algorithm
 in any significant way.
+
+The actual algorithm is implemented by the \code{findFirst} method on
+the \code{LibraryGraph} type found in the
+\code{github.com/xogeny/impact/graph} package.  The inputs to this function are:
+
+\begin{description}[noitemsep]
+  \item[\code{mapped}] Any existing decisions about specific versions of each library
+    (initially empty)
+  \item[\code{avail}] The set of all (remaining) possible versions for each library
+    (initially all versions of all libraries)
+  \item[\code{rest}] A list of libraries that are required based on
+    existing decisions but for which no version choice has yet been
+    made (initially the libraries the user wants installed in the
+    order specified by the user)
+\end{description}
+
+The algorithm then proceeds as follows:
+
+\begin{enumerate}
+  \item Is \code{rest} empty?  If so, we are done and we have a solution
+    ({\it i.e.,} \code{mapped})
+  \item Consider the first library in \code{rest}
+  \item Loop over available versions (based on \code{avail})
+    \begin{enumerate}
+      \item Add this choice to \code{mapped}
+      \item Find any new library dependencies resulting from this choice
+      \item If incompatible decisions have already been made about
+        these new dependencies, backtrack
+      \item Update \code{avail} to include version of new dependencies
+        that are compatible with our previous choices
+      \item If there are no possible versions for any library we depend on, backtrack
+      \item Return the result of calling this function again recursively
+    \end{enumerate}
+\end{enumerate}  
 
 \subsubsection{Formulating Constraints}
 
