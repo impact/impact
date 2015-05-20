@@ -150,7 +150,7 @@ development.
 Earlier, we mentioned that \code{impact} has been completely
 rewritten.  In fact, the very first version of \code{impact} was just
 a single Python script for indexing and installing Modelica
-code\parencite{impact-gist}.  It eventually evolved into a multi-file
+code~\parencite{impact-gist}.  It eventually evolved into a multi-file
 package that could be installed using the Python package management
 tools.
 
@@ -188,7 +188,7 @@ Furthermore, we wanted to provide a simple executable for all
 platforms without having to have actual development machines for each
 of these different platforms.  For this reason, \textbf{cross
   compilation} between different platforms was an important
-consideration was well.
+consideration as well.
 
 Of course, we also wanted to have \textbf{good performance}.  For most
 package management related functions, the speed of the internet
@@ -221,7 +221,7 @@ But there is one complication to the way Modelica deals with versions.
 In Modelica, a version is simply a string.  This by itself isn't a
 problem.  But it becomes a problem, as we will discuss in greater
 detail shortly, when you need to understand relationships between
-version.  In particular, there are two important things we would like
+versions.  In particular, there are two important things we would like
 to determine when dealing with version numbers.  The first is an
 unambiguous ordering of versions.  In other words, which, of any two
 versions, is the ``latest'' version?  The second is whether a newer
@@ -303,13 +303,13 @@ published in the resulting index.
 
 \subsection{Sources}
 
-Currently, \code{impact} only supports crawling GitHub\parencite{github}
-repositories.  It does this by using the GitHub API\parencite{gh-api} to
+Currently, \code{impact} only supports crawling GitHub~\parencite{github}
+repositories.  It does this by using the GitHub API~\parencite{gh-api} to
 search through repositories associated with particular users and to
 look for Modelica libraries stored in those repositories.  We will
 shortly discuss exactly how it identifies Modelica libraries.  But
 before we cover those details it is first necessary to understand
-which \emph{versions} of the repository it looks in.
+which \emph{versions} of the repository it looks into.
 
 Each change in a Git repository involves a \emph{commit}.  That commit
 affects the contents of one or more files in the repository.  During
@@ -359,7 +359,7 @@ Modelica content.
 \label{sec:dirinfo}
 
 For various reasons, library developers may not wish to conform to the
-repository structure patterns discussed previous.  Furthermore, there
+repository structure patterns discussed previously.  Furthermore, there
 may be additional information they wish to include about their
 libraries.  For this reason, a library developer can include an
 \code{impact.json} file in the root of the repository directory that
@@ -463,7 +463,7 @@ information may be present:
   \item[\code{name}] The name of the library (as used in Modelica)
   \item[\code{description}] A textual description of the library
   \item[\code{stars}] A way of ``rating'' libraries.  In the case of
-    GitHub, this the number of times the repository has been starred.
+    GitHub, this is the number of times the repository has been starred.
     But for other types of sources, other metrics can be used.
   \item[\code{uri}] A URI to uniquely identify the given library (when
     it shares a common \code{name} with another library)
@@ -475,7 +475,7 @@ information may be present:
   \item[\code{repository}] The URI for the library's source code
     repository
   \item[\code{format}] The format of the library's source code
-    repository (e.g., Git, Mercurial, Subversion, \emph{etc.})
+    repository (e.g., Git, Mercurial, Subversion)
   \item[\code{versions}] This is an object that maps a semantic
     version (in the form of a string) to details associated with that
     specific version
@@ -578,7 +578,7 @@ distinctive package $p \in P$.
 
 The dependency function $D$ maps a package $p$ to sets of sets of
 packages $d \in D(p)$, where each set represents a way to provide one
-required required feature of $p$.  In other words: If for each $d \in
+required feature of $p$.  In other words: If for each $d \in
 D(p)$ at least one package in $d$ is installed, it is possible to use
 $p$.
 
@@ -737,12 +737,12 @@ will consider will be...
 
 ...and the last combination we will consider will be...
 
-\code{A:1.0.0}, \code{1:1.2.0} and \code{1:1.2.0}
+\code{A:1.0.0}, \code{B:1.2.0} and \code{C:1.2.0}
 
 There are several interesting things to notice about this case.
 First, although the problem is not particularly large (3 libraries
 with 3 versions each), the number of combinations to check is
-significant (\emph{i.e.,} 3*3*3 = 27).  Of these 27 combinations, only
+significant (\emph{i.e.,} $3\cdot 3\cdot 3 = 27$).  Of these 27 combinations, only
 the last one to be considered (\emph{i.e.,} the least desirable)
 satisfies the dependency constraints.  There is nothing we can really
 do about the fact that the oldest version of each of these libraries
@@ -759,14 +759,14 @@ loop.  This is referred to as \emph{backtracking}.  In Modelica
 pseudo-code, the algorithm (for this specific case) might look like
 this:
 
-{\small
+{\footnotesize
 \begin{verbatim}
-for A in ["3.0.0","2.0.0","1.0.0"] loop
-  for B in ["1.2.0","1.1.0","1.0.0"] loop
+for A in ["3.0.0", "2.0.0", "1.0.0"] loop
+  for B in ["1.2.0", "1.1.0", "1.0.0"] loop
     if not are_compatible(A,B) then
        break;
     end if;
-    for C in ["1.2.0","1.1.0","1.0.0"] loop
+    for C in ["1.2.0", "1.1.0", "1.0.0"] loop
       if not are_compatible(B,C) then
         break;
       end if;
@@ -807,7 +807,7 @@ dependencies.  Consider the following simple set of dependencies:
 }
 
 We can also represent this set of dependencies graphically as shown in
-Figure \ref{fig:deps}.  Graphically, we have a box to represent each
+Figure~\ref{fig:deps}.  Graphically, we have a box to represent each
 library and that box contains the different versions available.  These
 versions are connected by the constraints shown in the table above.
 
@@ -821,7 +821,7 @@ Given these dependencies and the fact that the user wishes to install
 both \code{A} and \code{B}, what are the variables in our dependency
 resolution algorithm?  Obviously, we must consider all the versions of
 both \code{A} and \code{B} ({\it i.e.,} we must pick a version from
-the box for library \code{A} and \code{B} in Figure \ref{fig:deps}).
+the box for library \code{A} and \code{B} in Figure~\ref{fig:deps}).
 But what about \code{C} and \code{D}?  It makes no sense to enumerate
 all combinations of versions for these four libraries because in many
 cases \code{D} isn't even required.  Furthermore, what is their
@@ -945,7 +945,7 @@ The algorithm then proceeds as follows:
       \item If there are no possible versions for any library we depend on, backtrack
       \item Return the result of calling this function again recursively
     \end{enumerate}
-\end{enumerate}  
+\end{enumerate}
 
 \subsubsection{Formulating Constraints}
 
@@ -1047,7 +1047,8 @@ repository).  Instead, such tokens must be provided as environment
 variables.
 
 The \code{impact} source code is licensed under an MIT license and is
-hosted on GitHub.  The GitHub repository includes a \code{LICENSE},
+hosted on GitHub.  The GitHub repository~\parencite{impact-repo}
+includes a \code{LICENSE},
 \code{README.md} and \code{CONTRIBUTING.md} which provide a details
 license, introductory documentation and instructions for contributors,
 respectively.  We've linked the GitHub repository to a continuous
@@ -1109,8 +1110,9 @@ There are new features/mechanisms made available both by GitHub and
   Making these self-contained project folders.
 \end{itemize}
 
-Bases on which we recommend that library developers make the most of
-it and change the structure in which they organize their library repositories.
+We recommend that library developers make the most out of
+the new features above and change the structure in which
+they organize their library repositories.
 \begin{enumerate}
 \item Get rid of the \texttt{release} branch as long as it was only
   for the sake of providing a download-able zip-file with a customized
@@ -1165,7 +1167,7 @@ platform dependent versions with pre-compiled binaries).
 \subsection{Which license is best for your library}
 The \emph{Modelica Standard library} (\texttt{Modelica})~\parencite{MSL} is licensed under
 the ``Modelica License Version 2.0''~\parencite{MoLic2}. So in order
-to stay compatible with the \texttt{Modelica} library most user libraries choose the
+to stay compatible with the \texttt{Modelica} library most user libraries chose the
 same license. This seemed to be just natural. Now there is one problem
 which is not very apparent to most library developers. This is that
 the ``Modelica License Version 2.0'' contains the section
@@ -1190,7 +1192,7 @@ alone is already a violation of the terms of the ``Modelica License
 Version 2.0''.
 
 So what should the library developer do? The simplest solution is to
-``not'' use the ``Modelica License Version 2.0'' for user libraries
+\textbf{not} use the ``Modelica License Version 2.0'' for user libraries
 but rather go for standard licenses~\parencite{lic} that are similar
 in  nature like, MIT or BSD style license. Interestingly enough the
 old ``Modelica License Version 1.1'' is still suitable for user
@@ -1203,23 +1205,23 @@ would be a good choice for a license in order
 to protect parts of their library being used inside proprietary
 libraries without any bug-fixes and improvements being fed back to them
 as ``upstream'' developers. Unfortunately the GPL also forbids that any
-other non-GPL library (even the Modelica Standard Library) uses
-the GPL library and being distributed that way. So what about the
+other \mbox{non-GPL} library (even the Modelica Standard Library) uses
+the GPL licensed library and is distributed that way. So what about the
 LGPL, this allows the usage and distribution \emph{alongside} with
-other non-gpl libraries. The problem her is that it does not allow
+other non-gpl libraries. The problem here is that it does not allow
 static linking. Something that happens when one creates a compiled
-version of simulation model that uses different Modelica libraries.
+version of a simulation model that uses different Modelica libraries.
 A typical example would be the generation of an FMU~\parencite{FMI}.
 A way out is here the ``Mozilla Public License'' which is very much
 alike the LGPL but allows generated code to be statically linked
 together with non-GPL licensed code.
 
-Conclusion. For user libraries should if possible avoid the ``Modelica
+Conclusion. User libraries should, if possible, avoid the ``Modelica
 License Version 2.0'' as this was primarily designed for the
-requirements of the \emph{Modelica Standard library}. Perhaps there
+requirements of the \emph{Modelica Standard Library}. Perhaps there
 will be a future revision that is adapted to current open-source
 development models for user libraries. Until then try to use standard
-libraries that are BSD/MIT style.
+libraries that are BSD/MIT or MPL style.
 
 
 \section{Future Development}
@@ -1249,9 +1251,9 @@ At the moment, \code{impact} is only able to crawl GitHub
 repositories.  There is nothing particularly special about GitHub
 and/or its APIs.  The authors are confident that indices could be
 constructed for many different storage types.  The most obvious next
-steps for crawling support would be to add support for Bitbucket and
-Subversion repositories.  Pull requests to introduce such
-functionality would be welcome.
+steps for crawling support would be to add support for GitLab and
+Bitbucket(Mercurial and Subversion) repositories.
+Pull requests to introduce such functionality would be welcome.
 
 On a related note, we anticipate there will be many use cases where
 \code{impact} could be useful for closed source projects that involve
