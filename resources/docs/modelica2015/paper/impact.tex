@@ -825,7 +825,7 @@ versions of \code{B} that are compatible\footnote{It is not possible
   to express this kind of ``or'' dependency currently in Modelica, but
   it is supported by \code{impact}.  This capability exists in {\code
     impact} both to support anticipated future capabilities in
-  Modelica \cite{} and/or to support cases we will discuss shortly
+  Modelica \cite{https://trac.modelica.org/Modelica/raw-attachment/ticket/573/Package-Proposal_asMCP.doc} and/or to support cases we will discuss shortly
   that consider cases of compatibility implicit in semantic versions.}
 (\emph{i.e.,} \code{B:1.1.0} and \code{B:1.0.0}).  Given that we are
 considering \code{A:1.0.0} and we've already ruled out {\code
@@ -917,7 +917,7 @@ explicit constraints.
 
 %% TODO: Cite Go languages
 
-We've created an implementation of \code{impact} using Go\cite{Go}.
+We've created an implementation of \code{impact} using Go\cite{http://golang.org/ref/spec}.
 This implementation includes different sub-packages for dealing with
 crawling repositories, resolving dependencies, parsing Modelica code
 and managing configuration settings.  It also contains a sub-package
@@ -1246,9 +1246,10 @@ could once again leverage Go's static executable generation to build
 such installers from the index.  Instead of installing the needed
 files locally, the installer could simply bundle them up and attach
 them to an installation program using one of the many Go
-extensions\cite{go.rice}\cite{https://bitbucket.org/tebeka/nrsc/} for
-concatenating static content onto executables or simply downloading
-some pre-specified libraries over the network.
+extensions\cite{https://github.com/GeertJohan/go.rice}
+\cite{https://bitbucket.org/tebeka/nrsc/}
+for concatenating static content onto executables or simply
+downloading some pre-specified libraries over the network.
 
 \section{Conclusion}
 
