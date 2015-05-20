@@ -170,7 +170,7 @@ with a way for people to install \code{impact} \textbf{as a simple
 
 Another issue we ran into with the Python version was the fact that
 there are two different and incompatible versions of Python being used
-today ({\it i.e.,} 2.x and 3.x).  Trying to support both was an
+today (\emph{i.e.,} 2.x and 3.x).  Trying to support both was an
 unnecessarily inefficient use of resources.  We also had some
 difficulties in the Python version with support for SSL under Windows
 \parencite{python-ssl}.  Because we were doing lots of ``crawling''
@@ -250,7 +250,7 @@ semantic version means something.  If you make a non-backward
 compatible change, you must increment the major version.  If you make
 a backward compatible version, you must increment the minor version.
 If you make a change that should be completely compatible with the
-previous version ({\it e.g.,} doesn't add any new capability), you
+previous version (\emph{e.g.,} doesn't add any new capability), you
 increment only the patch version.
 
 There are additional provisions in semantic versioning to handle
@@ -731,11 +731,12 @@ dependencies:
 and \code{C}.  For each variable, we have three possible values.  As
 we've already described, newer versions are preferred over older
 versions while searching.  This means that the first combination we
-will consider will be...
+will consider will be\ldots
 
 \code{A:3.0.0}, \code{B:1.2.0} and \code{C:1.2.0}
 
-...and the last combination we will consider will be...
+\noindent
+\ldots and the last combination we will consider will be\ldots
 
 \code{A:1.0.0}, \code{B:1.2.0} and \code{C:1.2.0}
 
@@ -820,7 +821,7 @@ versions are connected by the constraints shown in the table above.
 Given these dependencies and the fact that the user wishes to install
 both \code{A} and \code{B}, what are the variables in our dependency
 resolution algorithm?  Obviously, we must consider all the versions of
-both \code{A} and \code{B} ({\it i.e.,} we must pick a version from
+both \code{A} and \code{B} (\emph{i.e.,} we must pick a version from
 the box for library \code{A} and \code{B} in Figure~\ref{fig:deps}).
 But what about \code{C} and \code{D}?  It makes no sense to enumerate
 all combinations of versions for these four libraries because in many
@@ -932,7 +933,7 @@ The algorithm then proceeds as follows:
 
 \begin{enumerate}
   \item Is \code{rest} empty?  If so, we are done and we have a solution
-    ({\it i.e.,} \code{mapped})
+    (\emph{i.e.,} \code{mapped})
   \item Consider the first library in \code{rest}
   \item Loop over available versions (based on \code{avail})
     \begin{enumerate}
@@ -1198,7 +1199,7 @@ License Version 2.0''.
 So what should the library developer do? The simplest solution is to
 \textbf{not} use the ``Modelica License Version 2.0'' for libraries
 but rather go for standard licenses~\parencite{lic} that are more
-compatible with open source, community driven development ({\it e.g.,}
+compatible with open source, community driven development (\emph{e.g.,}
 MIT or BSD licenses). Interestingly, the old ``Modelica License
 Version 1.1'' is still suitable for user libraries since it does not
 contain the restrictions of having to change the package name.
@@ -1256,7 +1257,7 @@ repositories.  There is nothing particularly special about GitHub
 and/or its APIs.  The authors are confident that indices could be
 constructed for many different storage types.  The most obvious next
 steps for crawling support would be to add support for GitLab and
-Bitbucket(Mercurial and Subversion) repositories.  Pull requests to
+Bitbucket (Mercurial and Subversion) repositories.  Pull requests to
 introduce such functionality are welcome.
 
 On a related note, we anticipate there will be many use cases where
