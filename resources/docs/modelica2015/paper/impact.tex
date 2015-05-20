@@ -95,7 +95,7 @@
 \maketitle\thispagestyle{empty} %% <-- you need this for the first page
 \abstract{%
 
-  This paper discussed the \code{impact} package manager.  The primary
+  This paper discusses the \code{impact} package manager.  The primary
   goal of this project is to support the development of a healthy
   eco-system around Modelica.  For many other languages, the existence
   of an easy to use package manager has made it easier for people to
@@ -126,7 +126,7 @@ The motivation behind the \code{impact} project is to support two
 critical aspects of library development.  The first is to make it very
 easy for library developers to \emph{publish} their work.  The second
 is, at the same time, to make it easy for library consumers to both
-find and install published libraries.
+\emph{find} and \emph{install} published libraries.
 
 We also feel it is important  to reinforce best practices with respect
 to model development.   For this reason, we have  made version control
@@ -150,17 +150,17 @@ development.
 Earlier, we mentioned that \code{impact} has been completely
 rewritten.  In fact, the very first version of \code{impact} was just
 a single Python script for indexing and installing Modelica
-code\parencite{impact-gist}.  It eventually involved into a multi-file
+code\parencite{impact-gist}.  It eventually evolved into a multi-file
 package that could be installed using the Python package management
 tools.
 
 \section{Requirements}
 
 After building the original Python version, we gave some thought to
-what worked and what didn't work well.  One issue we ran into almost
-immediately was the complexity of installing the Python version of
-\code{impact}.  Python is unusual in that it has two package managers,
-\code{easy\_install} and \code{pip}.  It comes with
+what worked well and what didn't work well.  One issue we ran into
+almost immediately was the complexity of installing the Python version
+of \code{impact}.  Python is unusual in that it has two package
+managers, \code{easy\_install} and \code{pip}.  It comes with
 \code{easy\_install}, but \code{pip} is the more capable package
 manager.  So in order for someone to install \code{impact}, they first
 needed to install Python, then install \code{pip} and then install
@@ -170,16 +170,15 @@ with a way for people to install \code{impact} \textbf{as a simple
 
 Another issue we ran into with the Python version was the fact that
 there are two different and incompatible versions of Python being used
-today.  Trying to support both was an unnecessarily inefficient use of
-resources.  For this reason, we felt we needed to move away from
-Python altogether.
+today ({\it i.e.,} 2.x and 3.x).  Trying to support both was an
+unnecessarily inefficient use of resources.  We also had some
+difficulties in the Python version with support for SSL under Windows
+\parencite{python-ssl}.  Because we were doing lots of ``crawling''
+(more on this shortly), we needed a platform that provided
+\textbf{solid HTTP client support}.  For these reasons, we felt we
+needed to move away from Python altogether.
 
-We also had some difficulties in the Python version with support for
-SSL under Windows \parencite{python-ssl}.  Because we were doing lots of
-``crawling'' (more on this shortly), we needed a platform that
-provided \textbf{solid HTTP client support}.
-
-Although most users Modelica run their development tools and
+Although most Modelica users run their development tools and
 simulations under Windows, there are several tools that support OSX
 and Linux as well as Windows.  So as to not neglect users of those
 tools and to support more cross-platform options, we also wanted to be
@@ -199,14 +198,14 @@ shortly, the computational complexity of the dependency resolution
 algorithm we implemented could lead to some computationally intensive
 calculations for complex systems of dependencies.
 
-For these reasons, we ultimately rewrote \code{impact} in Go.  Go is a
-relatively new language from Google that stresses simplicity in
-language semantics but, at the same time, provides a fairly complete
-standard library.  You can think of Go as being quite similar to C
-with support for extremely simple object-oriented functionality,
-automatic garbage collection and language level support for CSP-based
-concurrency.  With Go, we were able to satisfy all the requirements
-above.
+For these reasons, we ultimately rewrote \code{impact} in
+Go~\parencite{go-lang}.  Go is a relatively new language from Google
+that stresses simplicity in language semantics but, at the same time,
+provides a fairly complete standard library.  You can think of Go as
+being quite similar to C with support for extremely simple
+object-oriented functionality, automatic garbage collection and
+language level support for CSP-based concurrency.  With Go, we were
+able to satisfy all the requirements above.
 
 \section{Version Numbering}
 \label{sec:numbers}
@@ -240,17 +239,19 @@ widely used approach is to employ what is called \textbf{semantic
 it sounds like, an approach to defining version numbers where the
 version numbers have very explicit meanings associated with them.
 
-A very simple summary of semantic versioning would be that \textbf{all}
-versions have exactly three numerical components, a major version
-number, a minor version number and a patch.  A semantic version must
-have all of these numbers and they must be \texttt{.}-separated.  For this
-reason, the following versions are not legal semantic version numbers:
-\code{1}, \code{1a}, \code{1.0}, \code{1.0-beta5}, \code{4.0.2.4096}.
-Each of these number means something.  If you make a non-backward
+A very simple summary of semantic versioning would be that
+\textbf{all} versions have exactly three numerical components, a major
+version number, a minor version number and a patch.  A semantic
+version must have all of these numbers and they must be
+\texttt{.}-separated.  For this reason, the following versions are not
+legal semantic version numbers: \code{1}, \code{1a}, \code{1.0},
+\code{1.0-beta5}, \code{4.0.2.4096}.  Each of the three numbers in a
+semantic version means something.  If you make a non-backward
 compatible change, you must increment the major version.  If you make
 a backward compatible version, you must increment the minor version.
 If you make a change that should be completely compatible with the
-previous version, you increment only the patch version.
+previous version ({\it e.g.,} doesn't add any new capability), you
+increment only the patch version.
 
 There are additional provisions in semantic versioning to handle
 pre-release versions as well as build annotations.  We will not
@@ -290,7 +291,7 @@ As mentioned previously, there are two main functions that
 developers to publish their libraries and the other is making it easy
 for consumers to find and install those same libraries.  Where these
 two needs meet is the library index.  The index is \textbf{built} by
-collecting information about publish libraries.  The same index is
+collecting information about published libraries.  The same index is
 \textbf{used} by consumers searching for information about available
 libraries.
 
@@ -321,7 +322,7 @@ version.  Each tag in the repository history that starts with a
 \subsection{Repository Structure}
 
 For each version of a repository tagged with a semantic version
-number, \code{impact} inspects to contents of that version of the
+number, \code{impact} inspects the contents of that version of the
 repository looking for Modelica libraries.  There are effectively two
 ways that \code{impact} finds Modelica libraries in a repository.  The
 first is to check for libraries in ``obvious'' places that conform to
@@ -337,21 +338,22 @@ libraries:
 
 \begin{itemize}[noitemsep]
   \item \textbf{\code{./package.mo}} The entire repository is treated as a Modelica
-    package whose name is the name of the repository.
+    package.
 
   \item \textbf{\code{./<dirname>/package.mo}} or\\  \textbf{\code{./<dirname>
       <ver>/package.mo}} The directory \code{<dirname>} is presumed to
-    be a Modelica package.  The name of the library is determined by
-    parsing the \code{package.mo} file.
+    be a Modelica package.
 
   \item \textbf{\code{./<filename>.mo}} or\\ \textbf{\code{./<filename> <ver>.mo}} The
     file \code{./<filename>.mo} is a file containing a Modelica
-    library.  The name of the library is determined by parsing the
-    file.
+    library.
 \end{itemize}
 
-As can be seen from these conventions, only files and directories that
-exist at the root level are checked for Modelica content.
+In all cases, the name of the library is determined by parsing the
+actual Modelica \code{package} definition and is not related to the
+name of the repository.  As can be seen from these conventions, only
+files and directories that exist at the root level are checked for
+Modelica content.
 
 \subsubsection{\code{impact.json}}
 \label{sec:dirinfo}
@@ -391,13 +393,14 @@ version control to make the process of indexing and collection
 libraries easier.  However, version control does introduce one
 complexity as well.  That complexity is how to deal with \emph{forks}.
 
-A fork occurs when there are multiple perspectives on how development
-should progress on a given project.  In some cases, rather than
-reconciling these different perspectives, developers decide to proceed
-in different directions.  When this happens, the project becomes
-``forked'' and there are then (at least) two \textbf{different} libraries
-being developed in parallel.  Each of these libraries may share a
-common name and perhaps even the same version numbers but still be
+Forks are common in open source projects and typically occur when
+there are multiple perspectives on how development should progress on
+a given project.  In some cases, rather than reconciling these
+different perspectives, developers decide to proceed in different
+directions.  When this happens, the project becomes ``forked'' and
+there are then (at least) two \textbf{different} libraries being
+developed in parallel.  Each of these libraries may share a common
+name and perhaps even the same version numbers but still be
 fundamentally different libraries.
 
 A fork can arise for another, more positive, reason.  When someone
@@ -407,8 +410,9 @@ it is extremely common for a library to be forked simply to enable a
 third-party to make an improvement.  The author of the improvement
 then sends what is called a \emph{pull request} to the library author
 asking them to incorporate the improvement.  In such a workflow, the
-fork is simply a temporary measure to support concurrent development.
-Once the pull request is accepted, the fork can be removed entirely.
+fork is simply a temporary measure (akin to a branch) to support
+concurrent development.  Once the pull request is accepted, the fork
+can be removed entirely.
 
 Regardless of why the fork occurs, it is important that \code{impact}
 accommodates cases where forking occurs.  This is because forking is a
@@ -435,8 +439,10 @@ we will provide a complete description of information used by
 \subsubsection{\code{impact\_index.json}}
 \label{sec:index_schema}
 
-The root of an \code{impact\_index.json} file contains only two
-elements:
+As part of the indexing process, \code{impact} produces an index file
+named \code{impact\_index.json}.  This is a JSON encoded
+representation of all the libraries found during indexing.  The root
+of an \code{impact\_index.json} file contains only two elements:
 
 \begin{description}[noitemsep]
   \item[\code{version}] A string indicating what version of impact
@@ -519,8 +525,9 @@ information:
     libraries.  This information can, therefore, be used to
     disambiguate between dependencies where there may be multiple
     libraries with that name.
-  \item[\code{libraries}] This is an array where each element contains
-    information about a library present in the repository.
+  \item[\code{libraries}] This is an array where each element is an
+    object that contains information about a library present in the
+    repository.
 \end{description}
 
 For each library listed in the \code{libraries} field, the following
@@ -539,7 +546,8 @@ information may be provided:
     \code{uses} annotations found in the package definition).
 \end{description}
 
-For each dependency, the following information should be provided:
+Each dependency in the list should be an object that provides the
+following information:
 
 \begin{description}
   \item[\code{name}] Name of the required library
@@ -552,7 +560,7 @@ For each dependency, the following information should be provided:
 
 The previous section focused on how \code{impact} collects information
 about available libraries.  The main application for this information
-is support installation of those libraries.  In this section, we'll
+is to support installation of those libraries.  In this section, we'll
 discuss the installation side of using \code{impact}.
 
 \subsection{Dependency Resolution}
@@ -580,8 +588,7 @@ Modelica package.  However, due to the existence of external libraries
 need will arise in the future.  Additionally, current Modelica makes
 it impossible to refer to two different versions of a library from the
 same model.  Hence, we consider different versions of the same package
-conflicting (\code{impact} can will only install one version of each
-package in a given context).
+conflicting.
 
 The dependency resolution of \code{impact} fits into Boender's model.
 Therefore, the conclusions drawn in \parencite{boender2011formal} can be
@@ -625,8 +632,9 @@ Let's explain why this priority is important.  Consider a user who
 wishes to install libraries \code{A} and \code{B}.  If the user has
 not explicitly specified what version of each library they are
 interested in, \code{impact} assumes the user wants the latest
-version.  But what if the latest version of \emph{both} cannot be
-used.  To understand this case, consider the following constraints:
+version, if possible.  But what if the latest version of \emph{both}
+cannot be used?  To understand this case, consider the following
+constraints:
 
 \begin{description}
   \item \code{A:1.0.0} uses \code{B:2.0.0}
@@ -723,11 +731,11 @@ dependencies:
 and \code{C}.  For each variable, we have three possible values.  As
 we've already described, newer versions are preferred over older
 versions while searching.  This means that the first combination we
-will consider will be:
+will consider will be...
 
 \code{A:3.0.0}, \code{B:1.2.0} and \code{C:1.2.0}
 
-and the last combination we will consider will be:
+...and the last combination we will consider will be...
 
 \code{A:1.0.0}, \code{1:1.2.0} and \code{1:1.2.0}
 
@@ -962,7 +970,7 @@ explicit constraints.
 
 \section{Go Implementation}
 
-We've created an implementation of \code{impact} using Go~\parencite{go-lang}.
+We've created an implementation of \code{impact} using Go.
 This implementation includes different sub-packages for dealing with
 crawling repositories, resolving dependencies, parsing Modelica code
 and managing configuration settings.  It also contains a sub-package
