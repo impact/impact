@@ -814,8 +814,6 @@ wants \code{C:1.1.0}.  So no choice for \code{C} is valid.
 Furthermore, we don't even consider \code{D} because it isn't
 required in any of these cases.
 
-%% TODO: Cite Modelica proposal mentioned below
-
 Now if we move to the case of \code{A:1.0.0}, things are more
 complicated.  Now we \textbf{do} need to consider both \code{D} and
 \code{C}.  However, note that because \code{A:1.0.0} depends
@@ -825,7 +823,7 @@ versions of \code{B} that are compatible\footnote{It is not possible
   to express this kind of ``or'' dependency currently in Modelica, but
   it is supported by \code{impact}.  This capability exists in {\code
     impact} both to support anticipated future capabilities in
-  Modelica \cite{https://trac.modelica.org/Modelica/raw-attachment/ticket/573/Package-Proposal_asMCP.doc} and/or to support cases we will discuss shortly
+  Modelica \parencite{impact-MCP} and/or to support cases we will discuss shortly
   that consider cases of compatibility implicit in semantic versions.}
 (\emph{i.e.,} \code{B:1.1.0} and \code{B:1.0.0}).  Given that we are
 considering \code{A:1.0.0} and we've already ruled out {\code
@@ -884,8 +882,14 @@ how a particular library is not even considered until a dependency on
 that library is introduced by choosing a particular version that
 depends on it.
 
-% TODO: Insert graphic (see images directory)...should probably redo
-% with yEd
+% TODO: should probably redo with yEd
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=\columnwidth]{fig/complex_case}
+  \caption{Graphical representation of package dependencies}
+  \label{fig:deps}
+\end{figure}
+
 
 It should be noted that there are a variety of other special cases we
 also deal with like self dependency and cyclic dependency.  But these
@@ -915,9 +919,7 @@ explicit constraints.
 
 \section{Go Implementation}
 
-%% TODO: Cite Go languages
-
-We've created an implementation of \code{impact} using Go\cite{http://golang.org/ref/spec}.
+We've created an implementation of \code{impact} using Go~\parencite{go-lang}.
 This implementation includes different sub-packages for dealing with
 crawling repositories, resolving dependencies, parsing Modelica code
 and managing configuration settings.  It also contains a sub-package
@@ -1236,8 +1238,6 @@ of functionality could be added in the future.
 
 \subsection{Installers}
 
-%% TODO: Cite two packages...
-
 Finally, when installing software, it is common for developers to
 distribute ``installers'' ({\it i.e.,} executables that, when run,
 unpack and install the software).  Another potential extension of
@@ -1246,8 +1246,7 @@ could once again leverage Go's static executable generation to build
 such installers from the index.  Instead of installing the needed
 files locally, the installer could simply bundle them up and attach
 them to an installation program using one of the many Go
-extensions\cite{https://github.com/GeertJohan/go.rice}
-\cite{https://bitbucket.org/tebeka/nrsc/}
+extensions~\parencite{GeertJohan/go.rice,tebeka/nrsc}
 for concatenating static content onto executables or simply
 downloading some pre-specified libraries over the network.
 
