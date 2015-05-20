@@ -1084,20 +1084,20 @@ libraries.
     <Version>}'' and any generated content can be added).  Finally,
   developers should then place a tag on the release branch. This was
   done for the following reasons:
-  \begin{description}
-  \item[\textbf{+}] The link to the tag provided a (tar)zip file that
+  \begin{itemize}
+  \item The link to the tag provided a (tar)zip file that
     contained the library with the
     ``\texttt{<PackageName>~<Version>}'' format ready to be used with
     \texttt{MODELICAPATH}. However, we no longer need to rely on
     \texttt{MODELICAPATH} any more we don't need to add the
     \texttt{<Version>} identifier to the folder anymore.
-  \item[\textbf{-}] If we would like to see what stage a certain
+  \item If we would like to see what stage a certain
     release in \texttt{master} was at, then we needed to either
     inspect the \code{git} history (following backwards from the
     release tag) or use an additional tag (e.g.,
     ``\texttt{1.2.3-dev}'') which is rather cumbersome and seems
     unnecessary.
-  \end{description}
+  \end{itemize}
 \end{enumerate}
 
 \subsection{Repository structure recommendations}
