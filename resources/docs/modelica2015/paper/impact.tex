@@ -210,7 +210,7 @@ above.
 Before we dive into all the details associated with crawling,
 indexing, resolving and installing, it is useful to take a moment to
 briefly discuss versioning.  Modelica supports the notion of versions
-through the use of the `version` and `uses` annotations.  These two
+through the use of the \texttt{version} and \texttt{uses} annotations.  These two
 annotations allow libraries to explicitly state what version they are
 and what versions of other libraries they use, respectively.
 
@@ -239,7 +239,7 @@ version numbers have very explicit meanings associated with them.
 A very simple summary of semantic versioning would be that \textbf{all}
 versions have exactly three numerical components, a major version
 number, a minor version number and a patch.  A semantic version must
-have all of these numbers and they must be .-separated.  For this
+have all of these numbers and they must be \texttt{.}-separated.  For this
 reason, the following versions are not legal semantic version numbers:
 \code{1}, \code{1a}, \code{1.0}, \code{1.0-beta5}, \code{4.0.2.4096}.
 Each of these number means something.  If you make a non-backward
@@ -366,7 +366,7 @@ to include contact information beyond what can be extracted from
 information about the repository and its owner.  These are just a few
 use cases for why an \code{impact.json} file might be useful for
 library developers.  A complete schema for the \code{impact.json} file
-can be found later in Section \ref{sec:dirinfo_schema}.
+can be found later in Section~\ref{sec:dirinfo_schema}.
 
 \subsection{Handling Forks}
 
@@ -418,7 +418,7 @@ For this reason, \code{impact} records \textbf{not only the library name,
   but also a URI associated with each library}.  In this way, the URI
 serves as a completely unambiguous way of identifying different
 libraries.  While two forks may have the same name, they will never
-have the same URI.
+have the same URI\@.
 
 \subsection{Schema}
 
@@ -468,7 +468,7 @@ information may be present:
     repository (e.g., Git, Mercurial, Subversion, \emph{etc.})
   \item[\code{versions}] This is an object that maps a semantic
     version (in the form of a string) to details associated with that
-    specific version)
+    specific version
 \end{description}
 
 The details associated with each version are as follows:
@@ -494,13 +494,13 @@ The details associated with each version are as follows:
     \code{name}, giving the name of the required library and another
     field, \code{version}, which is the \textbf{semantic version} of that
     library represented as a string (see previous discussion on
-    normalization in \ref{sec:numbers}).
+    normalization in~\ref{sec:numbers}).
 \end{description}
 
 \subsubsection{\code{impact.json}}
 \label{sec:dirinfo_schema}
 
-As mentioned previously in Section \ref{sec:dirinfo}, each directory
+As mentioned previously in Section~\ref{sec:dirinfo}, each directory
 can include a file named \code{impact.json} that provides explicit
 information about Modelica libraries contained in that repository.
 The root of the \code{impact.json} file contains the following
@@ -587,8 +587,8 @@ The set of packages \code{impact} installs for a given project needs to
 fulfill two properties, Boender calls \emph{abundance} and \emph{peace}.
 Informally, abundance captures the requirement that all dependencies
 be met while peace avoids packages that are in conflict with each
-other.  A set of packages that is peaceful and abundant is called {\em
-  healthy} and a package $p$ is called \emph{installable} w.r.t. a
+other.  A set of packages that is peaceful and abundant is called
+\emph{healthy} and a package $p$ is called \emph{installable} w.r.t.\ a
 given repository if and only if there exists a healthy set $I$ in said
 repository such that $p \in I$.
 
@@ -660,9 +660,9 @@ summarizes the possibilities:
 \end{tabular}
 \end{center}
 }
-This is a simple enumeration of the possibilities.  But {\em
-  remember}, we assume the user wants the most recent version {\em
-  and} we assume \code{A} is more important than \code{B}.  Semantic
+This is a simple enumeration of the possibilities.  But
+\emph{remember}, we assume the user wants the most recent version
+\emph{and} we assume \code{A} is more important than \code{B}.  Semantic
 versioning provides us with a basis for determining which version is
 more recent.  Given these we reorder these combinations so that the
 most desirable combinations appear first and the least desirable
@@ -821,13 +821,13 @@ directly on \code{D}, we consider \code{D} more important.  This is
 important because when considering \code{A:1.0.0} we have two
 versions of \code{B} that are compatible\footnote{It is not possible
   to express this kind of ``or'' dependency currently in Modelica, but
-  it is supported by \code{impact}.  This capability exists in {\code
-    impact} both to support anticipated future capabilities in
+  it is supported by \code{impact}.  This capability exists in
+  \code{impact} both to support anticipated future capabilities in
   Modelica \parencite{impact-MCP} and/or to support cases we will discuss shortly
   that consider cases of compatibility implicit in semantic versions.}
 (\emph{i.e.,} \code{B:1.1.0} and \code{B:1.0.0}).  Given that we are
-considering \code{A:1.0.0} and we've already ruled out {\code
-  B:1.2.0}, we are left with the following combinations:
+considering \code{A:1.0.0} and we've already ruled out \code{B:1.2.0},
+we are left with the following combinations:
 {\small
 \begin{center}
 \begin{tabular}{ l l l }
@@ -886,8 +886,7 @@ depends on it.
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=\columnwidth]{fig/complex_case}
-  \caption{Graphical representation of package dependencies}
-  \label{fig:deps}
+  \caption{Graphical representation of package dependencies}\label{fig:deps}
 \end{figure}
 
 
@@ -901,7 +900,7 @@ in any significant way.
 The default assumption is that dependencies will come from the
 \code{uses} annotation in Modelica.  There is a proposal to extend the
 \code{uses} annotation to allow multiple compatible versions to be
-listed (vs. only a single compatible version today).  As mentioned
+listed (vs.\ only a single compatible version today).  As mentioned
 perviously, such an \code{or} relationship is already supported by
 \code{impact}.  So this change would not impact the resolution
 algorithm used by \code{impact}.
@@ -1051,7 +1050,7 @@ There are new features/mechanisms made available both by GitHub and
 \item GitHub's support for assets \parencite{gh-assets} allows one to
   upload adtional files to tagged releases
 \item  \code{impact} does not use the \texttt{MODELCAPATH} model but
-  rather uses a "one working directory per project" approach where a
+  rather uses a ``one working directory per project'' approach where a
   library of \textbf{one} version  and all dependencies live in one
   (working) directory. A different version of the same library would
   be placed in a different working directory.
@@ -1071,10 +1070,10 @@ it and change the structure in which they organize their library repositories.
     \texttt{Resources} sub-folder and committing this to the
     \texttt{release} branch and then tagging it, tag the
     \texttt{master} branch and then generate a zip-file which contains
-    that state and add the generated files to that tagged releas.
-    GitHub also provides some information on Creating
-    Releases~\parencite{gh-releases} and there exist for example the
-    \texttt{aktau/github-release}\parencite{aktau-github-release} tool
+    that state and add the generated files to the tagged release.
+    GitHub also provides some information on ``Creating
+    Releases''~\parencite{gh-releases} and there exist for example the
+    \texttt{aktau/github-release} tool~\parencite{aktau-github-release}
     to help automating that process.
   \item Another benefit of  the assets is that the GitHub
     API~\parencite{gh-api} allows you to get the download count for
@@ -1084,7 +1083,7 @@ it and change the structure in which they organize their library repositories.
 \item Get rid of the \texttt{<PackageName> <Version>} formatted folder
   names. The version number does not belong in the  \texttt{master}
   (i.e., development)  branch anyway and the version annotation is
-  contained  in the `version` annotation which tools will happily
+  contained  in the \texttt{version} annotation which tools will happily
   display for you. When you install a package with \code{impact} it
   will strip that version number in any case.
 \end{enumerate}
@@ -1099,17 +1098,17 @@ sub-module to \code{impact} itself.
 
 Currently the listing links directly to the (tar)zip-ball URL of the
 latest tag of a library. This works fine if the library uses the old
-\texttt{release} branch model where the "ready to install" version was
-placed.  licking on that coloured version link will result in a direct file download.
+\texttt{release} branch model where the ``ready to install'' version was
+placed.  Clicking on that coloured version link will result in a direct file download.
 
 This will be changed in such a way that if one clicks on the listed
-"Last Release" button one will be redirected to the "Releases" page of
+``Last Release'' button one will be redirected to the ``Releases'' page of
 that project showing the last release. This has the advantage that one
 does not immediately downloads the (tar)zip ball but gets to see
 proper release notes first \emph{and} is given a choice of what
 version of a release one can download (e.g., pure source distribution
 of that tag, customised version with additional files, different
-platform dependent versions with pre-compiled binaries)
+platform dependent versions with pre-compiled binaries).
 
 \subsection{Which license is best for your library}
 The \emph{Modelica Standard library} (\texttt{Modelica})~\parencite{MSL} is licensed under
@@ -1151,8 +1150,8 @@ GNU General Pubic license. People might think this
 would be a good choice for a license in order
 to protect parts of their library being used inside proprietary
 libraries without any bugfixes and improvements being fed back to them
-as ``upstream'' developers. Unfortunately the GPL also forbids the any
-other non-GPL library (even the Modelica Standard Library) to be using
+as ``upstream'' developers. Unfortunately the GPL also forbids that any
+other non-GPL library (even the Modelica Standard Library) uses
 the GPL library and being distributed that way. So what about the
 LGPL, this allows the usage and distribution \emph{alongside} with
 other non-gpl libraries. The problem her is that it does not allow
@@ -1281,7 +1280,7 @@ Peter Harman of ESi Group for their contributions to this project.
 %--------------------------------------------------------------------------------
 % References using biblatex
 \small
-\printbibliography
+\printbibliography%
 \normalsize
 
 \end{document}
