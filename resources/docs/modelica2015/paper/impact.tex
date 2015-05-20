@@ -1169,7 +1169,7 @@ that tag, customized version with additional files, different platform
 dependent versions with pre-compiled binaries).
 
 \subsection{Which license is best for your library}
-The \emph{Modelica Standard library}
+The \emph{Modelica Standard Library}
 (\texttt{Modelica})~\parencite{MSL} is licensed under the ``Modelica
 License Version 2.0''~\parencite{MoLic2}. So in order to stay
 compatible with the \texttt{Modelica} library most user libraries
@@ -1177,9 +1177,13 @@ chose the same license. This seemed like a natural choice. However,
 there is one problem which is not immediately apparent to most library
 developers. This is that the ``Modelica License Version 2.0'' contains
 the section ``4. Designation of Derivative Works and of Modified
-Works'' which says that ``\emph{\ldots This means especially that the
+Works'' which says that:
+
+ ``\emph{\ldots This means especially that the
   (root-level) name of a Modelica package under this license must be
-  changed if the package is modified \ldots}''.  This clause makes
+  changed if the package is modified \ldots}''.
+
+This clause makes
 perfect sense for a main library like the \texttt{Modelica} library
 that is developed and maintained by a major group centrally and wants
 to protect its product name.  But what does this mean for open-source
@@ -1210,7 +1214,7 @@ would be a good choice for a license in order to protect parts of
 their library from being used inside proprietary libraries without any
 bug-fixes and improvements being fed back to them as ``upstream''
 developers. Unfortunately the GPL also forbids that any other
-\mbox{non-GPL} library (even the Modelica Standard Library) uses the
+\mbox{non-GPL} library (even the \emph{Modelica Standard Library}) uses the
 GPL licensed library and is distributed that way. So what about the
 LGPL, this allows the usage and distribution \emph{alongside} with
 other non-gpl libraries. The problem here is that it does not allow
