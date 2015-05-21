@@ -2,12 +2,17 @@
 SVG2PDF   = rsvg-convert
 IMAGEDIRS = fig
 
+.PHONY: all impact.md
+
 all: clean images impact.pdf
 
 impact.pdf: impact.tex impact.bib
 	pdflatex impact.tex
 	biber impact
 	pdflatex impact.tex
+
+impact.md: impact.pdf
+	pandoc impact.tex -o impact.md --biblio impact.bib
 
 clean:
 	rm -f *.aux *.bbl *.blg *-blx.bib *.log *.out *.run.xml *.toc *.bcf *~
