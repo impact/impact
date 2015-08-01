@@ -4,9 +4,14 @@ IMAGEDIRS = fig
 
 .PHONY: all impact.md
 
-all: clean images impact.pdf
+all: clean impact.pdf
 
-impact.pdf: impact.tex impact.bib
+abstract.pdf: images abstract.tex impact.bib
+	pdflatex abstract.tex
+	biber abstract
+	pdflatex abstract.tex
+
+impact.pdf: images impact.tex impact.bib
 	pdflatex impact.tex
 	biber impact
 	pdflatex impact.tex
@@ -19,7 +24,7 @@ clean:
 	rm -f *.nlo *.ist *.nls *.ilg
 
 distclean: clean
-	rm -f impact.pdf
+	rm -f impact.pdf abstract.pdf
 	rm -rf auto/ _region_*
 	$(foreach file, $(PDFs), $(shell rm -f "$(file)"))
 
