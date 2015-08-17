@@ -1031,6 +1031,11 @@ Observations
         additional tag (e.g., “`1.2.3-dev`”) which is rather cumbersome
         and seems unnecessary.
 
+    But since GitHub also supports new alternatives (see below) there is
+    no longer a need for a specific `release` branch. That is to say,
+    libray developers can still use it if they think it useful but they
+    don’t have to anymore.
+
 Repository structure recommendations
 ------------------------------------
 
@@ -1085,16 +1090,16 @@ contains all information with links. Currently it is a stand-alone
 *Python* script but we are thinking of adding this functionality as a
 sub-module to <span>`impact`</span> itself.
 
-Currently the listing points directly to the (tar)zip-ball URL of the
-latest tag of a library. This works fine if the library uses the old
-`release` branch model where the “ready to install” version was placed.
-Clicking on that coloured version link will result in a direct file
+Up to May 2015 the listing pointed directly to the (tar)zip-ball URL of
+the latest tag of a library. This worked fine if the library used the
+old `release` branch model where the “ready to install” version was
+placed. Clicking on that coloured version link resulted in a direct file
 download.
 
-This will be changed in such a way that if one clicks on the listed
-“Last Release” button one will be redirected to the “Releases” page of
+This has now been changed in such a way that if one clicks on the listed
+“Last Release” button one will get redirected to the “Releases” page of
 that project showing the last release. This has the advantage that one
-does not immediately downloads the (tar)zip ball but gets to see proper
+does not immediately download the (tar)zip ball but gets to see proper
 release notes first *and* is given a choice of what version of a release
 to download (e.g., pure source distribution of that tag, customized
 version with additional files, different platform dependent versions
