@@ -76,15 +76,27 @@ slides:
       - goal.html
       - recent.html
       - ordering.html
-      - simple.html
-      - complex.html
-    # meme - One does not simply ... resolve dependencies
-    # The use case (install these libraries)
-    # The underlying problem
-    # The basic solution (depth first traversal)
-    #   Find the most recent version of each library using depth-first priority
-    # Nuances (variable tree topology)
-    # The solution
+      - example.html
+      - example1.html
+      - example2.html
+      - example3.html
+      - example4.html
+      - example5.html
+      - example6.html
+      - example7.html
+      - example8.html
+      - example9.html
+      - example10.html
+      - example11.html
+      - example12.html
+      - example13.html
+      - example14.html
+      - example15.html
+      - example16.html
+      - example17.html
+      - example18.html
+      - nuances.html
+      - constraints.html
   Future:
     metadata:
       id: future
