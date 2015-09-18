@@ -137,8 +137,8 @@ See [LICENSE](LICENSE) file
 The development takes place on https://github.com/impact/impact
 
  * Authors: [@mtiller](https://github.com/mtiller), [@dietmarw](https://github.com/dietmarw)
- * Contributors: See [graphs/contributors](../../graphs/contributors)
+ * Contributors: See [graphs/contributors](https://github.com/impact/impact/graphs/contributors)
 
-You may report any issues with using the [Issues](../../issues) button.
+You may report any issues with using the [Issues](https://github.com/impact/impact/issues) button.
 
-Contributions in shape of [Pull Requests](../../pulls) are always welcome.
+Contributions in shape of [Pull Requests](https://github.com/impact/impact/pulls) are always welcome.
