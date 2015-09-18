@@ -4,7 +4,7 @@
 
 *Impact* is a Modelica package manager.
 
-![ImpactLogo](https://rawgithub.com/xogeny/impact/master/resources/images/logo_glossy.svg)
+![ImpactLogo](https://rawgithub.com/impact/impact/master/resources/images/logo_glossy.svg)
 
 The concept was first presented in [impact - A Modelica Package Manager](resources/docs/modelica2014/paper/impact.md)
 
@@ -80,7 +80,7 @@ All you need to specify is:
 
 and then run:
 
-`$ go get github.com/xogeny/impact/impact`
+`$ go get github.com/impact/impact/impact`
 
 which will automatically clone a copy of the git repository and all its dependencies,
 compile impact and put them in a structure like
@@ -90,7 +90,7 @@ $GOPATH/
   bin/
   pkg/
   src/
-    github.com/xogeny/impact
+    github.com/impact/impact
 ```
 
 To build as static executable again, just run:
@@ -99,7 +99,7 @@ To build as static executable again, just run:
 
 from inside
 
-`$GOPATH/src/github.com/xogeny/impact/impact`
+`$GOPATH/src/github.com/impact/impact/impact`
 
 This will create a static executable of called `impact` in `$GOPATH/bin`.
 
@@ -134,7 +134,7 @@ command:
 See [LICENSE](LICENSE) file
 
 ## Development
-The development takes place on https://github.com/xogeny/impact
+The development takes place on https://github.com/impact/impact
 
  * Authors: [@mtiller](https://github.com/mtiller), [@dietmarw](https://github.com/dietmarw)
  * Contributors: See [graphs/contributors](../../graphs/contributors)
