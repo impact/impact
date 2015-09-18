@@ -1,0 +1,95 @@
+metadata:
+  title: "Dependency Resolution in Impact"
+  image: https://raw2.github.com/impact/impact/master/images/logo_glossy.svg
+  url: http://github.com/impact/impact
+  desc: Dependency Resolution in Impact
+  styles:
+    - css/impact.css
+  includes:
+    - templates/macros.html
+  draft: false
+  math: false
+  animation: false
+slides:
+  Title:
+    metadata:
+      id: title
+    pages:
+      - title.html
+      # - acknowledgments.html
+  Ecosystems:
+    metadata:
+      id: ecosystems
+    pages:
+      - ecosystems.html
+      - eco_meme.html
+    # everywhere meme - package managers everywhere
+    # build momentum
+    # Language needs an ecosystem and community
+    # Needs people who care and put work in
+    # Can be anybody
+    # Tools
+  JavaScript_EcoSystem:
+    metadata:
+      id: javascript
+    pages:
+      - <hero><h1>Javascript Ecosystem</h1></hero>
+    # sad meme - Javascript is a terrible language, but the tools are so good.
+    # npm
+    # bower
+    # search
+    # installation
+    # dependency resolution
+    # web pages, issue trackers, wikis
+    # Look how easy things are?
+    # Just using basic infrastructure
+  Impact:
+    metadata:
+      id: impact
+    pages:
+      - impact.html
+    # Wonka meme - A Package Manager?  Tell me more...
+    # What? package manager for Modelica
+    # What not? (build system, MODELICAPATH)
+    # Why? manage libraries on a per project basis
+    # Why not? put it in tools
+    # Where? (impact org on GitHub)
+    # Where not? Modelica Association
+    # Who (impact o
+  Go:
+    metadata:
+      id: golang
+    pages:
+      - <hero><h1>Migrating to Go</h1></hero>
+    # Skeptical kid - You write it in Python...now you are switching to Golang?
+    # lack of runtime
+    # static binaries
+    # fast
+    # good JSON support
+    # cross-compilation
+  Dependencies:
+    metadata:
+      id: dependencies
+    pages:
+      - dependencies.html
+      - use_case.html
+      - goal.html
+      - recent.html
+      - ordering.html
+      - simple.html
+      - complex.html
+    # meme - One does not simply ... resolve dependencies
+    # The use case (install these libraries)
+    # The underlying problem
+    # The basic solution (depth first traversal)
+    #   Find the most recent version of each library using depth-first priority
+    # Nuances (variable tree topology)
+    # The solution
+  Future:
+    metadata:
+      id: future
+    pages:
+      - <hero><h1>Future</h1></hero>
+    # Git checkout
+    # Manifest file (package.json)
+    # Community
