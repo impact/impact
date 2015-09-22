@@ -21,7 +21,6 @@ slides:
     metadata:
       id: ecosystems
     pages:
-      - ecosystems.html
       - eco_meme.html
     # everywhere meme - package managers everywhere
     # build momentum
@@ -29,25 +28,12 @@ slides:
     # Needs people who care and put work in
     # Can be anybody
     # Tools
-  JavaScript_EcoSystem:
-    metadata:
-      id: javascript
-    pages:
-      - <hero><h1>Javascript Ecosystem</h1></hero>
-    # sad meme - Javascript is a terrible language, but the tools are so good.
-    # npm
-    # bower
-    # search
-    # installation
-    # dependency resolution
-    # web pages, issue trackers, wikis
-    # Look how easy things are?
-    # Just using basic infrastructure
   Impact:
     metadata:
       id: impact
     pages:
-      - impact.html
+      - impact_meme.html
+      - impact_is.html
     # Wonka meme - A Package Manager?  Tell me more...
     # What? package manager for Modelica
     # What not? (build system, MODELICAPATH)
@@ -60,7 +46,8 @@ slides:
     metadata:
       id: golang
     pages:
-      - <hero><h1>Migrating to Go</h1></hero>
+      - go_meme.html
+      - reasons.html
     # Skeptical kid - You write it in Python...now you are switching to Golang?
     # lack of runtime
     # static binaries
