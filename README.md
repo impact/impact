@@ -145,7 +145,7 @@ The development takes place on https://github.com/impact/impact
  * Authors: [@mtiller](https://github.com/mtiller), [@dietmarw](https://github.com/dietmarw)
  * Contributors: See [graphs/contributors](https://github.com/impact/impact/graphs/contributors)
 
-For more information on how to contribute please look at [CONTRIBUTING.md](../../CONTRIBUTING.md)
+For more information on how to contribute please look at [CONTRIBUTING.md](../../blob/master/CONTRIBUTING.md).
 
 You may report any issues with using the [Issues](https://github.com/impact/impact/issues) button.
 
