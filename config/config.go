@@ -12,7 +12,7 @@ import (
 
 	"github.com/mitchellh/go-homedir"
 
-	"github.com/xogeny/impact/crawl"
+	"github.com/impact/impact/crawl"
 )
 
 // If this environment variable is set, we use the file it

@@ -10,7 +10,7 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 	. "github.com/xogeny/xconvey"
 
-	"github.com/xogeny/impact/recorder"
+	"github.com/impact/impact/recorder"
 )
 
 type NullRecorder struct {

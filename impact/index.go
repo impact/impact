@@ -6,8 +6,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/xogeny/impact/config"
-	"github.com/xogeny/impact/index"
+	"github.com/impact/impact/config"
+	"github.com/impact/impact/index"
 )
 
 type IndexCommand struct {

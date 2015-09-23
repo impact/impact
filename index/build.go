@@ -5,8 +5,8 @@ import (
 
 	"github.com/wsxiaoys/terminal/color"
 
-	"github.com/xogeny/impact/graph"
-	"github.com/xogeny/impact/parsing"
+	"github.com/impact/impact/graph"
+	"github.com/impact/impact/parsing"
 )
 
 func (ind *Index) BuildGraph(verbose bool) (graph.Resolver, error) {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/xogeny/impact/config"
+	"github.com/impact/impact/config"
 )
 
 func LoadIndex(verbose bool) (*Index, error) {

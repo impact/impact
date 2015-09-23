@@ -6,8 +6,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/xogeny/impact/crawl"
-	"github.com/xogeny/impact/index"
+	"github.com/impact/impact/crawl"
+	"github.com/impact/impact/index"
 
 	. "github.com/smartystreets/goconvey/convey"
 	. "github.com/xogeny/xconvey"

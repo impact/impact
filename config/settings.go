@@ -3,7 +3,7 @@ package config
 import (
 	"fmt"
 
-	"github.com/xogeny/impact/crawl"
+	"github.com/impact/impact/crawl"
 )
 
 type Settings struct {

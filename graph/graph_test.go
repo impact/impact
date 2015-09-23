@@ -6,7 +6,7 @@ import (
 
 	"testing"
 
-	"github.com/xogeny/impact/parsing"
+	"github.com/impact/impact/parsing"
 
 	"github.com/blang/semver"
 	. "github.com/smartystreets/goconvey/convey"

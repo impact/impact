@@ -10,8 +10,8 @@ import (
 
 	"github.com/google/go-github/github"
 
-	"github.com/xogeny/impact/dirinfo"
-	"github.com/xogeny/impact/parsing"
+	"github.com/impact/impact/dirinfo"
+	"github.com/impact/impact/parsing"
 )
 
 func parsePackage(client *github.Client, user string, reponame string,

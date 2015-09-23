@@ -5,8 +5,8 @@ import (
 
 	"github.com/wsxiaoys/terminal/color"
 
-	"github.com/xogeny/impact/config"
-	"github.com/xogeny/impact/index"
+	"github.com/impact/impact/config"
+	"github.com/impact/impact/index"
 )
 
 /* Define a struct listing all command line options for 'search' */

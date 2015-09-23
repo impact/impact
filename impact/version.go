@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/wsxiaoys/terminal/color"
 
-	"github.com/xogeny/impact/config"
+	"github.com/impact/impact/config"
 )
 
 var version = "0.9.0-dev"

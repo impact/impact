@@ -12,7 +12,7 @@ import (
 	"github.com/pierrre/archivefile/zip"
 	"github.com/wsxiaoys/terminal/color"
 
-	"github.com/xogeny/impact/index"
+	"github.com/impact/impact/index"
 )
 
 func Install(libname string, ver index.VersionDetails, ind *index.Index,

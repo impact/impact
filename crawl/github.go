@@ -9,8 +9,8 @@ import (
 	"code.google.com/p/goauth2/oauth"
 	"github.com/google/go-github/github"
 
-	"github.com/xogeny/impact/parsing"
-	"github.com/xogeny/impact/recorder"
+	"github.com/impact/impact/parsing"
+	"github.com/impact/impact/recorder"
 )
 
 type GitHubCrawler struct {

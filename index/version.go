@@ -3,7 +3,7 @@ package index
 import (
 	"github.com/blang/semver"
 
-	"github.com/xogeny/impact/recorder"
+	"github.com/impact/impact/recorder"
 )
 
 type VersionDetails struct {

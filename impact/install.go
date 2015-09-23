@@ -6,10 +6,10 @@ import (
 
 	"github.com/wsxiaoys/terminal/color"
 
-	"github.com/xogeny/impact/config"
-	"github.com/xogeny/impact/graph"
-	"github.com/xogeny/impact/index"
-	"github.com/xogeny/impact/install"
+	"github.com/impact/impact/config"
+	"github.com/impact/impact/graph"
+	"github.com/impact/impact/index"
+	"github.com/impact/impact/install"
 )
 
 /* Define a struct listing all command line options for 'install' */

@@ -1,7 +1,7 @@
 package crawl
 
 import (
-	"github.com/xogeny/impact/recorder"
+	"github.com/impact/impact/recorder"
 	"log"
 )
 
