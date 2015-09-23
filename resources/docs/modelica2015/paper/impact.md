@@ -1,5 +1,40 @@
-*Keywords: Modelica, package management, GitHub, dependency resolution,
-golang*
+#  Where `impact` got *Go*ing
+
+Authors:
+-  Michael Tiller,
+    [Xogeny Inc.](http://xogeny.com), USA,
+    [michael.tiller@xogeny.com](mailto:michael.tiller@xogeny.com)
+-  Dietmar Winkler,
+    [Telemark University College](http://www.hit.no), Norway,
+    [dietmar.winkler@hit.no](mailto:dietmar.winkler@hit.no)
+
+---
+
+Abstract
+========
+
+This paper discusses the `impact` package manager.  The primary
+goal of this project is to support the development of a healthy
+eco-system around Modelica.  For many other languages, the existence
+of an easy to use package manager has made it easier for people to
+explore and adopt those languages.  We seek to bring that same kind
+of capability to the Modelica community by incorporating useful
+features from other package managers like `bower`, `npm`, *etc*.
+
+This paper is an update on the status of the `impact` package
+manager which was discussed previously in
+[impact - A Modelica Package Manager](resources/docs/modelica2014/paper/impact.md).
+This latest version of `impact` involves a complete rewrite that
+incorporates a more advanced dependency resolution algorithm.  That
+dependency resolution will be discussed in depth along with many of
+the subtle issues that arose during the development of this latest
+version of `impact`.  Along with a superior dependency resolution
+scheme, the new version of `impact` is much easier to install
+and use.  Furthermore, it includes many useful new features as well.
+
+#### Keywords:
+
+*Modelica, package management, GitHub, dependency resolution, golang*
 
 Introduction
 ============
@@ -726,7 +761,7 @@ dependencies. Consider the following simple set of dependencies:
   **3**   <span>`B:1.2.0`</span>    uses  <span>`C:1.2.0`</span>
   **4**   <span>`A:1.0.0`</span>    uses  <span>`B:1.1.0`</span> or
                                           <span>`B:1.0.0`</span>
-                                          
+
   **5**   <span>`A:1.0.0`</span>    uses  <span>`D:1.1.0`</span>
   **6**   <span>`B:1.0.0`</span>    uses  <span>`C:1.1.0`</span>
   **7**   <span>`C:1.2.0`</span>    uses  <span>`D:1.0.0`</span>
@@ -802,20 +837,20 @@ backtracking occurs. In such a case, we can think of the search as
 proceeding as follows:
 
   --------------------------------------------------------------------------------------------------- ------------------ --
-  <span>`A:2.0.0`</span>                                                                                                 
-  <span>`A:2.0.0`</span> & <span>`B:1.2.0`</span>                                                                        
-  <span>`A:2.0.0`</span> & <span>`B:1.2.0`</span> & <span>`C:1.2.0`</span>                            $\rightarrow$\#2   
-  <span>`A:2.0.0`</span> & <span>`B:1.2.0`</span> & <span>`C:1.1.0`</span>                            $\rightarrow$\#3   
-  <span>`A:2.0.0`</span> & <span>`B:1.1.0`</span>                                                     $\rightarrow$\#1   
-  <span>`A:2.0.0`</span> & <span>`B:1.0.0`</span>                                                     $\rightarrow$\#1   
-  <span>`A:1.0.0`</span> & <span>`B:1.2.0`</span>                                                     $\rightarrow$\#4   
-  <span>`A:1.0.0`</span> & <span>`B:1.1.0`</span>                                                                        
-  <span>`A:1.0.0`</span> & <span>`B:1.1.0`</span> & <span>`D:1.1.0`</span>                                               
-  <span>`A:1.0.0`</span> & <span>`B:1.1.0`</span> & <span>`D:1.1.0`</span> & <span>`C:1.2.0`</span>   $\rightarrow$\#7   
-  <span>`A:1.0.0`</span> & <span>`B:1.1.0`</span> & <span>`D:1.1.0`</span> & <span>`C:1.1.0`</span>   $\rightarrow$\#8   
-  <span>`A:1.0.0`</span> & <span>`B:1.1.0`</span> & <span>`D:1.0.0`</span>                            $\rightarrow$\#5   
-  <span>`A:1.0.0`</span> & <span>`B:1.0.0`</span> & <span>`D:1.1.0`</span> & <span>`C:1.2.0`</span>   $\rightarrow$\#6   
-  <span>`A:1.0.0`</span> & <span>`B:1.0.0`</span> & <span>`D:1.1.0`</span> & <span>`C:1.1.0`</span>                      
+  <span>`A:2.0.0`</span>
+  <span>`A:2.0.0`</span> & <span>`B:1.2.0`</span>
+  <span>`A:2.0.0`</span> & <span>`B:1.2.0`</span> & <span>`C:1.2.0`</span>                            $\rightarrow$\#2
+  <span>`A:2.0.0`</span> & <span>`B:1.2.0`</span> & <span>`C:1.1.0`</span>                            $\rightarrow$\#3
+  <span>`A:2.0.0`</span> & <span>`B:1.1.0`</span>                                                     $\rightarrow$\#1
+  <span>`A:2.0.0`</span> & <span>`B:1.0.0`</span>                                                     $\rightarrow$\#1
+  <span>`A:1.0.0`</span> & <span>`B:1.2.0`</span>                                                     $\rightarrow$\#4
+  <span>`A:1.0.0`</span> & <span>`B:1.1.0`</span>
+  <span>`A:1.0.0`</span> & <span>`B:1.1.0`</span> & <span>`D:1.1.0`</span>
+  <span>`A:1.0.0`</span> & <span>`B:1.1.0`</span> & <span>`D:1.1.0`</span> & <span>`C:1.2.0`</span>   $\rightarrow$\#7
+  <span>`A:1.0.0`</span> & <span>`B:1.1.0`</span> & <span>`D:1.1.0`</span> & <span>`C:1.1.0`</span>   $\rightarrow$\#8
+  <span>`A:1.0.0`</span> & <span>`B:1.1.0`</span> & <span>`D:1.0.0`</span>                            $\rightarrow$\#5
+  <span>`A:1.0.0`</span> & <span>`B:1.0.0`</span> & <span>`D:1.1.0`</span> & <span>`C:1.2.0`</span>   $\rightarrow$\#6
+  <span>`A:1.0.0`</span> & <span>`B:1.0.0`</span> & <span>`D:1.1.0`</span> & <span>`C:1.1.0`</span>
   --------------------------------------------------------------------------------------------------- ------------------ --
 
 This elaboration of the search shows the role that the relative priority

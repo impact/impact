@@ -12,6 +12,11 @@ The concept was first presented in [impact - A Modelica Package Manager](resourc
 > Proceedings of the 10th International Modelica Conference, March 10-12, 2014,
 > Lund, Sweden http://dx.doi.org/10.3384/ecp14096543
 
+A follow up paper presented in [Where `impact` got *Go*ing](resources/docs/modelica2015/paper/impact.md)
+
+> Michael Tiller, Dietmar Winkler (2015). Where impact got Going,
+> Proceedings of the 11th International Modelica Conference, September 21-23, 2015,
+> Versailles, France http://dx.doi.org/10.3384/ecp15118725
 
 ## History
 
@@ -138,6 +143,8 @@ The development takes place on https://github.com/impact/impact
 
  * Authors: [@mtiller](https://github.com/mtiller), [@dietmarw](https://github.com/dietmarw)
  * Contributors: See [graphs/contributors](https://github.com/impact/impact/graphs/contributors)
+
+For more information on how to contribute please look at [CONTRIBUTING.md](../../CONTRIBUTING.md)
 
 You may report any issues with using the [Issues](https://github.com/impact/impact/issues) button.
 
