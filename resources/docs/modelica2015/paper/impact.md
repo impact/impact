@@ -866,7 +866,7 @@ significant way.
 
 The actual algorithm is implemented by the <span>`findFirst`</span>
 method on the <span>`LibraryGraph`</span> type found in the
-<span>`github.com/xogeny/impact/graph`</span> package. The inputs to
+<span>`github.com/impact/impact/graph`</span> package. The inputs to
 this function are:
 
 <span>`mapped`</span>
