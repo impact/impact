@@ -28,11 +28,9 @@
         <path d="M605.4655 -714.4655 L610.5051 440.5236 L-362.4856 444.7691 L-367.5252 -710.2199 L605.4655 -714.4655 Z"/>
       </clipPath>
     </defs>
-	<!--
     <g fill="white" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="translate(15,-17)" stroke="white">
       <rect x="-15" width="1155" height="973" y="17" clip-path="url(#clipPath2)" stroke="none"/>
     </g>
-	-->
     <g fill="rgb(245,245,245)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,15,-17)" stroke="rgb(245,245,245)">
       <rect x="0" y="100" clip-path="url(#clipPath2)" width="325" rx="4" ry="4" height="475" stroke="none"/>
       <rect x="0" y="100" clip-path="url(#clipPath2)" fill="rgb(235,235,235)" width="325" height="21.666" stroke="none"/>

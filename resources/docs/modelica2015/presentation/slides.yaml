@@ -9,7 +9,7 @@ metadata:
     - templates/macros.html
   draft: false
   math: false
-  animation: false
+  animation: true
 slides:
   Title:
     metadata:
@@ -89,6 +89,7 @@ slides:
       id: future
     pages:
       - <hero><h1>Future</h1></hero>
+      - future.html
     # Git checkout
     # Manifest file (package.json)
     # Community
