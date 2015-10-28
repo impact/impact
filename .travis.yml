@@ -1,0 +1,12 @@
+language: go
+
+go:
+  - tip
+
+script:
+  - cd impact
+  - go build
+  - go test -short ../...
+
+notifications:
+  email: false
