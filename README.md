@@ -1,6 +1,6 @@
 # Impact
 
-[![Build Status](https://drone.io/github.com/xogeny/impact/status.png)](https://drone.io/github.com/xogeny/impact/latest)
+[![Build Status](https://travis-ci.org/impact/impact.svg?branch=master)](https://travis-ci.org/impact/impact)
 
 *Impact* is a Modelica package manager.
 
