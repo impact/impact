@@ -19,6 +19,14 @@ explained the new resolution algorithm used by impact to identify library depend
 > Proceedings of the 11th International Modelica Conference, September 21-23, 2015,
 > Versailles, France http://dx.doi.org/10.3384/ecp15118725
 
+## Search Applications
+
+Not only can `impact` be used as a package manager, but the indices that it creates can also be used to drive a web application that helps users explore the set of available Modelica libraries.  That web application can be found at:
+
+[http://impact.github.io](http://impact.github.io)
+
+The source code for the web application is also open sourc and is [hosted on GitHub](http://github.com/impact/search) as well.
+
 ## History
 
 *Impact* was initially development in [Python](https://www.python.org/) which is also the version
