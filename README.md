@@ -19,9 +19,14 @@ explained the new resolution algorithm used by impact to identify library depend
 > Proceedings of the 11th International Modelica Conference, September 21-23, 2015,
 > Versailles, France http://dx.doi.org/10.3384/ecp15118725
 
+Further motivation for why we need to have package management for mathematical models can be found in Bret Victor's
+excellent essay [What Can a Technologist Do about Climate Change?](http://worrydream.com/ClimateChange/) where he asks
+the question "What if there were an 'npm' for scientific models?".  Of course, our answer would be "there already is". :smiley:
+
 ## Search Applications
 
-Not only can `impact` be used as a package manager, but the indices that it creates can also be used to drive a web application that helps users explore the set of available Modelica libraries.  That web application can be found at:
+Not only can `impact` be used as a package manager, but the indices that it creates can also be used to drive
+a web application that helps users explore the set of available Modelica libraries.  That web application can be found at:
 
 [http://impact.github.io](http://impact.github.io)
 
