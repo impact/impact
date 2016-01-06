@@ -30,7 +30,7 @@ a web application that helps users explore the set of available Modelica librari
 
 [http://impact.github.io](http://impact.github.io)
 
-The source code for the web application is also open sourc and is [hosted on GitHub](http://github.com/impact/search) as well.
+The source code for the web application is also open source and is [hosted on GitHub](http://github.com/impact/search) as well.
 
 ## History
 
