@@ -1,5 +1,8 @@
 language: go
 
+before_install:
+  - pip install --user codecov
+
 go:
   - tip
 
@@ -7,6 +10,9 @@ script:
   - cd impact
   - go build
   - go test -short ../...
+
+after_success:
+  - codecov
 
 notifications:
   email: false
