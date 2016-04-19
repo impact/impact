@@ -12,7 +12,7 @@
 
 LAST_TAG := $(shell git describe --abbrev=0 --tags)
 
-USER := xogeny
+USER := impact
 EXECUTABLE := impact
 GITHUB_RELEASE = github-release
 BUILD_CMD =  go build
