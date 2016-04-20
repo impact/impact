@@ -95,7 +95,7 @@ func ReadSettings() (Settings, error) {
 
 	// If no indices were specified, use the default:
 	if len(ret.Indices) == 0 {
-		ret.Indices = []string{"https://impact.modelica.org/impact_index.json"}
+		ret.Indices = []string{"https://impact.github.io/impact_index.json"}
 	}
 
 	mo := denada.NewDeclaration("source", "", "github")
