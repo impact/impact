@@ -6,7 +6,7 @@ import (
 	"github.com/impact/impact/config"
 )
 
-var version = "0.9.0-dev"
+var version = "0.8.1"
 
 type VersionCommand struct {
 	Verbose bool `short:"v" long:"verbose" description:"Turn on verbose output"`
